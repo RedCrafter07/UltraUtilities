@@ -1,6 +1,0 @@
-{
-  "parent": "item/generated",
-  "textures": {
-    "layer0": "processed:item/deactivated_charged_overload_processor"
-  }
-}

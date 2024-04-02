@@ -1,6 +1,0 @@
-{
-  "parent": "item/generated",
-  "textures": {
-    "layer0": "processed:item/carbon_reinforced_saw_blade"
-  }
-}
