@@ -11,8 +11,6 @@ import redcrafter07.processed.block.ModBlocks
 object ModItemGroup {
     val CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, ProcessedMod.ID);
 
-    //hang on
-
 //    val EXAMPLE_TAB = CREATIVE_MODE_TABS.register("Processed") {
 //        CreativeModeTab.builder()
 //            .title(Component.translatable("itemGroup." + ProcessedMod.ID + ".main"))
