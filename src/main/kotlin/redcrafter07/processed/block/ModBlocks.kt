@@ -1,10 +1,10 @@
 package redcrafter07.processed.block
 
-import net.minecraft.world.flag.FeatureFlag
 import net.minecraft.world.item.BlockItem
 import net.minecraft.world.item.Item
 import redcrafter07.processed.ProcessedMod
 import net.minecraft.world.level.block.Block
+import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.block.state.BlockBehaviour
 import net.neoforged.neoforge.registries.DeferredBlock
 import net.neoforged.neoforge.registries.DeferredRegister
@@ -18,10 +18,7 @@ object ModBlocks {
     // this is automatically registered by the deferred registry at the correct times
     val BLITZ_ORE =
         registerBlock("blitz_ore") {
-            Block(BlockBehaviour.Properties.of().lightLevel { 5 }
-                .explosionResistance(1200f /* blast resistance of obsidian */)
-                .strength(3f)
-                .requiresCorrectToolForDrops())
+            Block(BlockBehaviour.Properties.ofFullCopy(Blocks.DIAMOND_ORE).explosionResistance(1200f))
         };
 
     private fun <T : Block> registerBlock(name: String, block: Supplier<T>): DeferredBlock<T> {

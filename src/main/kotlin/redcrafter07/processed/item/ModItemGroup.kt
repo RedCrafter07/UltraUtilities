@@ -16,7 +16,7 @@ object ModItemGroup {
         CreativeModeTab.builder()
             .title(Component.translatable("itemGroup." + ProcessedMod.ID + ".main"))
             .icon() { ItemStack(ModBlocks.BLITZ_ORE) }
-            .displayItems { params, output ->
+            .displayItems { _, output ->
                 output.accept(ModBlocks.BLITZ_ORE);
                 output.accept(ModItems.BLITZ_ORB);
             }
