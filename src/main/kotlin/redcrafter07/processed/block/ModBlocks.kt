@@ -1,5 +1,6 @@
 package redcrafter07.processed.block
 
+import net.minecraft.world.flag.FeatureFlag
 import net.minecraft.world.item.BlockItem
 import net.minecraft.world.item.Item
 import redcrafter07.processed.ProcessedMod
@@ -15,8 +16,13 @@ object ModBlocks {
 
     // the returned ObjectHolderDelegate can be used as a property delegate
     // this is automatically registered by the deferred registry at the correct times
-    val EXAMPLE_BLOCK =
-        registerBlock("example_block") { Block(BlockBehaviour.Properties.of().lightLevel { 15 }.instabreak()) };
+    val BLITZ_ORE =
+        registerBlock("blitz_ore") {
+            Block(BlockBehaviour.Properties.of().lightLevel { 5 }
+                .explosionResistance(1200f /* blast resistance of obsidian */)
+                .strength(3f)
+                .requiresCorrectToolForDrops())
+        };
 
     private fun <T : Block> registerBlock(name: String, block: Supplier<T>): DeferredBlock<T> {
         // this will call registerItem later, that's why it's not implemented yet

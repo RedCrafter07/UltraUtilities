@@ -1,6 +1,7 @@
 package redcrafter07.processed.item
 
 import net.minecraft.world.item.Item
+import net.neoforged.neoforge.registries.DeferredItem
 import net.neoforged.neoforge.registries.DeferredRegister
 import redcrafter07.processed.ProcessedMod
 import java.util.function.Supplier
@@ -12,9 +13,11 @@ import java.util.function.Supplier
 
 //your implementation is correct fyi
 object ModItems {
-    val ITEMS: DeferredRegister<Item> = DeferredRegister.createItems(ProcessedMod.ID);
+    val ITEMS: DeferredRegister.Items = DeferredRegister.createItems(ProcessedMod.ID);
 
-    fun <T: Item> registerItem(name: String, item: Supplier<T>) {
-        ITEMS.register(name, item);
+    val BLITZ_ORB = registerItem("blitz_orb") { Item(Item.Properties()) };
+
+    fun <T: Item> registerItem(name: String, item: Supplier<T>): DeferredItem<T> {
+        return ITEMS.register(name, item);
     }
 }
