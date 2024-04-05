@@ -12,6 +12,7 @@ import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.block.state.StateDefinition
 import net.minecraft.world.level.block.state.properties.BooleanProperty
 import net.neoforged.neoforge.capabilities.Capabilities
+import redcrafter07.processed.ProcessedMod
 import redcrafter07.processed.block.tile_entities.PipeBlockEntity
 
 class BlockPipe : Block(Properties.of().sound(SoundType.STONE).isRedstoneConductor { _, _, _ -> false }), EntityBlock {
@@ -37,7 +38,8 @@ class BlockPipe : Block(Properties.of().sound(SoundType.STONE).isRedstoneConduct
     override fun getStateForPlacement(context: BlockPlaceContext): BlockState? {
         val block_pos = context.clickedPos
         val level = context.level
-        val default_block_state = defaultBlockState()
+        val default_block_state = stateDefinition.any();
+//        ProcessedMod.LOGGER.info(level.get)
 
         for (direction in Direction.stream()) {
             val blockState = context.level.getBlockState(block_pos.relative(direction))
