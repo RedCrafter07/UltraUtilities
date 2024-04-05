@@ -75,8 +75,8 @@ class BlockPipe : Block(
     override fun onWrenchUse(context: UseOnContext, state: BlockState) {
         val oldPipeState = state.getValue(pipeState)
         val newPipeState = oldPipeState.next()
-        state.setValue(pipeState, newPipeState)
-        context.level.setBlock(context.clickedPos, state, UPDATE_CLIENTS or UPDATE_NEIGHBORS)
+        val newState = state.setValue(pipeState, newPipeState)
+        context.level.setBlock(context.clickedPos, newState, UPDATE_CLIENTS or UPDATE_NEIGHBORS)
 
         context.player?.sendSystemMessage(
             Component.translatable(
