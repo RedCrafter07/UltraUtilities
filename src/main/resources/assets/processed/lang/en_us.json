@@ -5,5 +5,6 @@
   "item.processed.wrench": "Wrench",
   "processed.pipe_like_state.normal": "Normal",
   "processed.pipe_like_state.push": "Push",
-  "processed.pipe_like_state.pull": "Pull"
+  "processed.pipe_like_state.pull": "Pull",
+  "processed.pipe_like_state.update": "State: %d -> %d"
 }
