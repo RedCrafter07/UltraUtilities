@@ -27,7 +27,8 @@ class WrenchItem : Item(Properties().stacksTo(1)) {
 
         if (block is WrenchInteractableBlock) {
             block.onWrenchInfo(player, player.level().getBlockState(pos))
-            return false
+
+            return true
         } else {
             return super.onBlockStartBreak(itemstack, pos, player)
         }
