@@ -8,6 +8,7 @@ import net.neoforged.fml.event.lifecycle.FMLDedicatedServerSetupEvent
 import org.apache.logging.log4j.Level
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
+import redcrafter07.processed.block.tile_entities.ModTileEntities
 import redcrafter07.processed.item.ModItemGroup
 import redcrafter07.processed.item.ModItems
 import thedarkcolour.kotlinforforge.neoforge.forge.MOD_BUS
@@ -35,6 +36,7 @@ object ProcessedMod {
         ModBlocks.BLOCKS.register(MOD_BUS)
         ModItems.ITEMS.register(MOD_BUS);
         ModItemGroup.CREATIVE_MODE_TABS.register(MOD_BUS);
+        ModTileEntities.BLOCK_TYPES.register(MOD_BUS);
 
         val obj = runForDist(
             clientTarget = {
