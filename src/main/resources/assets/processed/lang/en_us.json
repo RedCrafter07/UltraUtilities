@@ -3,7 +3,7 @@
   "block.processed.blitz_ore": "Blitz Ore",
   "item.processed.blitz_orb": "Blitz Orb",
   "item.processed.wrench": "Wrench",
-  "processed.pipe_like_state.normal": "Normal",
+  "processed.pipe_like_state.none": "Normal",
   "processed.pipe_like_state.push": "Push",
   "processed.pipe_like_state.pull": "Pull",
   "processed.pipe_like_state.update": "State: %d -> %d"
