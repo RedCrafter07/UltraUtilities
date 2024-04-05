@@ -80,6 +80,14 @@ class BlockPipe : Block(
 
         val player = context.player
 
+        val pitch = when (newPipeState) {
+            PipeLikeState.Pull -> 1.0f
+            PipeLikeState.Push -> 1.2f
+            PipeLikeState.None -> 1.5f
+        }
+
+        player?.playSound(NoteBlockInstrument.BELL.soundEvent.value(), 1.0f, pitch)
+
         if (player is ServerPlayer) {
             player.connection.send(
                 ClientboundSetActionBarTextPacket(
