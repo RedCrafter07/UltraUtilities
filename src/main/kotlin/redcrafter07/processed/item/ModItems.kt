@@ -9,7 +9,7 @@ import java.util.function.Supplier
 object ModItems {
     val ITEMS: DeferredRegister.Items = DeferredRegister.createItems(ProcessedMod.ID)
 
-    val BLITZ_ORB = registerItem("blitz_orb") { ModItem(Item.Properties()) }
+    val BLITZ_ORB = registerItem("blitz_orb") { ModItem(Item.Properties(), "blitz_orb") }
     val WRENCH = registerItem("wrench") { WrenchItem() }
 
     fun <T : Item> registerItem(name: String, item: Supplier<T>): DeferredItem<T> {
