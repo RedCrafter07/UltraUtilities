@@ -92,7 +92,7 @@ class BlockPipe : Block(
             player.connection.send(
                 ClientboundSetActionBarTextPacket(
                     Component.translatable(
-                        "processed.pipe_like_state.update",
+                        "processed.pipe_state.update",
                         oldPipeState.translation(true),
                         newPipeState.translation(true)
                     )
