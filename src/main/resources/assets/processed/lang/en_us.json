@@ -9,5 +9,5 @@
   "processed.pipe_state.title.none": "§9Normal",
   "processed.pipe_state.title.push": "§aPush",
   "processed.pipe_state.title.pull": "§cPull",
-  "processed.pipe_state.update": "§7State: %d §7-> %d"
+  "processed.pipe_state": "§7State: %d"
 }
