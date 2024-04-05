@@ -16,30 +16,26 @@ import redcrafter07.processed.item.ModItems
 
 class ModBlockLootTables : BlockLootSubProvider(setOf(), FeatureFlags.REGISTRY.allFlags()) {
     override fun generate() {
-        createOreLootTable(ModBlocks.BLITZ_ORE.get(), ModItems.BLITZ_ORB.get(), 1f, 3f);
-        this.dropSelf(ModBlocks.BLOCK_PIPE.get());
+        createOreLootTable(ModBlocks.BLITZ_ORE.get(), ModItems.BLITZ_ORB.get(), 1f, 3f)
+        this.dropSelf(ModBlocks.BLOCK_PIPE.get())
     }
 
-    fun createOreLootTable(block: Block, item: Item, min: Float, max: Float) {
+    private fun createOreLootTable(block: Block, item: Item, min: Float, max: Float) {
         this.add(
             block, createSilkTouchDispatchTable(
-                block,
-                applyExplosionDecay(
+                block, applyExplosionDecay(
                     block,
                     LootItem.lootTableItem(item)
                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(min, max)))
                         .apply(ApplyBonusCount.addUniformBonusCount(Enchantments.BLOCK_FORTUNE))
                 ) as LootPoolEntryContainer.Builder<*>
             )
-        );
+        )
     }
 
     override fun getKnownBlocks(): Iterable<Block> {
         return Iterable {
-            ModBlocks.BLOCKS
-                .entries
-                .stream()
-                .map(DeferredHolder<*, out Block>::get).iterator()
-        };
+            ModBlocks.BLOCKS.entries.stream().map(DeferredHolder<*, out Block>::get).iterator()
+        }
     }
 }
