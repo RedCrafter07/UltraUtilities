@@ -1,6 +1,7 @@
 package redcrafter07.processed.item
 
 import net.minecraft.world.item.Item
+import net.minecraft.world.item.PickaxeItem
 import net.neoforged.neoforge.registries.DeferredItem
 import net.neoforged.neoforge.registries.DeferredRegister
 import redcrafter07.processed.ProcessedMod
@@ -10,6 +11,7 @@ object ModItems {
     val ITEMS: DeferredRegister.Items = DeferredRegister.createItems(ProcessedMod.ID)
 
     val BLITZ_ORB = registerItem("blitz_orb") { Item(Item.Properties()) }
+    val WRENCH = registerItem("wrench") { WrenchItem() }
 
     fun <T: Item> registerItem(name: String, item: Supplier<T>): DeferredItem<T> {
         return ITEMS.register(name, item)

@@ -13,6 +13,7 @@ class ModItemModelProvider(output: PackOutput, existingFileHelper: ExistingFileH
     ItemModelProvider(output, ProcessedMod.ID, existingFileHelper) {
     override fun registerModels() {
         simpleItem(ModItems.BLITZ_ORB);
+        simpleItem(ModItems.WRENCH);
     }
 
     private fun simpleItem(item: DeferredItem<*>): ItemModelBuilder {
