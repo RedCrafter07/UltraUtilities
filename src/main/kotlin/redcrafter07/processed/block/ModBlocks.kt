@@ -1,6 +1,5 @@
 package redcrafter07.processed.block
 
-import net.minecraft.world.item.BlockItem
 import net.minecraft.world.item.Item
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.Blocks
@@ -21,16 +20,16 @@ object ModBlocks {
     }
     val BLOCK_PIPE = registerBlock("pipe") { BlockPipe() }
 
-    private fun <T : Block> registerBlock(name: String, block: Supplier<T>): DeferredBlock<T> {
+    private fun <T : Block> registerBlock(id: String, block: Supplier<T>): DeferredBlock<T> {
         // this will call registerItem later, that's why it's not implemented yet
-        val regBlock = BLOCKS.register(name, block)
+        val regBlock = BLOCKS.register(id, block)
 
-        registerBlockItem(name, regBlock)
+        registerBlockItem(id, regBlock)
 
         return regBlock
     }
 
-    private fun <T : Block> registerBlockItem(name: String, block: DeferredBlock<T>) {
-        ModItems.registerItem(name) { BlockItem(block.get(), Item.Properties()) }
+    private fun <T : Block> registerBlockItem(id: String, block: DeferredBlock<T>) {
+        ModItems.registerItem(id) { ModBlockItem(block.get(), Item.Properties(), id) }
     }
 }
