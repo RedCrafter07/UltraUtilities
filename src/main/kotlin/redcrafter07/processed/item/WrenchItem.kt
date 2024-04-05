@@ -1,6 +1,8 @@
 package redcrafter07.processed.item
 
+import net.minecraft.core.BlockPos
 import net.minecraft.world.InteractionResult
+import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.context.UseOnContext
@@ -17,6 +19,17 @@ class WrenchItem : Item(Properties().stacksTo(1)) {
             return InteractionResult.SUCCESS
         } else {
             return super.onItemUseFirst(stack, context)
+        }
+    }
+
+    override fun onBlockStartBreak(itemstack: ItemStack, pos: BlockPos, player: Player): Boolean {
+        val block = player.level().getBlockState(pos).block
+
+        if (block is WrenchInteractableBlock) {
+            block.onWrenchInfo(player, player.level().getBlockState(pos))
+            return false
+        } else {
+            return super.onBlockStartBreak(itemstack, pos, player)
         }
     }
 }
