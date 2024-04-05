@@ -1,6 +1,7 @@
 package redcrafter07.processed.block
 
 import net.minecraft.core.BlockPos
+import net.minecraft.world.item.context.BlockPlaceContext
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.EntityBlock
 import net.minecraft.world.level.block.SoundType
@@ -20,18 +21,14 @@ class BlockPipe : Block(Properties.of().sound(SoundType.STONE).isRedstoneConduct
         val PIPE_STATE_EAST = BooleanProperty.create("PipeConnectionEast")
     }
 
-//    override fun getStateForPlacement(context: BlockPlaceContext): BlockState? {
-//        val block_pos = context.clickedPos
-//        val level = context.level;
-//        val below = block_pos.below()
-//        val north = block_pos.north()
-//        val south = block_pos.south()
-//        val east = block_pos.east()
-//        val west = block_pos.west()
-//        val default_block_state = defaultBlockState();
-//
-//        return null;
-//    }
+    override fun getStateForPlacement(context: BlockPlaceContext): BlockState? {
+        val block_pos = context.clickedPos
+        val level = context.level;
+        
+        val default_block_state = defaultBlockState();
+
+        return null;
+    }
 
     override fun createBlockStateDefinition(stateDefinition: StateDefinition.Builder<Block, BlockState>) {
         stateDefinition.add(
