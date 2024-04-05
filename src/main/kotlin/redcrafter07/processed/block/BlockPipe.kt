@@ -17,12 +17,12 @@ import redcrafter07.processed.block.tile_entities.PipeBlockEntity
 
 class BlockPipe : Block(Properties.of().sound(SoundType.STONE).isRedstoneConductor { _, _, _ -> false }), EntityBlock {
     companion object {
-        val PIPE_STATE_UP = BooleanProperty.create("PipeConnectionTop")
-        val PIPE_STATE_DOWN = BooleanProperty.create("PipeConnectionBottom")
-        val PIPE_STATE_NORTH = BooleanProperty.create("PipeConnectionNorth")
-        val PIPE_STATE_SOUTH = BooleanProperty.create("PipeConnectionSouth")
-        val PIPE_STATE_WEST = BooleanProperty.create("PipeConnectionWest")
-        val PIPE_STATE_EAST = BooleanProperty.create("PipeConnectionEast")
+        val PIPE_STATE_UP = BooleanProperty.create("pipe_connection_top")
+        val PIPE_STATE_DOWN = BooleanProperty.create("pipe_connection_bottom")
+        val PIPE_STATE_NORTH = BooleanProperty.create("pipe_connection_north")
+        val PIPE_STATE_SOUTH = BooleanProperty.create("pipe_connection_south")
+        val PIPE_STATE_WEST = BooleanProperty.create("pipe_connection_west")
+        val PIPE_STATE_EAST = BooleanProperty.create("pipe_connection_east")
         fun propertyForDirection(direction: Direction): BooleanProperty {
             return when (direction) {
                 Direction.UP -> PIPE_STATE_UP
