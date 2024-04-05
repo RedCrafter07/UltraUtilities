@@ -78,10 +78,18 @@ class BlockPipe : Block(
         val newState = state.setValue(pipeState, newPipeState)
         context.level.setBlock(context.clickedPos, newState, UPDATE_CLIENTS or UPDATE_NEIGHBORS)
 
-        context.player?.sendSystemMessage(
-            Component.translatable(
-                "processed.pipe_like_state.update", oldPipeState.translation(), newPipeState.translation()
+        val player = context.player
+
+        if (player is ServerPlayer) {
+            player.connection.send(
+                ClientboundSetActionBarTextPacket(
+                    Component.translatable(
+                        "processed.pipe_like_state.update",
+                        oldPipeState.translation(true),
+                        newPipeState.translation(true)
+                    )
+                )
             )
-        )
+        }
     }
 }
