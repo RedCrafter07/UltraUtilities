@@ -8,6 +8,7 @@
   "block.processed.blitz_ore.tooltip": "§7An ore which you can get Blitz Orbs from.",
   "block.processed.blitz_ore": "Blitz Ore",
   "block.processed.pipe": "Pipe",
+  "block.processed.pipe.tooltip": "§7A pipe to transfer items and fluids.",
   "processed.pipe_state.normal": "Normal",
   "processed.pipe_state.push": "Push",
   "processed.pipe_state.pull": "Pull",
