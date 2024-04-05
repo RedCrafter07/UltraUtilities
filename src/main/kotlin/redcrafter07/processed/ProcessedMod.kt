@@ -34,7 +34,7 @@ object ProcessedMod {
         // Register the KDeferredRegister to the mod-specific event bus
         ModBlocks.BLOCKS.register(MOD_BUS)
         ModItemGroup.CREATIVE_MODE_TABS.register(MOD_BUS);
-        ModItems.ITEMS.register(MOD_BUS)
+        ModItems.ITEMS.register(MOD_BUS);
 
         val obj = runForDist(
             clientTarget = {
