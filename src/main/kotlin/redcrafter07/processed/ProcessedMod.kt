@@ -26,15 +26,15 @@ object ProcessedMod {
     const val ID = "processed"
 
     // the logger for our mod
-    private val LOGGER: Logger = LogManager.getLogger(ID)
+    val LOGGER: Logger = LogManager.getLogger(ID)
 
     init {
         LOGGER.log(Level.INFO, "Hello world!")
 
         // Register the KDeferredRegister to the mod-specific event bus
         ModBlocks.BLOCKS.register(MOD_BUS)
-        ModItemGroup.CREATIVE_MODE_TABS.register(MOD_BUS);
         ModItems.ITEMS.register(MOD_BUS);
+        ModItemGroup.CREATIVE_MODE_TABS.register(MOD_BUS);
 
         val obj = runForDist(
             clientTarget = {
