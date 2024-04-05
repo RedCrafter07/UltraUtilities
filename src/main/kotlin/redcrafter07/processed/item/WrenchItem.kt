@@ -15,8 +15,6 @@ class WrenchItem : Item(Properties().stacksTo(1)) {
         val block = blockState.block;
         val withShift = context.player?.isShiftKeyDown ?: false;
 
-        ProcessedMod.LOGGER.info("Wrench used on block: $block with shift: $withShift");
-
         if (block is WrenchInteractableBlock) {
             block.onWrenchUse(context, blockState, withShift);
             return InteractionResult.SUCCESS;
