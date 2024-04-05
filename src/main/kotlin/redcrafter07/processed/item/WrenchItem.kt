@@ -6,7 +6,7 @@ import net.minecraft.world.item.context.UseOnContext
 import redcrafter07.processed.block.WrenchInteractableBlock
 
 
-class WrenchItem : ModItem(Properties().stacksTo(1)) {
+class WrenchItem : ModItem(Properties().stacksTo(1), "wrench") {
 
     override fun onItemUseFirst(stack: ItemStack, context: UseOnContext): InteractionResult {
         val blockState = context.level.getBlockState(context.clickedPos) ?: return super.onItemUseFirst(stack, context)
