@@ -1,6 +1,8 @@
 package redcrafter07.processed.block
 
 import net.minecraft.network.chat.Component
+import net.minecraft.network.protocol.game.ClientboundSetActionBarTextPacket
+import net.minecraft.server.level.ServerPlayer
 import net.minecraft.util.StringRepresentable
 import net.minecraft.world.item.context.BlockPlaceContext
 import net.minecraft.world.item.context.UseOnContext
@@ -9,6 +11,7 @@ import net.minecraft.world.level.block.SoundType
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.block.state.StateDefinition
 import net.minecraft.world.level.block.state.properties.EnumProperty
+import net.minecraft.world.level.block.state.properties.NoteBlockInstrument
 import redcrafter07.processed.ProcessedMod
 
 enum class PipeLikeState : StringRepresentable {
@@ -32,12 +35,21 @@ enum class PipeLikeState : StringRepresentable {
         }
     }
 
-    fun translation(): Component {
-        return when (this) {
-            None -> Component.translatable("processed.pipe_like_state.none")
-            Pull -> Component.translatable("processed.pipe_like_state.pull")
-            Push -> Component.translatable("processed.pipe_like_state.push")
+    fun translation(withColor: Boolean = false): Component {
+        val base = "processed.pipe_state"
+        val addition = when (withColor) {
+            true -> "title."
+            false -> ""
         }
+        val state = when (this) {
+            None -> "none"
+            Pull -> "pull"
+            Push -> "push"
+        }
+
+        val formattedString = Component.translatable("${base}.${addition}${state}")
+
+        return formattedString
     }
 }
 
@@ -65,7 +77,6 @@ class BlockPipe : Block(
         val newPipeState = oldPipeState.next()
         state.setValue(pipeState, newPipeState)
         context.level.setBlock(context.clickedPos, state, UPDATE_CLIENTS or UPDATE_NEIGHBORS)
-        ProcessedMod.LOGGER.info("Pos: " + context.clickedPos)
 
         context.player?.sendSystemMessage(
             Component.translatable(
