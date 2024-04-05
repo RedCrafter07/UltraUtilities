@@ -15,10 +15,14 @@ object ModItemGroup {
     val EXAMPLE_TAB = registerCreativeModeTab("processed") {
         CreativeModeTab.builder()
             .title(Component.translatable("itemGroup." + ProcessedMod.ID + ".main"))
-            .icon() { ItemStack(ModBlocks.BLITZ_ORE) }
+            .icon() { ItemStack(ModItems.BLITZ_ORB.get()) }
             .displayItems { _, output ->
-                output.accept(ModBlocks.BLITZ_ORE);
-                output.accept(ModItems.BLITZ_ORB);
+                for (i in ModItems.ITEMS.entries) {
+                    output.accept(i.get());
+                }
+                for (i in ModBlocks.BLOCKS.entries) {
+                    output.accept(i.get());
+                }
             }
             .build()
     };
