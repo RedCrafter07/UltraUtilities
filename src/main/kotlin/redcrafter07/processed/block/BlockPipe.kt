@@ -12,7 +12,6 @@ import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.block.state.StateDefinition
 import net.minecraft.world.level.block.state.properties.EnumProperty
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument
-import redcrafter07.processed.ProcessedMod
 
 enum class PipeLikeState : StringRepresentable {
     None,
@@ -72,12 +71,9 @@ class BlockPipe : Block(
         return super.getStateForPlacement(p_49820_)
     }
 
-    override fun onWrenchUse(context: UseOnContext, state: BlockState, withShift: Boolean) {
+    override fun onWrenchUse(context: UseOnContext, state: BlockState) {
         val oldPipeState = state.getValue(pipeState)
-        val newPipeState = when (withShift) {
-            true -> PipeLikeState.None
-            false -> oldPipeState.next()
-        }
+        val newPipeState = oldPipeState.next()
         val newState = state.setValue(pipeState, newPipeState)
         context.level.setBlock(context.clickedPos, newState, UPDATE_CLIENTS or UPDATE_NEIGHBORS)
 
