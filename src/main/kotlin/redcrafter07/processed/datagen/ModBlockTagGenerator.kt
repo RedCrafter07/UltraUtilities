@@ -8,6 +8,7 @@ import net.neoforged.neoforge.common.data.BlockTagsProvider
 import net.neoforged.neoforge.common.data.ExistingFileHelper
 import redcrafter07.processed.ProcessedMod
 import redcrafter07.processed.block.ModBlocks
+import redcrafter07.processed.tags.ProcessedTags
 import java.util.concurrent.CompletableFuture
 
 class ModBlockTagGenerator(
@@ -23,6 +24,9 @@ class ModBlockTagGenerator(
             .add(ModBlocks.BLITZ_ORE.get());
 
         this.tag(Tags.Blocks.ORES)
+            .add(ModBlocks.BLITZ_ORE.get());
+
+        this.tag(ProcessedTags.Blocks.FORGE_ORE_BLITZ)
             .add(ModBlocks.BLITZ_ORE.get());
     }
 }
