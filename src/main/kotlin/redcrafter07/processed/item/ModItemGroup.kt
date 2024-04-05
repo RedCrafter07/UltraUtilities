@@ -10,24 +10,21 @@ import redcrafter07.processed.block.ModBlocks
 import java.util.function.Supplier
 
 object ModItemGroup {
-    val CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, ProcessedMod.ID);
+    val CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, ProcessedMod.ID)
 
     val EXAMPLE_TAB = registerCreativeModeTab("processed") {
-        CreativeModeTab.builder()
-            .title(Component.translatable("itemGroup." + ProcessedMod.ID + ".main"))
-            .icon() { ItemStack(ModItems.BLITZ_ORB.get()) }
-            .displayItems { _, output ->
+        CreativeModeTab.builder().title(Component.translatable("itemGroup." + ProcessedMod.ID + ".main"))
+            .icon { ItemStack(ModItems.BLITZ_ORB.get()) }.displayItems { _, output ->
                 for (i in ModItems.ITEMS.entries) {
-                    output.accept(i.get());
+                    output.accept(i.get())
                 }
                 for (i in ModBlocks.BLOCKS.entries) {
-                    output.accept(i.get());
+                    output.accept(i.get())
                 }
-            }
-            .build()
-    };
+            }.build()
+    }
 
     private fun registerCreativeModeTab(name: String, tab: Supplier<CreativeModeTab>) {
-        CREATIVE_MODE_TABS.register(name, tab);
+        CREATIVE_MODE_TABS.register(name, tab)
     }
 }
