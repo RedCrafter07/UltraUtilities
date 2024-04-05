@@ -3,11 +3,13 @@
   "block.processed.blitz_ore": "Blitz Ore",
   "item.processed.blitz_orb": "Blitz Orb",
   "item.processed.wrench": "Wrench",
-  "processed.pipe_state.none": "Normal",
+  "processed.pipe_state.normal": "Normal",
   "processed.pipe_state.push": "Push",
   "processed.pipe_state.pull": "Pull",
-  "processed.pipe_state.title.none": "§9Normal",
+  "processed.pipe_state.none": "None",
+  "processed.pipe_state.title.normal": "§9Normal",
   "processed.pipe_state.title.push": "§aPush",
   "processed.pipe_state.title.pull": "§cPull",
+  "processed.pipe_state.title.none": "§4None",
   "processed.pipe_state": "§7State: %d"
 }
