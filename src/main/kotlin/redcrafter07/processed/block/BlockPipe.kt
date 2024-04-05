@@ -1,6 +1,7 @@
 package redcrafter07.processed.block
 
 import net.minecraft.core.BlockPos
+import net.minecraft.core.Direction
 import net.minecraft.world.item.context.BlockPlaceContext
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.EntityBlock
@@ -13,27 +14,42 @@ import redcrafter07.processed.block.tile_entities.PipeBlockEntity
 
 class BlockPipe : Block(Properties.of().sound(SoundType.STONE).isRedstoneConductor { _, _, _ -> false }), EntityBlock {
     companion object {
-        val PIPE_STATE_TOP = BooleanProperty.create("PipeConnectionTop")
-        val PIPE_STATE_BOTTOM = BooleanProperty.create("PipeConnectionBottom")
+        val PIPE_STATE_UP = BooleanProperty.create("PipeConnectionTop")
+        val PIPE_STATE_DOWN = BooleanProperty.create("PipeConnectionBottom")
         val PIPE_STATE_NORTH = BooleanProperty.create("PipeConnectionNorth")
         val PIPE_STATE_SOUTH = BooleanProperty.create("PipeConnectionSouth")
         val PIPE_STATE_WEST = BooleanProperty.create("PipeConnectionWest")
         val PIPE_STATE_EAST = BooleanProperty.create("PipeConnectionEast")
+        fun propertyForDirection(direction: Direction): BooleanProperty {
+            return when (direction) {
+                Direction.UP -> PIPE_STATE_UP
+                Direction.DOWN -> PIPE_STATE_DOWN
+                Direction.EAST -> PIPE_STATE_EAST
+                Direction.WEST -> PIPE_STATE_WEST
+                Direction.NORTH -> PIPE_STATE_NORTH
+                Direction.SOUTH -> PIPE_STATE_SOUTH
+            }
+        }
     }
 
     override fun getStateForPlacement(context: BlockPlaceContext): BlockState? {
         val block_pos = context.clickedPos
         val level = context.level;
-        
         val default_block_state = defaultBlockState();
 
-        return null;
+        for (direction in Direction.stream()) {
+            val blockState = context.level.getBlockState(block_pos.relative(direction));
+            var is_connected = false;
+            if (blockState != null && blockState is P)
+        }
+
+        return default_block_state;
     }
 
     override fun createBlockStateDefinition(stateDefinition: StateDefinition.Builder<Block, BlockState>) {
         stateDefinition.add(
-            PIPE_STATE_TOP,
-            PIPE_STATE_BOTTOM,
+            PIPE_STATE_UP,
+            PIPE_STATE_DOWN,
             PIPE_STATE_NORTH,
             PIPE_STATE_EAST,
             PIPE_STATE_SOUTH,
