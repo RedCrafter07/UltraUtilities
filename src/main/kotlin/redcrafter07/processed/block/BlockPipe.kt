@@ -72,9 +72,12 @@ class BlockPipe : Block(
         return super.getStateForPlacement(p_49820_)
     }
 
-    override fun onWrenchUse(context: UseOnContext, state: BlockState) {
+    override fun onWrenchUse(context: UseOnContext, state: BlockState, withShift: Boolean) {
         val oldPipeState = state.getValue(pipeState)
-        val newPipeState = oldPipeState.next()
+        val newPipeState = when (withShift) {
+            true -> PipeLikeState.None
+            false -> oldPipeState.next()
+        }
         val newState = state.setValue(pipeState, newPipeState)
         context.level.setBlock(context.clickedPos, newState, UPDATE_CLIENTS or UPDATE_NEIGHBORS)
 
