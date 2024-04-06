@@ -1,11 +1,18 @@
 package redcrafter07.processed.block
 
+import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.network.chat.Component
 import net.minecraft.util.StringRepresentable
+import net.minecraft.world.level.BlockGetter
 import net.minecraft.world.level.block.Block
+import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.block.state.properties.EnumProperty
+import net.minecraft.world.phys.shapes.BooleanOp
+import net.minecraft.world.phys.shapes.CollisionContext
+import net.minecraft.world.phys.shapes.Shapes
+import net.minecraft.world.phys.shapes.VoxelShape
 import redcrafter07.processed.ProcessedMod
 
 enum class PipeLikeState : StringRepresentable {
@@ -128,6 +135,22 @@ val SHAPE_WEST = Block.box(0.0, 3.0, 3.0, 3.0, 13.0, 13.0);
 val SHAPE_EAST = Block.box(13.0, 3.0, 3.0, 16.0, 13.0, 13.0);
 val SHAPE_TOP = Block.box(3.0, 13.0, 3.0, 13.0, 16.0, 13.0);
 val SHAPE_BOTTOM = Block.box(3.0, 0.0, 3.0, 13.0, 3.0, 13.0);
+
+fun getShape(
+    state: BlockState,
+): VoxelShape {
+    var shape = SHAPE_CORE;
+    if (state.getValue(PIPE_STATE_NORTH) != PipeLikeState.None) shape =
+        Shapes.join(shape, SHAPE_NORTH, BooleanOp.OR);
+    if (state.getValue(PIPE_STATE_SOUTH) != PipeLikeState.None) shape =
+        Shapes.join(shape, SHAPE_SOUTH, BooleanOp.OR);
+    if (state.getValue(PIPE_STATE_WEST) != PipeLikeState.None) shape = Shapes.join(shape, SHAPE_WEST, BooleanOp.OR);
+    if (state.getValue(PIPE_STATE_EAST) != PipeLikeState.None) shape = Shapes.join(shape, SHAPE_EAST, BooleanOp.OR);
+    if (state.getValue(PIPE_STATE_TOP) != PipeLikeState.None) shape = Shapes.join(shape, SHAPE_TOP, BooleanOp.OR);
+    if (state.getValue(PIPE_STATE_BOTTOM) != PipeLikeState.None) shape =
+        Shapes.join(shape, SHAPE_BOTTOM, BooleanOp.OR);
+    return shape;
+}
 
 val PIPE_STATE_TOP = EnumProperty.create("pipe_state_top", PipeLikeState::class.java)
 val PIPE_STATE_BOTTOM = EnumProperty.create("pipe_state_bottom", PipeLikeState::class.java)

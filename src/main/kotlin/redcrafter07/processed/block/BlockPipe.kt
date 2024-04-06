@@ -15,14 +15,10 @@ import net.minecraft.world.level.block.SoundType
 import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.block.state.StateDefinition
-import net.minecraft.world.level.block.state.properties.EnumProperty
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument
-import net.minecraft.world.phys.shapes.BooleanOp
 import net.minecraft.world.phys.shapes.CollisionContext
-import net.minecraft.world.phys.shapes.Shapes
 import net.minecraft.world.phys.shapes.VoxelShape
 import net.neoforged.neoforge.capabilities.Capabilities
-import redcrafter07.processed.ProcessedMod
 import redcrafter07.processed.block.tile_entities.PipeBlockEntity
 import kotlin.math.floor
 
@@ -35,22 +31,12 @@ class BlockPipe : Block(Properties.of().sound(SoundType.STONE).isRedstoneConduct
     }
 
     override fun getShape(
-        state: BlockState,
+        blockState: BlockState,
         p_60556_: BlockGetter,
         p_60557_: BlockPos,
         p_60558_: CollisionContext
     ): VoxelShape {
-        var shape = SHAPE_CORE;
-        if (state.getValue(PIPE_STATE_NORTH) != PipeLikeState.None) shape =
-            Shapes.join(shape, SHAPE_NORTH, BooleanOp.OR);
-        if (state.getValue(PIPE_STATE_SOUTH) != PipeLikeState.None) shape =
-            Shapes.join(shape, SHAPE_SOUTH, BooleanOp.OR);
-        if (state.getValue(PIPE_STATE_WEST) != PipeLikeState.None) shape = Shapes.join(shape, SHAPE_WEST, BooleanOp.OR);
-        if (state.getValue(PIPE_STATE_EAST) != PipeLikeState.None) shape = Shapes.join(shape, SHAPE_EAST, BooleanOp.OR);
-        if (state.getValue(PIPE_STATE_TOP) != PipeLikeState.None) shape = Shapes.join(shape, SHAPE_TOP, BooleanOp.OR);
-        if (state.getValue(PIPE_STATE_BOTTOM) != PipeLikeState.None) shape =
-            Shapes.join(shape, SHAPE_BOTTOM, BooleanOp.OR);
-        return shape;
+        return redcrafter07.processed.block.getShape(blockState)
     }
 
     override fun propagatesSkylightDown(blockState: BlockState, blockGetter: BlockGetter, blockPos: BlockPos): Boolean {

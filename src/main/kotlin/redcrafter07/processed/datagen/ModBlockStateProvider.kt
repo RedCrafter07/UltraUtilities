@@ -11,6 +11,7 @@ class ModBlockStateProvider(output: PackOutput, exFileHelper: ExistingFileHelper
     BlockStateProvider(output, ProcessedMod.ID, exFileHelper) {
     override fun registerStatesAndModels() {
         blockWithItem(ModBlocks.BLITZ_ORE);
+        blockWithItem(ModBlocks.BLOCK_PIPE_PRESSURIZER)
     }
 
     private fun blockWithItem(blockRegistryObject: DeferredBlock<*>) {

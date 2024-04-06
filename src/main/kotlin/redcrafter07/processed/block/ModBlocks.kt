@@ -1,12 +1,16 @@
 package redcrafter07.processed.block
 
+import net.minecraft.core.BlockPos
 import net.minecraft.world.item.Item
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.Blocks
+import net.minecraft.world.level.block.SoundType
 import net.minecraft.world.level.block.state.BlockBehaviour
+import net.minecraft.world.level.block.state.BlockState
 import net.neoforged.neoforge.registries.DeferredBlock
 import net.neoforged.neoforge.registries.DeferredRegister
 import redcrafter07.processed.ProcessedMod
+import redcrafter07.processed.block.tile_entities.PipePressurizerBlockEntity
 import redcrafter07.processed.item.ModItems
 import java.util.function.Supplier
 
@@ -19,6 +23,13 @@ object ModBlocks {
         Block(BlockBehaviour.Properties.ofFullCopy(Blocks.DIAMOND_ORE).explosionResistance(1200f))
     }
     val BLOCK_PIPE = registerBlock("pipe") { BlockPipe() }
+    val BLOCK_PIPE_PRESSURIZER = registerBlock("pipe_pressurizer") {
+        BlockEntityBlock(
+            BlockBehaviour.Properties.of().isRedstoneConductor { _, _, _ -> false }.sound(SoundType.STONE)
+        ) { pos: BlockPos, state: BlockState ->
+            PipePressurizerBlockEntity(pos, state)
+        }
+    }
 
     private fun <T : Block> registerBlock(id: String, block: Supplier<T>): DeferredBlock<T> {
         // this will call registerItem later, that's why it's not implemented yet
