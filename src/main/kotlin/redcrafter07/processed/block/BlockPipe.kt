@@ -2,6 +2,7 @@ package redcrafter07.processed.block
 
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
+import net.minecraft.nbt.CompoundTag
 import net.minecraft.network.chat.Component
 import net.minecraft.network.protocol.game.ClientboundSetActionBarTextPacket
 import net.minecraft.server.level.ServerPlayer
@@ -15,11 +16,8 @@ import net.minecraft.world.level.block.SoundType
 import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.block.state.StateDefinition
-import net.minecraft.world.level.block.state.properties.BooleanProperty
 import net.minecraft.world.level.block.state.properties.EnumProperty
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument
-import net.neoforged.neoforge.attachment.AttachmentType
-import net.neoforged.neoforge.items.IItemHandler
 import redcrafter07.processed.block.tile_entities.PipeBlockEntity
 
 enum class PipeLikeState : StringRepresentable {
@@ -82,6 +80,57 @@ enum class PipeLikeState : StringRepresentable {
         }
     }
 }
+class DirectionalPipeLikeState {
+    var stateNorth: PipeLikeState = PipeLikeState.Normal;
+    var stateSouth: PipeLikeState = PipeLikeState.Normal;
+    var stateWest: PipeLikeState = PipeLikeState.Normal;
+    var stateEast: PipeLikeState = PipeLikeState.Normal;
+    var stateUp: PipeLikeState = PipeLikeState.Normal;
+    var stateDown: PipeLikeState = PipeLikeState.Normal;
+
+    fun getState(direction: Direction): PipeLikeState {
+        return when (direction) {
+            Direction.UP -> stateUp
+            Direction.DOWN -> stateDown
+            Direction.NORTH -> stateNorth
+            Direction.SOUTH -> stateSouth
+            Direction.WEST -> stateWest
+            Direction.EAST -> stateEast
+        }
+    }
+
+    fun setState(direction: Direction, value: PipeLikeState) {
+        when (direction) {
+            Direction.UP -> stateUp = value
+            Direction.DOWN -> stateDown = value
+            Direction.NORTH -> stateNorth = value
+            Direction.SOUTH -> stateSouth = value
+            Direction.WEST -> stateWest = value
+            Direction.EAST -> stateEast = value;
+        }
+    }
+
+    fun saveToNBT(name: String, nbt: CompoundTag) {
+        val ushort = stateUp.save().rotateLeft(10) or
+                stateDown.save().rotateLeft(8) or
+                stateWest.save().rotateLeft(6) or
+                stateEast.save().rotateLeft(4) or
+                stateNorth.save().rotateLeft(2) or
+                stateSouth.save()
+        nbt.putShort(name, ushort.toShort())
+    }
+
+    fun loadFromNBT(name: String, nbt: CompoundTag) {
+        val ushort = nbt.getShort(name).toUShort();
+        val utwo = 0b11.toUShort();
+        stateUp = PipeLikeState.load(ushort.rotateRight(10) and utwo);
+        stateDown = PipeLikeState.load(ushort.rotateRight(8) and utwo);
+        stateWest = PipeLikeState.load(ushort.rotateRight(6) and utwo);
+        stateEast = PipeLikeState.load(ushort.rotateRight(4) and utwo);
+        stateNorth = PipeLikeState.load(ushort.rotateRight(2) and utwo);
+        stateSouth = PipeLikeState.load(ushort and utwo);
+    }
+}
 
 class BlockPipe : Block(Properties.of().sound(SoundType.STONE).isRedstoneConductor { _, _, _ -> false }), EntityBlock,
     WrenchInteractableBlock {
@@ -93,6 +142,7 @@ class BlockPipe : Block(Properties.of().sound(SoundType.STONE).isRedstoneConduct
         val PIPE_STATE_SOUTH = EnumProperty.create("pipe_state_south", PipeLikeState::class.java)
         val PIPE_STATE_WEST = EnumProperty.create("pipe_state_west", PipeLikeState::class.java)
         val PIPE_STATE_EAST = EnumProperty.create("pipe_state_east", PipeLikeState::class.java)
+
         fun propertyForDirection(direction: Direction): EnumProperty<PipeLikeState> {
             return when (direction) {
                 Direction.UP -> PIPE_STATE_UP
@@ -108,8 +158,8 @@ class BlockPipe : Block(Properties.of().sound(SoundType.STONE).isRedstoneConduct
     override fun onWrenchUse(context: UseOnContext, state: BlockState) {
         val blockEntity = context.level.getBlockEntity(context.clickedPos);
         if (blockEntity !is PipeBlockEntity) return;
-        val newPipeState = blockEntity.getState(context.clickedFace).next();
-        blockEntity.setState(context.clickedFace, newPipeState);
+        val newPipeState = blockEntity.pipeState.getState(context.clickedFace).next();
+        blockEntity.pipeState.setState(context.clickedFace, newPipeState);
         val player = context.player
 
         val pitch = when (newPipeState) {
@@ -139,8 +189,8 @@ class BlockPipe : Block(Properties.of().sound(SoundType.STONE).isRedstoneConduct
     ): PipeLikeState {
         if (my_block_entity !is PipeBlockEntity) return PipeLikeState.None;
         if (other_block_entity !is PipeBlockEntity) return PipeLikeState.None;
-        if (other_block_entity.getState(direction.opposite) == PipeLikeState.None) return PipeLikeState.None;
-        return my_block_entity.getState(direction);
+        if (other_block_entity.pipeState.getState(direction.opposite) == PipeLikeState.None) return PipeLikeState.None;
+        return my_block_entity.pipeState.getState(direction);
     }
 
     override fun updateShape(
