@@ -74,7 +74,7 @@ class BlockPipe : Block(Properties.of().sound(SoundType.STONE).isRedstoneConduct
         }
     }
 
-    fun connectionType(
+    private fun connectionType(
         myBlockEntity: BlockEntity?,
         otherBlockEntity: BlockEntity?,
         otherBlockPos: BlockPos,
@@ -91,6 +91,7 @@ class BlockPipe : Block(Properties.of().sound(SoundType.STONE).isRedstoneConduct
                 Capabilities.ItemHandler.BLOCK, otherBlockPos, direction.opposite
             ) != null
         ) return myPipeState
+        if(otherBlockEntity is PipeBlockEntity && otherBlockEntity.pipeState.getState(direction.opposite) != PipeLikeState.None) return PipeLikeState.Normal
         if (otherBlockEntity !is PipeBlockEntity) return PipeLikeState.None
         if (otherBlockEntity.pipeState.getState(direction.opposite) == PipeLikeState.None) return PipeLikeState.None
         return myPipeState
@@ -117,13 +118,8 @@ class BlockPipe : Block(Properties.of().sound(SoundType.STONE).isRedstoneConduct
         for (direction in Direction.stream()) {
             val otherBlockPos = blockPos.relative(direction)
             defaultBlockState = defaultBlockState.setValue(
-                propertyForDirection(direction),
-                connectionType(
-                    null,
-                    level.getBlockEntity(otherBlockPos),
-                    otherBlockPos,
-                    direction,
-                    PipeLikeState.Normal
+                propertyForDirection(direction), connectionType(
+                    null, level.getBlockEntity(otherBlockPos), otherBlockPos, direction, PipeLikeState.Normal
                 )
             )
         }
