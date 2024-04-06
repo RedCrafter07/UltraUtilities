@@ -71,7 +71,7 @@ enum class PipeLikeState : StringRepresentable {
 
     companion object {
         fun load(short: UShort): PipeLikeState {
-            val int = (short and 3.toUShort()).toInt();
+            val int = (short and 0b11.toUShort()).toInt();
             return when (int) {  /* 0b11, the last 2 bits of a number, 0-3 */
                 0 -> Normal
                 1 -> Pull

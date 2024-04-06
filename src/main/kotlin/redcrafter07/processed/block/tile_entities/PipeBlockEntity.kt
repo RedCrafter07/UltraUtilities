@@ -40,26 +40,27 @@ class PipeBlockEntity(pos: BlockPos, state: BlockState): BlockEntity(ModTileEnti
 
     override fun saveAdditional(nbt: CompoundTag) {
         super.saveAdditional(nbt)
-        var ushort = 0.toUShort()
-//        ushort.
-//        nbt.putShort("states", ushort.toShort())
+        val ushort = stateUp.save().rotateLeft(10) or
+                stateDown.save().rotateLeft(8) or
+                stateWest.save().rotateLeft(6) or
+                stateEast.save().rotateLeft(4) or
+                stateNorth.save().rotateLeft(2) or
+                stateSouth.save()
+        ProcessedMod.LOGGER.info("Saving PipeBlockEntityState: {}", ushort);
+        nbt.putShort("states", ushort.toShort())
     }
 
     override fun load(nbt: CompoundTag) {
         super.load(nbt)
-//        var ushort = nbt.getShort("states").toUShort();
-//        val utwo = 2.toUShort();
-//        stateEast = PipeLikeState.load(ushort and utwo)
-//        ushort = ushort.rotateRight(2)
-//        stateWest = PipeLikeState.load(ushort and utwo)
-//        ushort = ushort.rotateRight(2)
-//        stateSouth = PipeLikeState.load(ushort and utwo)
-//        ushort = ushort.rotateRight(2)
-//        stateNorth = PipeLikeState.load(ushort and utwo)
-//        ushort = ushort.rotateRight(2)
-//        stateDown = PipeLikeState.load(ushort and utwo)
-//        ushort = ushort.rotateRight(2)
-//        stateUp = PipeLikeState.load(ushort and utwo)
-//        ProcessedMod.LOGGER.info("Loaded PipeblockEntity: up {} down {} north {} south {} west {} east {}", stateUp, stateDown, stateNorth, stateSouth, stateWest, stateEast);
+        val ushort = nbt.getShort("states").toUShort();
+        ProcessedMod.LOGGER.info("Loading PipeBlockEntityState: {}", ushort);
+        val utwo = 0b11.toUShort();
+        stateUp = PipeLikeState.load(ushort.rotateRight(10) and utwo);
+        stateDown = PipeLikeState.load(ushort.rotateRight(8) and utwo);
+        stateWest = PipeLikeState.load(ushort.rotateRight(6) and utwo);
+        stateEast = PipeLikeState.load(ushort.rotateRight(4) and utwo);
+        stateNorth = PipeLikeState.load(ushort.rotateRight(2) and utwo);
+        stateSouth = PipeLikeState.load(ushort and utwo);
+        ProcessedMod.LOGGER.info("Loaded PipeblockEntity: up {} down {} north {} south {} west {} east {}", stateUp, stateDown, stateNorth, stateSouth, stateWest, stateEast);
     }
 }
