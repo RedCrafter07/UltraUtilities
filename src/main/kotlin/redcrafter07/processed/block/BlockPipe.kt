@@ -24,27 +24,23 @@ import redcrafter07.processed.block.tile_entities.PipePressurizerBlockEntity
 import kotlin.math.floor
 
 class BlockPipe : Block(Properties.of().sound(SoundType.STONE).isRedstoneConductor { _, _, _ -> false }.noOcclusion()
-    .lightLevel { 4 }),
-    EntityBlock, WrenchInteractableBlock {
+    .lightLevel { 4 }), EntityBlock, WrenchInteractableBlock {
 
     override fun hasDynamicShape(): Boolean {
-        return true;
+        return true
     }
 
     override fun getShape(
-        blockState: BlockState,
-        p_60556_: BlockGetter,
-        p_60557_: BlockPos,
-        p_60558_: CollisionContext
+        blockState: BlockState, blockGetter: BlockGetter, blockPos: BlockPos, collisionContext: CollisionContext
     ): VoxelShape {
-        return redcrafter07.processed.block.getShape(blockState)
+        return getShape(blockState)
     }
 
     override fun propagatesSkylightDown(blockState: BlockState, blockGetter: BlockGetter, blockPos: BlockPos): Boolean {
         return true
     }
 
-    override fun getShadeBrightness(p_60472_: BlockState, p_60473_: BlockGetter, p_60474_: BlockPos): Float {
+    override fun getShadeBrightness(blockState: BlockState, blockGetter: BlockGetter, blockPos: BlockPos): Float {
         return 1f
     }
 
@@ -52,19 +48,40 @@ class BlockPipe : Block(Properties.of().sound(SoundType.STONE).isRedstoneConduct
         val x = floor((context.clickLocation.x - floor(context.clickLocation.x)) * 16).toInt()
         val y = floor((context.clickLocation.y - floor(context.clickLocation.y)) * 16).toInt()
         val z = floor((context.clickLocation.z - floor(context.clickLocation.z)) * 16).toInt()
-        val direction = actualDirection(x, y, z, context.clickedFace);
+        val direction = actualDirection(x, y, z, context.clickedFace)
+
+        //check if block in direction is a pipe
+        val nearbyBlockState = context.level.getBlockState(context.clickedPos.relative(direction))
+        val nearbyBlockIsPipe = nearbyBlockState.block is BlockPipe
 
         val blockEntity = context.level.getBlockEntity(context.clickedPos)
         if (blockEntity !is PipeBlockEntity) return
-        val newPipeState = blockEntity.pipeState.getState(direction).next()
+        val newPipeState: PipeLikeState
+        if (nearbyBlockIsPipe) {
+            val currentPipeState = blockEntity.pipeState.getState(direction)
+
+            newPipeState = when (currentPipeState) {
+                PipeLikeState.Normal -> PipeLikeState.None
+                PipeLikeState.None -> PipeLikeState.Normal
+                else -> PipeLikeState.None
+            }
+        } else newPipeState = blockEntity.pipeState.getState(direction).next()
         blockEntity.pipeState.setState(direction, newPipeState)
         val player = context.player
 
-        val otherBlockPos = context.clickedPos.relative(direction);
-        context.level.setBlock(context.clickedPos, state.setValue(
-            propertyForDirection(direction),
-            connectionType(null, context.level.getBlockEntity(otherBlockPos), otherBlockPos, direction, newPipeState)
-        ), UPDATE_CLIENTS or UPDATE_NEIGHBORS);
+        val otherBlockPos = context.clickedPos.relative(direction)
+        context.level.setBlock(
+            context.clickedPos, state.setValue(
+                propertyForDirection(direction),
+                connectionType(
+                    null,
+                    context.level.getBlockEntity(otherBlockPos),
+                    otherBlockPos,
+                    direction,
+                    newPipeState
+                )
+            ), UPDATE_CLIENTS or UPDATE_NEIGHBORS
+        )
 
         val pitch = when (newPipeState) {
             PipeLikeState.Pull -> 1.0f
