@@ -83,12 +83,12 @@ enum class PipeLikeState : StringRepresentable {
 }
 
 class DirectionalPipeLikeState {
-    var stateNorth: PipeLikeState = PipeLikeState.Normal
-    var stateSouth: PipeLikeState = PipeLikeState.Normal
-    var stateWest: PipeLikeState = PipeLikeState.Normal
-    var stateEast: PipeLikeState = PipeLikeState.Normal
-    var stateUp: PipeLikeState = PipeLikeState.Normal
-    var stateDown: PipeLikeState = PipeLikeState.Normal
+    private var stateNorth: PipeLikeState = PipeLikeState.Normal
+    private var stateSouth: PipeLikeState = PipeLikeState.Normal
+    private var stateWest: PipeLikeState = PipeLikeState.Normal
+    private  var stateEast: PipeLikeState = PipeLikeState.Normal
+    private var stateUp: PipeLikeState = PipeLikeState.Normal
+    private var stateDown: PipeLikeState = PipeLikeState.Normal
 
     fun getState(direction: Direction): PipeLikeState {
         return when (direction) {
@@ -210,14 +210,14 @@ class BlockPipe : Block(Properties.of().sound(SoundType.STONE).isRedstoneConduct
     }
 
     override fun getStateForPlacement(context: BlockPlaceContext): BlockState? {
-        val block_pos = context.clickedPos
+        val blockPos = context.clickedPos
         val level = context.level
         var defaultBlockState = stateDefinition.any()
         for (direction in Direction.stream()) {
-            val otherBlockPos = block_pos.relative(direction)
+            val otherBlockPos = blockPos.relative(direction)
             defaultBlockState = defaultBlockState.setValue(
                 propertyForDirection(direction),
-                connectionType(level.getBlockEntity(block_pos), level.getBlockEntity(otherBlockPos), direction)
+                connectionType(level.getBlockEntity(blockPos), level.getBlockEntity(otherBlockPos), direction)
             )
         }
 
