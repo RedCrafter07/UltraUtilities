@@ -30,7 +30,7 @@ class PipePressurizerBlockEntity(pos: BlockPos, state: BlockState) :
             if (blockEntity !is PipeBlockEntity) continue
             if (blockEntity.pipeState.getState(directionalPosition.direction.opposite) == PipeLikeState.None) continue
 
-            blockEntity.pipePresurizerPos = myBlockPos
+            blockEntity.pipePressurizerPos = myBlockPos
             connectedPipes.push(directionalPosition.blockPos);
             for (direction in Direction.stream()) {
                 val newBlockPos = DirectionalPosition(directionalPosition.blockPos.relative(direction), direction)
