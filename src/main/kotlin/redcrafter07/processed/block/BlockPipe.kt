@@ -19,7 +19,7 @@ import net.minecraft.world.level.block.state.properties.NoteBlockInstrument
 import net.neoforged.neoforge.capabilities.Capabilities
 import redcrafter07.processed.block.tile_entities.PipeBlockEntity
 
-class BlockPipe : Block(Properties.of().sound(SoundType.STONE).isRedstoneConductor { _, _, _ -> false }), EntityBlock,
+class BlockPipe : Block(Properties.of().sound(SoundType.STONE).isRedstoneConductor { _, _, _ -> false }.noOcclusion()), EntityBlock,
     WrenchInteractableBlock {
     companion object {
 
