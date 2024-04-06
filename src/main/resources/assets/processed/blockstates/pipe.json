@@ -13,11 +13,11 @@
     {"apply": {"model": "processed:block/pipe_normal", "uvlock": false, "y": 270}, "when": {"pipe_state_west": "normal"}},
     {"apply": {"model": "processed:block/pipe_push", "uvlock": false, "y": 270}, "when": {"pipe_state_west": "push"}},
     {"apply": {"model": "processed:block/pipe_pull", "uvlock": false, "y": 270}, "when": {"pipe_state_west": "pull"}},
-    {"apply": {"model": "processed:block/pipe_normal", "uvlock": false,"x": 90}, "when": {"pipe_state_top": "normal"}},
-    {"apply": {"model": "processed:block/pipe_push", "uvlock": false,"x": 90}, "when": {"pipe_state_top": "push"}},
-    {"apply": {"model": "processed:block/pipe_pull", "uvlock": false,"x": 90}, "when": {"pipe_state_top": "pull"}},
-    {"apply": {"model": "processed:block/pipe_normal", "uvlock": false,"x": 270}, "when": {"pipe_state_bottom": "normal"}},
-    {"apply": {"model": "processed:block/pipe_push", "uvlock": false,"x": 270}, "when": {"pipe_state_bottom": "push"}},
-    {"apply": {"model": "processed:block/pipe_pull", "uvlock": false,"x": 270}, "when": {"pipe_state_bottom": "pull"}}
+    {"apply": {"model": "processed:block/pipe_normal", "uvlock": false,"x": 270}, "when": {"pipe_state_top": "normal"}},
+    {"apply": {"model": "processed:block/pipe_push", "uvlock": false,"x": 270}, "when": {"pipe_state_top": "push"}},
+    {"apply": {"model": "processed:block/pipe_pull", "uvlock": false,"x": 270}, "when": {"pipe_state_top": "pull"}},
+    {"apply": {"model": "processed:block/pipe_normal", "uvlock": false,"x": 90}, "when": {"pipe_state_bottom": "normal"}},
+    {"apply": {"model": "processed:block/pipe_push", "uvlock": false,"x": 90}, "when": {"pipe_state_bottom": "push"}},
+    {"apply": {"model": "processed:block/pipe_pull", "uvlock": false,"x": 90}, "when": {"pipe_state_bottom": "pull"}}
   ]
 }
