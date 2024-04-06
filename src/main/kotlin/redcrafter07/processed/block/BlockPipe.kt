@@ -18,6 +18,8 @@ import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.block.state.StateDefinition
 import net.minecraft.world.level.block.state.properties.EnumProperty
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument
+import net.neoforged.neoforge.capabilities.Capabilities
+import redcrafter07.processed.ProcessedMod
 import redcrafter07.processed.block.tile_entities.PipeBlockEntity
 
 enum class PipeLikeState : StringRepresentable {
@@ -81,12 +83,11 @@ enum class PipeLikeState : StringRepresentable {
         }
     }
 }
-
 class DirectionalPipeLikeState {
     private var stateNorth: PipeLikeState = PipeLikeState.Normal
     private var stateSouth: PipeLikeState = PipeLikeState.Normal
     private var stateWest: PipeLikeState = PipeLikeState.Normal
-    private  var stateEast: PipeLikeState = PipeLikeState.Normal
+    private var stateEast: PipeLikeState = PipeLikeState.Normal
     private var stateUp: PipeLikeState = PipeLikeState.Normal
     private var stateDown: PipeLikeState = PipeLikeState.Normal
 
@@ -187,12 +188,25 @@ class BlockPipe : Block(Properties.of().sound(SoundType.STONE).isRedstoneConduct
     fun connectionType(
         my_block_entity: BlockEntity?,
         other_block_entity: BlockEntity?,
+        other_block_pos: BlockPos,
         direction: Direction,
+        myPipeStateDefault: PipeLikeState?
     ): PipeLikeState {
-        if (my_block_entity !is PipeBlockEntity) return PipeLikeState.None
+        var myPipeState = myPipeStateDefault;
+        if (my_block_entity is PipeBlockEntity) {
+            myPipeState = my_block_entity.pipeState.getState(direction);
+        }
+        if (myPipeState == null || myPipeState == PipeLikeState.None) return PipeLikeState.None
+        val level = other_block_entity?.level ?: my_block_entity?.level ?: return PipeLikeState.None
+        if (level.getCapability(
+                Capabilities.ItemHandler.BLOCK,
+                other_block_pos,
+                direction.opposite
+            ) != null
+        ) return myPipeState
         if (other_block_entity !is PipeBlockEntity) return PipeLikeState.None
         if (other_block_entity.pipeState.getState(direction.opposite) == PipeLikeState.None) return PipeLikeState.None
-        return my_block_entity.pipeState.getState(direction)
+        return myPipeState
     }
 
     override fun updateShape(
@@ -205,7 +219,7 @@ class BlockPipe : Block(Properties.of().sound(SoundType.STONE).isRedstoneConduct
     ): BlockState {
         return blockStateA.setValue(
             propertyForDirection(direction),
-            connectionType(level.getBlockEntity(blockPosA), level.getBlockEntity(blockPosB), direction)
+            connectionType(level.getBlockEntity(blockPosA), level.getBlockEntity(blockPosB), blockPosB, direction, null)
         )
     }
 
@@ -217,7 +231,7 @@ class BlockPipe : Block(Properties.of().sound(SoundType.STONE).isRedstoneConduct
             val otherBlockPos = blockPos.relative(direction)
             defaultBlockState = defaultBlockState.setValue(
                 propertyForDirection(direction),
-                connectionType(level.getBlockEntity(blockPos), level.getBlockEntity(otherBlockPos), direction)
+                connectionType(null, level.getBlockEntity(otherBlockPos), otherBlockPos, direction, PipeLikeState.Normal)
             )
         }
 
