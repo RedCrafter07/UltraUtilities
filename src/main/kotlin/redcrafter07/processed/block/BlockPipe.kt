@@ -7,6 +7,7 @@ import net.minecraft.network.protocol.game.ClientboundSetActionBarTextPacket
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.item.context.BlockPlaceContext
 import net.minecraft.world.item.context.UseOnContext
+import net.minecraft.world.level.BlockGetter
 import net.minecraft.world.level.LevelAccessor
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.EntityBlock
@@ -19,8 +20,8 @@ import net.minecraft.world.level.block.state.properties.NoteBlockInstrument
 import net.neoforged.neoforge.capabilities.Capabilities
 import redcrafter07.processed.block.tile_entities.PipeBlockEntity
 
-class BlockPipe : Block(Properties.of().sound(SoundType.STONE).isRedstoneConductor { _, _, _ -> false }.noOcclusion()), EntityBlock,
-    WrenchInteractableBlock {
+class BlockPipe : Block(Properties.of().sound(SoundType.STONE).isRedstoneConductor { _, _, _ -> false }.noOcclusion()),
+    EntityBlock, WrenchInteractableBlock {
     companion object {
 
         val PIPE_STATE_UP = EnumProperty.create("pipe_state_top", PipeLikeState::class.java)
@@ -40,6 +41,10 @@ class BlockPipe : Block(Properties.of().sound(SoundType.STONE).isRedstoneConduct
                 Direction.SOUTH -> PIPE_STATE_SOUTH
             }
         }
+    }
+
+    override fun propagatesSkylightDown(blockState: BlockState, blockGetter: BlockGetter, blockPos: BlockPos): Boolean {
+        return true
     }
 
     override fun onWrenchUse(context: UseOnContext, state: BlockState) {
@@ -76,16 +81,14 @@ class BlockPipe : Block(Properties.of().sound(SoundType.STONE).isRedstoneConduct
         direction: Direction,
         myPipeStateDefault: PipeLikeState?
     ): PipeLikeState {
-        var myPipeState = myPipeStateDefault;
+        var myPipeState = myPipeStateDefault
         if (myBlockEntity is PipeBlockEntity) {
-            myPipeState = myBlockEntity.pipeState.getState(direction);
+            myPipeState = myBlockEntity.pipeState.getState(direction)
         }
         if (myPipeState == null || myPipeState == PipeLikeState.None) return PipeLikeState.None
         val level = otherBlockEntity?.level ?: myBlockEntity?.level ?: return PipeLikeState.None
         if (level.getCapability(
-                Capabilities.ItemHandler.BLOCK,
-                otherBlockPos,
-                direction.opposite
+                Capabilities.ItemHandler.BLOCK, otherBlockPos, direction.opposite
             ) != null
         ) return myPipeState
         if (otherBlockEntity !is PipeBlockEntity) return PipeLikeState.None
@@ -115,7 +118,13 @@ class BlockPipe : Block(Properties.of().sound(SoundType.STONE).isRedstoneConduct
             val otherBlockPos = blockPos.relative(direction)
             defaultBlockState = defaultBlockState.setValue(
                 propertyForDirection(direction),
-                connectionType(null, level.getBlockEntity(otherBlockPos), otherBlockPos, direction, PipeLikeState.Normal)
+                connectionType(
+                    null,
+                    level.getBlockEntity(otherBlockPos),
+                    otherBlockPos,
+                    direction,
+                    PipeLikeState.Normal
+                )
             )
         }
 
