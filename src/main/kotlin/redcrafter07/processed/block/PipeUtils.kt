@@ -1,19 +1,15 @@
 package redcrafter07.processed.block
 
-import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.network.chat.Component
 import net.minecraft.util.StringRepresentable
-import net.minecraft.world.level.BlockGetter
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.block.state.properties.EnumProperty
 import net.minecraft.world.phys.shapes.BooleanOp
-import net.minecraft.world.phys.shapes.CollisionContext
 import net.minecraft.world.phys.shapes.Shapes
 import net.minecraft.world.phys.shapes.VoxelShape
-import redcrafter07.processed.ProcessedMod
 
 enum class PipeLikeState : StringRepresentable {
     Normal, Push, Pull, None;
@@ -170,10 +166,10 @@ fun propertyForDirection(direction: Direction): EnumProperty<PipeLikeState> {
     }
 }
 
-fun actualDirection(x: Int, y: Int, z: Int, direction: Direction): Direction {
-    var x = x
-    var y = y
-    var z = z
+fun actualDirection(originalX: Int, originalY: Int, originalZ: Int, direction: Direction): Direction {
+    var x = originalX
+    var y = originalY
+    var z = originalZ
     when (direction) {
         Direction.WEST -> x = 7
         Direction.EAST -> x = 7
@@ -182,7 +178,6 @@ fun actualDirection(x: Int, y: Int, z: Int, direction: Direction): Direction {
         Direction.NORTH -> z = 7
         Direction.SOUTH -> z = 7
     }
-    ProcessedMod.LOGGER.info("{} {} {}", x, y, z)
     if (x < 3) return Direction.WEST
     if (x >= 13) return Direction.EAST
     if (y < 3) return Direction.DOWN
