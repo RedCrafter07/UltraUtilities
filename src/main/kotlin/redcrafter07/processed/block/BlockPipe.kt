@@ -56,16 +56,15 @@ class BlockPipe : Block(Properties.of().sound(SoundType.STONE).isRedstoneConduct
 
         val blockEntity = context.level.getBlockEntity(context.clickedPos)
         if (blockEntity !is PipeBlockEntity) return
-        val newPipeState: PipeLikeState
-        if (nearbyBlockIsPipe) {
+        val newPipeState = if (nearbyBlockIsPipe) {
             val currentPipeState = blockEntity.pipeState.getState(direction)
 
-            newPipeState = when (currentPipeState) {
+            when (currentPipeState) {
                 PipeLikeState.Normal -> PipeLikeState.None
                 PipeLikeState.None -> PipeLikeState.Normal
                 else -> PipeLikeState.None
             }
-        } else newPipeState = blockEntity.pipeState.getState(direction).next()
+        } else blockEntity.pipeState.getState(direction).next()
         blockEntity.pipeState.setState(direction, newPipeState)
         val player = context.player
 
