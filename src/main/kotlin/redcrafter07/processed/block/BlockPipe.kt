@@ -60,17 +60,32 @@ enum class PipeLikeState : StringRepresentable {
 
         return formattedString
     }
+    fun save(): UShort {
+        return when (this) {
+            Normal -> 0.toUShort()
+            Pull -> 1.toUShort()
+            Push -> 2.toUShort()
+            None -> 3.toUShort()
+        }
+    }
+
+    companion object {
+        fun load(short: UShort): PipeLikeState {
+            val int = (short and 3.toUShort()).toInt();
+            return when (int) {  /* 0b11, the last 2 bits of a number, 0-3 */
+                0 -> Normal
+                1 -> Pull
+                2 -> Push
+                3 -> None
+                else -> Normal // unreachable
+            }
+        }
+    }
 }
 
 class BlockPipe : Block(Properties.of().sound(SoundType.STONE).isRedstoneConductor { _, _, _ -> false }), EntityBlock,
     WrenchInteractableBlock {
     companion object {
-        val PIPE_CONNECTION_UP = BooleanProperty.create("pipe_connection_top")
-        val PIPE_CONNECTION_DOWN = BooleanProperty.create("pipe_connection_bottom")
-        val PIPE_CONNECTION_NORTH = BooleanProperty.create("pipe_connection_north")
-        val PIPE_CONNECTION_SOUTH = BooleanProperty.create("pipe_connection_south")
-        val PIPE_CONNECTION_WEST = BooleanProperty.create("pipe_connection_west")
-        val PIPE_CONNECTION_EAST = BooleanProperty.create("pipe_connection_east")
 
         val PIPE_STATE_UP = EnumProperty.create("pipe_state_top", PipeLikeState::class.java)
         val PIPE_STATE_DOWN = EnumProperty.create("pipe_state_bottom", PipeLikeState::class.java)
@@ -78,18 +93,7 @@ class BlockPipe : Block(Properties.of().sound(SoundType.STONE).isRedstoneConduct
         val PIPE_STATE_SOUTH = EnumProperty.create("pipe_state_south", PipeLikeState::class.java)
         val PIPE_STATE_WEST = EnumProperty.create("pipe_state_west", PipeLikeState::class.java)
         val PIPE_STATE_EAST = EnumProperty.create("pipe_state_east", PipeLikeState::class.java)
-        fun propertyForDirection(direction: Direction): BooleanProperty {
-            return when (direction) {
-                Direction.UP -> PIPE_CONNECTION_UP
-                Direction.DOWN -> PIPE_CONNECTION_DOWN
-                Direction.EAST -> PIPE_CONNECTION_EAST
-                Direction.WEST -> PIPE_CONNECTION_WEST
-                Direction.NORTH -> PIPE_CONNECTION_NORTH
-                Direction.SOUTH -> PIPE_CONNECTION_SOUTH
-            }
-        }
-
-        fun propertyStateForDirection(direction: Direction): EnumProperty<PipeLikeState> {
+        fun propertyForDirection(direction: Direction): EnumProperty<PipeLikeState> {
             return when (direction) {
                 Direction.UP -> PIPE_STATE_UP
                 Direction.DOWN -> PIPE_STATE_DOWN
@@ -102,12 +106,10 @@ class BlockPipe : Block(Properties.of().sound(SoundType.STONE).isRedstoneConduct
     }
 
     override fun onWrenchUse(context: UseOnContext, state: BlockState) {
-        val newPipeState = state.getValue(propertyStateForDirection(context.clickedFace)).next();
-        context.level.setBlock(
-            context.clickedPos,
-            state.setValue(propertyStateForDirection(context.clickedFace), newPipeState),
-            UPDATE_CLIENTS or UPDATE_NEIGHBORS
-        );
+        val blockEntity = context.level.getBlockEntity(context.clickedPos);
+        if (blockEntity !is PipeBlockEntity) return;
+        val newPipeState = blockEntity.getState(context.clickedFace).next();
+        blockEntity.setState(context.clickedFace, newPipeState);
         val player = context.player
 
         val pitch = when (newPipeState) {
@@ -130,19 +132,15 @@ class BlockPipe : Block(Properties.of().sound(SoundType.STONE).isRedstoneConduct
         }
     }
 
-    fun connectsTo(
-        my_blockstate: BlockState,
-        other_blockstate: BlockState,
+    fun connectionType(
+        my_block_entity: BlockEntity?,
+        other_block_entity: BlockEntity?,
         direction: Direction,
-        other_block_entity: BlockEntity?
-    ): Boolean {
-        if (my_blockstate.block !is BlockPipe) return false;
-        if (my_blockstate.getValue(propertyStateForDirection(direction)) == PipeLikeState.None) return false
-        if (other_blockstate.block is BlockPipe) {
-            return other_blockstate.getValue(propertyStateForDirection(direction.opposite)) != PipeLikeState.None;
-        }
-
-        return other_block_entity is IItemHandler
+    ): PipeLikeState {
+        if (my_block_entity !is PipeBlockEntity) return PipeLikeState.None;
+        if (other_block_entity !is PipeBlockEntity) return PipeLikeState.None;
+        if (other_block_entity.getState(direction.opposite) == PipeLikeState.None) return PipeLikeState.None;
+        return my_block_entity.getState(direction);
     }
 
     override fun updateShape(
@@ -155,7 +153,7 @@ class BlockPipe : Block(Properties.of().sound(SoundType.STONE).isRedstoneConduct
     ): BlockState {
         return blockStateA.setValue(
             propertyForDirection(direction),
-            connectsTo(blockStateA, blockStateB, direction, level.getBlockEntity(blockPosB))
+            connectionType(level.getBlockEntity(blockPosA), level.getBlockEntity(blockPosB), direction)
         )
     }
 
@@ -165,12 +163,9 @@ class BlockPipe : Block(Properties.of().sound(SoundType.STONE).isRedstoneConduct
         var defaultBlockState = stateDefinition.any();
         for (direction in Direction.stream()) {
             val other_block_pos = block_pos.relative(direction);
-            val blockState = context.level.getBlockState(other_block_pos)
-            var is_connected =
-                connectsTo(defaultBlockState, blockState, direction, level.getBlockEntity(other_block_pos));
-            defaultBlockState = defaultBlockState.setValue(propertyForDirection(direction), is_connected).setValue(
-                propertyStateForDirection(direction), PipeLikeState.Normal
-            )
+            var connection_type =
+                connectionType(level.getBlockEntity(block_pos), level.getBlockEntity(other_block_pos), direction);
+            defaultBlockState = defaultBlockState.setValue(propertyForDirection(direction), connection_type)
         }
 
         return defaultBlockState
@@ -184,12 +179,6 @@ class BlockPipe : Block(Properties.of().sound(SoundType.STONE).isRedstoneConduct
             PIPE_STATE_EAST,
             PIPE_STATE_SOUTH,
             PIPE_STATE_WEST,
-            PIPE_CONNECTION_UP,
-            PIPE_CONNECTION_DOWN,
-            PIPE_CONNECTION_NORTH,
-            PIPE_CONNECTION_EAST,
-            PIPE_CONNECTION_SOUTH,
-            PIPE_CONNECTION_WEST,
         )
     }
 
