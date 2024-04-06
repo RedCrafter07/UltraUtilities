@@ -47,6 +47,12 @@ class BlockPipe : Block(Properties.of().sound(SoundType.STONE).isRedstoneConduct
         return true
     }
 
+    override fun getShadeBrightness(p_60472_: BlockState, p_60473_: BlockGetter, p_60474_: BlockPos): Float {
+        return 1f
+    }
+
+
+
     override fun onWrenchUse(context: UseOnContext, state: BlockState) {
         val blockEntity = context.level.getBlockEntity(context.clickedPos)
         if (blockEntity !is PipeBlockEntity) return
