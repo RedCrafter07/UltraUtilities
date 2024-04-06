@@ -93,7 +93,7 @@ class BlockPipe : Block(Properties.of().sound(SoundType.STONE).isRedstoneConduct
         ) return myPipeState
         if (otherBlockEntity !is PipeBlockEntity) return PipeLikeState.None
         if (otherBlockEntity.pipeState.getState(direction.opposite) == PipeLikeState.None) return PipeLikeState.None
-        if(otherBlockEntity is PipeBlockEntity && otherBlockEntity.pipeState.getState(direction.opposite) != PipeLikeState.None) return PipeLikeState.Normal
+        if(otherBlockEntity.pipeState.getState(direction.opposite) != PipeLikeState.None) return PipeLikeState.Normal
         return myPipeState
     }
 
