@@ -1,4 +1,6 @@
 # Processed
+
+*Please note that this mod is being rewritten and a lot of the concepts described here will change.*
 ### Another Utility Mod with different features
 
 Processed is a mod which ads different utilities based on processors. It's made for automation, block creation and more. 
