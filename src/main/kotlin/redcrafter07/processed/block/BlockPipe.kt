@@ -51,8 +51,6 @@ class BlockPipe : Block(Properties.of().sound(SoundType.STONE).isRedstoneConduct
         return 1f
     }
 
-
-
     override fun onWrenchUse(context: UseOnContext, state: BlockState) {
         val blockEntity = context.level.getBlockEntity(context.clickedPos)
         if (blockEntity !is PipeBlockEntity) return

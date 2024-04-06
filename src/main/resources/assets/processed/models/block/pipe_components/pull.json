@@ -1,23 +1,6 @@
 {
 	"credit": "Made by RedCrafter07 using Blockbench",
-	"texture_size": [64, 64],
-	"textures": {
-		"0": "processed:block/pipe",
-		"particle": "processed:block/pipe"
-	},
 	"elements": [
-		{
-			"from": [4, 4, 0],
-			"to": [12, 12, 4],
-			"faces": {
-				"north": {"uv": [0, 0, 2, 2], "texture": "#0"},
-				"east": {"uv": [4, 4, 5, 6], "texture": "#0"},
-				"south": {"uv": [0, 2, 2, 4], "texture": "#0"},
-				"west": {"uv": [5, 4, 6, 6], "texture": "#0"},
-				"up": {"uv": [2, 7, 0, 6], "texture": "#0"},
-				"down": {"uv": [8, 0, 6, 1], "texture": "#0"}
-			}
-		},
 		{
 			"from": [3, 3, 0],
 			"to": [5, 5, 3],
@@ -108,12 +91,6 @@
 			"color": 0,
 			"children": [
 				{
-					"name": "push",
-					"origin": [0, 0, 0],
-					"color": 7,
-					"children": [0]
-				},
-				{
 					"name": "pull",
 					"origin": [0, 0, 0],
 					"color": 7,
@@ -122,7 +99,7 @@
 							"name": "corners",
 							"origin": [0, 0, 0],
 							"color": 7,
-							"children": [1, 2, 3, 4]
+							"children": [0, 1, 2, 3]
 						}
 					]
 				}
