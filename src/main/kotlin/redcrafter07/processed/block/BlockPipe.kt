@@ -17,30 +17,40 @@ import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.block.state.StateDefinition
 import net.minecraft.world.level.block.state.properties.EnumProperty
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument
+import net.minecraft.world.phys.shapes.BooleanOp
+import net.minecraft.world.phys.shapes.CollisionContext
+import net.minecraft.world.phys.shapes.Shapes
+import net.minecraft.world.phys.shapes.VoxelShape
 import net.neoforged.neoforge.capabilities.Capabilities
+import redcrafter07.processed.ProcessedMod
 import redcrafter07.processed.block.tile_entities.PipeBlockEntity
+import kotlin.math.floor
 
-class BlockPipe : Block(Properties.of().sound(SoundType.STONE).isRedstoneConductor { _, _, _ -> false }.noOcclusion()),
+class BlockPipe : Block(Properties.of().sound(SoundType.STONE).isRedstoneConductor { _, _, _ -> false }.noOcclusion()
+    .lightLevel { 4 }),
     EntityBlock, WrenchInteractableBlock {
-    companion object {
 
-        val PIPE_STATE_UP = EnumProperty.create("pipe_state_top", PipeLikeState::class.java)
-        val PIPE_STATE_DOWN = EnumProperty.create("pipe_state_bottom", PipeLikeState::class.java)
-        val PIPE_STATE_NORTH = EnumProperty.create("pipe_state_north", PipeLikeState::class.java)
-        val PIPE_STATE_SOUTH = EnumProperty.create("pipe_state_south", PipeLikeState::class.java)
-        val PIPE_STATE_WEST = EnumProperty.create("pipe_state_west", PipeLikeState::class.java)
-        val PIPE_STATE_EAST = EnumProperty.create("pipe_state_east", PipeLikeState::class.java)
+    override fun hasDynamicShape(): Boolean {
+        return true;
+    }
 
-        fun propertyForDirection(direction: Direction): EnumProperty<PipeLikeState> {
-            return when (direction) {
-                Direction.UP -> PIPE_STATE_UP
-                Direction.DOWN -> PIPE_STATE_DOWN
-                Direction.EAST -> PIPE_STATE_EAST
-                Direction.WEST -> PIPE_STATE_WEST
-                Direction.NORTH -> PIPE_STATE_NORTH
-                Direction.SOUTH -> PIPE_STATE_SOUTH
-            }
-        }
+    override fun getShape(
+        state: BlockState,
+        p_60556_: BlockGetter,
+        p_60557_: BlockPos,
+        p_60558_: CollisionContext
+    ): VoxelShape {
+        var shape = SHAPE_CORE;
+        if (state.getValue(PIPE_STATE_NORTH) != PipeLikeState.None) shape =
+            Shapes.join(shape, SHAPE_NORTH, BooleanOp.OR);
+        if (state.getValue(PIPE_STATE_SOUTH) != PipeLikeState.None) shape =
+            Shapes.join(shape, SHAPE_SOUTH, BooleanOp.OR);
+        if (state.getValue(PIPE_STATE_WEST) != PipeLikeState.None) shape = Shapes.join(shape, SHAPE_WEST, BooleanOp.OR);
+        if (state.getValue(PIPE_STATE_EAST) != PipeLikeState.None) shape = Shapes.join(shape, SHAPE_EAST, BooleanOp.OR);
+        if (state.getValue(PIPE_STATE_TOP) != PipeLikeState.None) shape = Shapes.join(shape, SHAPE_TOP, BooleanOp.OR);
+        if (state.getValue(PIPE_STATE_BOTTOM) != PipeLikeState.None) shape =
+            Shapes.join(shape, SHAPE_BOTTOM, BooleanOp.OR);
+        return shape;
     }
 
     override fun propagatesSkylightDown(blockState: BlockState, blockGetter: BlockGetter, blockPos: BlockPos): Boolean {
@@ -52,11 +62,22 @@ class BlockPipe : Block(Properties.of().sound(SoundType.STONE).isRedstoneConduct
     }
 
     override fun onWrenchUse(context: UseOnContext, state: BlockState) {
+        val x = floor((context.clickLocation.x - floor(context.clickLocation.x)) * 16).toInt()
+        val y = floor((context.clickLocation.y - floor(context.clickLocation.y)) * 16).toInt()
+        val z = floor((context.clickLocation.z - floor(context.clickLocation.z)) * 16).toInt()
+        val direction = actualDirection(x, y, z, context.clickedFace);
+
         val blockEntity = context.level.getBlockEntity(context.clickedPos)
         if (blockEntity !is PipeBlockEntity) return
-        val newPipeState = blockEntity.pipeState.getState(context.clickedFace).next()
-        blockEntity.pipeState.setState(context.clickedFace, newPipeState)
+        val newPipeState = blockEntity.pipeState.getState(direction).next()
+        blockEntity.pipeState.setState(direction, newPipeState)
         val player = context.player
+
+        val otherBlockPos = context.clickedPos.relative(direction);
+        context.level.setBlock(context.clickedPos, state.setValue(
+            propertyForDirection(direction),
+            connectionType(null, context.level.getBlockEntity(otherBlockPos), otherBlockPos, direction, newPipeState)
+        ), UPDATE_CLIENTS or UPDATE_NEIGHBORS);
 
         val pitch = when (newPipeState) {
             PipeLikeState.Pull -> 1.0f
@@ -132,8 +153,8 @@ class BlockPipe : Block(Properties.of().sound(SoundType.STONE).isRedstoneConduct
 
     override fun createBlockStateDefinition(stateDefinition: StateDefinition.Builder<Block, BlockState>) {
         stateDefinition.add(
-            PIPE_STATE_UP,
-            PIPE_STATE_DOWN,
+            PIPE_STATE_TOP,
+            PIPE_STATE_BOTTOM,
             PIPE_STATE_NORTH,
             PIPE_STATE_EAST,
             PIPE_STATE_SOUTH,

@@ -4,6 +4,9 @@ import net.minecraft.core.Direction
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.network.chat.Component
 import net.minecraft.util.StringRepresentable
+import net.minecraft.world.level.block.Block
+import net.minecraft.world.level.block.state.properties.EnumProperty
+import redcrafter07.processed.ProcessedMod
 
 enum class PipeLikeState : StringRepresentable {
     Normal, Push, Pull, None;
@@ -47,8 +50,8 @@ enum class PipeLikeState : StringRepresentable {
     fun save(): UShort {
         return when (this) {
             Normal -> 0.toUShort()
-            Pull -> 1.toUShort()
-            Push -> 2.toUShort()
+            Push -> 1.toUShort()
+            Pull -> 2.toUShort()
             None -> 3.toUShort()
         }
     }
@@ -116,4 +119,52 @@ class DirectionalPipeLikeState {
         stateNorth = PipeLikeState.load(ushort.rotateRight(2) and utwo)
         stateSouth = PipeLikeState.load(ushort and utwo)
     }
+}
+
+val SHAPE_CORE = Block.box(3.0, 3.0, 3.0, 13.0, 13.0, 13.0);
+val SHAPE_NORTH = Block.box(3.0, 3.0, 0.0, 13.0, 13.0, 3.0);
+val SHAPE_SOUTH = Block.box(3.0, 3.0, 13.0, 13.0, 13.0, 16.0);
+val SHAPE_WEST = Block.box(0.0, 3.0, 3.0, 3.0, 13.0, 13.0);
+val SHAPE_EAST = Block.box(13.0, 3.0, 3.0, 16.0, 13.0, 13.0);
+val SHAPE_TOP = Block.box(3.0, 13.0, 3.0, 13.0, 16.0, 13.0);
+val SHAPE_BOTTOM = Block.box(3.0, 0.0, 3.0, 13.0, 3.0, 13.0);
+
+val PIPE_STATE_TOP = EnumProperty.create("pipe_state_top", PipeLikeState::class.java)
+val PIPE_STATE_BOTTOM = EnumProperty.create("pipe_state_bottom", PipeLikeState::class.java)
+val PIPE_STATE_NORTH = EnumProperty.create("pipe_state_north", PipeLikeState::class.java)
+val PIPE_STATE_SOUTH = EnumProperty.create("pipe_state_south", PipeLikeState::class.java)
+val PIPE_STATE_WEST = EnumProperty.create("pipe_state_west", PipeLikeState::class.java)
+val PIPE_STATE_EAST = EnumProperty.create("pipe_state_east", PipeLikeState::class.java)
+
+fun propertyForDirection(direction: Direction): EnumProperty<PipeLikeState> {
+    return when (direction) {
+        Direction.UP -> PIPE_STATE_TOP
+        Direction.DOWN -> PIPE_STATE_BOTTOM
+        Direction.EAST -> PIPE_STATE_EAST
+        Direction.WEST -> PIPE_STATE_WEST
+        Direction.NORTH -> PIPE_STATE_NORTH
+        Direction.SOUTH -> PIPE_STATE_SOUTH
+    }
+}
+
+fun actualDirection(x: Int, y: Int, z: Int, direction: Direction): Direction {
+    var x = x
+    var y = y
+    var z = z
+    when (direction) {
+        Direction.WEST -> x = 7
+        Direction.EAST -> x = 7
+        Direction.DOWN -> y = 7
+        Direction.UP -> y = 7
+        Direction.NORTH -> z = 7
+        Direction.SOUTH -> z = 7
+    }
+    ProcessedMod.LOGGER.info("{} {} {}", x, y, z)
+    if (x < 3) return Direction.WEST
+    if (x >= 13) return Direction.EAST
+    if (y < 3) return Direction.DOWN
+    if (y >= 13) return Direction.UP
+    if (z < 3) return Direction.NORTH
+    if (z >= 13) return Direction.SOUTH
+    return direction
 }
