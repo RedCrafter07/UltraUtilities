@@ -20,6 +20,7 @@ import net.minecraft.world.phys.shapes.CollisionContext
 import net.minecraft.world.phys.shapes.VoxelShape
 import net.neoforged.neoforge.capabilities.Capabilities
 import redcrafter07.processed.block.tile_entities.PipeBlockEntity
+import redcrafter07.processed.block.tile_entities.PipePressurizerBlockEntity
 import kotlin.math.floor
 
 class BlockPipe : Block(Properties.of().sound(SoundType.STONE).isRedstoneConductor { _, _, _ -> false }.noOcclusion()
@@ -102,6 +103,7 @@ class BlockPipe : Block(Properties.of().sound(SoundType.STONE).isRedstoneConduct
                 Capabilities.ItemHandler.BLOCK, otherBlockPos, direction.opposite
             ) != null
         ) return myPipeState
+        if (otherBlockEntity is PipePressurizerBlockEntity) return PipeLikeState.Normal
         if (otherBlockEntity !is PipeBlockEntity) return PipeLikeState.None
         if (otherBlockEntity.pipeState.getState(direction.opposite) == PipeLikeState.None) return PipeLikeState.None
         return PipeLikeState.Normal
