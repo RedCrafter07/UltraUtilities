@@ -20,7 +20,7 @@ import net.minecraft.world.phys.shapes.CollisionContext
 import net.minecraft.world.phys.shapes.VoxelShape
 import net.neoforged.neoforge.capabilities.Capabilities
 import redcrafter07.processed.block.tile_entities.ItemPipeBlockEntity
-import redcrafter07.processed.block.tile_entities.ItemPipePressurizerBlockEntity
+import redcrafter07.processed.block.tile_entities.PipePressurizerBlockEntity
 import kotlin.math.floor
 
 class BlockItemPipe : Block(Properties.of().sound(SoundType.STONE).isRedstoneConductor { _, _, _ -> false }.noOcclusion()
@@ -53,7 +53,7 @@ class BlockItemPipe : Block(Properties.of().sound(SoundType.STONE).isRedstoneCon
         //check if block in direction is a pipe
         val nearbyBlockState = context.level.getBlockState(context.clickedPos.relative(direction))
         val nearbyBlockIsPipeOrPump =
-            nearbyBlockState.block is BlockItemPipe || nearbyBlockState.block is ItemPipePressurizerBlock
+            nearbyBlockState.block is BlockItemPipe || nearbyBlockState.block is PipePressurizerBlock
 
         val blockEntity = context.level.getBlockEntity(context.clickedPos)
         if (blockEntity !is ItemPipeBlockEntity) return
@@ -104,7 +104,7 @@ class BlockItemPipe : Block(Properties.of().sound(SoundType.STONE).isRedstoneCon
 
         val pressurizerBlockPos = blockEntity.pipePressurizerPos ?: return
         val pressurizerBlockEntity = context.level.getBlockEntity(pressurizerBlockPos)
-        if (pressurizerBlockEntity !is ItemPipePressurizerBlockEntity) return
+        if (pressurizerBlockEntity !is PipePressurizerBlockEntity) return
         if (newPipeState == PipeLikeState.Normal || newPipeState == PipeLikeState.None) pressurizerBlockEntity.scanNetwork(
             context.level,
             pressurizerBlockPos
@@ -130,7 +130,7 @@ class BlockItemPipe : Block(Properties.of().sound(SoundType.STONE).isRedstoneCon
                 Capabilities.ItemHandler.BLOCK, otherBlockPos, direction.opposite
             ) != null
         ) return myPipeState
-        if (otherBlockEntity is ItemPipePressurizerBlockEntity) return PipeLikeState.Normal
+        if (otherBlockEntity is PipePressurizerBlockEntity) return PipeLikeState.Normal
         if (otherBlockEntity !is ItemPipeBlockEntity) return PipeLikeState.None
         if (otherBlockEntity.pipeState.getState(direction.opposite) == PipeLikeState.None) return PipeLikeState.None
         return PipeLikeState.Normal
@@ -152,7 +152,7 @@ class BlockItemPipe : Block(Properties.of().sound(SoundType.STONE).isRedstoneCon
         if (blockEntity !is ItemPipeBlockEntity) return newBlockState
         val pressurizerBlockPos = blockEntity.pipePressurizerPos ?: return newBlockState
         val pressurizerBlockEntity = level.getBlockEntity(pressurizerBlockPos)
-        if (pressurizerBlockEntity !is ItemPipePressurizerBlockEntity) return newBlockState
+        if (pressurizerBlockEntity !is PipePressurizerBlockEntity) return newBlockState
         pressurizerBlockEntity.scanNetwork(level, pressurizerBlockPos)
         return newBlockState
     }

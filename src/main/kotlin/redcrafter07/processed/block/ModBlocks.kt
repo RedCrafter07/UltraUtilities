@@ -19,7 +19,7 @@ object ModBlocks {
         Block(BlockBehaviour.Properties.ofFullCopy(Blocks.DIAMOND_ORE).explosionResistance(1200f))
     }
     val BLOCK_ITEM_PIPE = registerBlock("item_pipe") { BlockItemPipe() }
-    val BLOCK_PIPE_PRESSURIZER = registerBlock("item_pipe_pressurizer") { ItemPipePressurizerBlock() }
+    val BLOCK_PIPE_PRESSURIZER = registerBlock("pipe_pressurizer") { PipePressurizerBlock() }
 
     private fun <T : Block> registerBlock(id: String, block: Supplier<T>): DeferredBlock<T> {
         // this will call registerItem later, that's why it's not implemented yet
