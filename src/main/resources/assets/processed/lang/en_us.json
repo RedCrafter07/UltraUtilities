@@ -12,7 +12,7 @@
   "block.processed.item_pipe": "Item Pipe",
   "block.processed.item_pipe.tooltip": "§7A pipe to transfer items.",
   "block.processed.pipe_pressurizer": "Pipe Pressurizer",
-  "block.processed.pipe_pressurizer.tooltip": "The controller for item pipes.",
+  "block.processed.pipe_pressurizer.tooltip": "§7The controller for item pipes.",
   "processed.pipe_state.normal": "Normal",
   "processed.pipe_state.push": "Push",
   "processed.pipe_state.pull": "Pull",
