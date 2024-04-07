@@ -17,7 +17,7 @@ import redcrafter07.processed.item.ModItems
 class ModBlockLootTables : BlockLootSubProvider(setOf(), FeatureFlags.REGISTRY.allFlags()) {
     override fun generate() {
         createOreLootTable(ModBlocks.BLITZ_ORE.get(), ModItems.BLITZ_ORB.get(), 1f, 3f)
-        this.dropSelf(ModBlocks.BLOCK_PIPE.get())
+        this.dropSelf(ModBlocks.BLOCK_ITEM_PIPE.get())
         this.dropSelf(ModBlocks.BLOCK_PIPE_PRESSURIZER.get())
     }
 
