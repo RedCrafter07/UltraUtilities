@@ -19,6 +19,7 @@ import net.minecraft.world.level.block.state.properties.NoteBlockInstrument
 import net.minecraft.world.phys.shapes.CollisionContext
 import net.minecraft.world.phys.shapes.VoxelShape
 import net.neoforged.neoforge.capabilities.Capabilities
+import redcrafter07.processed.ProcessedMod
 import redcrafter07.processed.block.tile_entities.PipeBlockEntity
 import redcrafter07.processed.block.tile_entities.PipePressurizerBlockEntity
 import kotlin.math.floor
@@ -52,11 +53,12 @@ class BlockPipe : Block(Properties.of().sound(SoundType.STONE).isRedstoneConduct
 
         //check if block in direction is a pipe
         val nearbyBlockState = context.level.getBlockState(context.clickedPos.relative(direction))
-        val nearbyBlockIsPipe = nearbyBlockState.block is BlockPipe
+        val nearbyBlockIsPipeOrPump =
+            nearbyBlockState.block is BlockPipe || nearbyBlockState.block is PipePressurizerBlock
 
         val blockEntity = context.level.getBlockEntity(context.clickedPos)
         if (blockEntity !is PipeBlockEntity) return
-        val newPipeState = if (nearbyBlockIsPipe) {
+        val newPipeState = if (nearbyBlockIsPipeOrPump) {
             val currentPipeState = blockEntity.pipeState.getState(direction)
 
             when (currentPipeState) {
@@ -100,6 +102,16 @@ class BlockPipe : Block(Properties.of().sound(SoundType.STONE).isRedstoneConduct
                 )
             )
         }
+
+        val pressurizerBlockPos = blockEntity.pipePressurizerPos ?: return
+        val pressurizerBlockEntity = context.level.getBlockEntity(pressurizerBlockPos)
+        if (pressurizerBlockEntity !is PipePressurizerBlockEntity) return
+        if (newPipeState == PipeLikeState.Normal || newPipeState == PipeLikeState.None) pressurizerBlockEntity.scanNetwork(
+            context.level,
+            pressurizerBlockPos
+        )
+        else pressurizerBlockEntity.markPipe(context.clickedPos)
+
     }
 
     private fun connectionType(
@@ -133,10 +145,17 @@ class BlockPipe : Block(Properties.of().sound(SoundType.STONE).isRedstoneConduct
         blockPosA: BlockPos,
         blockPosB: BlockPos
     ): BlockState {
-        return blockStateA.setValue(
+        val newBlockState = blockStateA.setValue(
             propertyForDirection(direction),
             connectionType(level.getBlockEntity(blockPosA), level.getBlockEntity(blockPosB), blockPosB, direction, null)
         )
+        val blockEntity = level.getBlockEntity(blockPosA)
+        if (blockEntity !is PipeBlockEntity) return newBlockState
+        val pressurizerBlockPos = blockEntity.pipePressurizerPos ?: return newBlockState
+        val pressurizerBlockEntity = level.getBlockEntity(pressurizerBlockPos)
+        if (pressurizerBlockEntity !is PipePressurizerBlockEntity) return newBlockState
+        pressurizerBlockEntity.scanNetwork(level, pressurizerBlockPos)
+        return newBlockState
     }
 
     override fun getStateForPlacement(context: BlockPlaceContext): BlockState? {

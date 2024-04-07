@@ -9,6 +9,7 @@ import redcrafter07.processed.block.WrenchInteractableBlock
 class WrenchItem : ModItem(Properties().stacksTo(1), "wrench") {
 
     override fun onItemUseFirst(stack: ItemStack, context: UseOnContext): InteractionResult {
+//        if (context.level.isClientSide) return super.onItemUseFirst(stack, context)
         val blockState = context.level.getBlockState(context.clickedPos) ?: return super.onItemUseFirst(stack, context)
         val block = blockState.block
 
