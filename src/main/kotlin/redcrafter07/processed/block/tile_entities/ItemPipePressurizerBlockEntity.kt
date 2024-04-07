@@ -13,7 +13,7 @@ import redcrafter07.processed.ProcessedMod
 import redcrafter07.processed.block.PipeLikeState
 import java.util.Stack
 
-class PipePressurizerBlockEntity(pos: BlockPos, state: BlockState) :
+class ItemPipePressurizerBlockEntity(pos: BlockPos, state: BlockState) :
     BlockEntity(ModTileEntities.PIPE_PRESSURIZER_BLOCK_ENTITY.get(), pos, state) {
     val connectedPipes: Stack<BlockPos> = Stack()
     private var pushingTo: Stack<DirectionalPosition> = Stack()
@@ -41,14 +41,14 @@ class PipePressurizerBlockEntity(pos: BlockPos, state: BlockState) :
         pullingFrom.clear()
         for (pipe in connectedPipes) {
             val blockEntity = level.getBlockEntity(pipe)
-            if (blockEntity is PipeBlockEntity) blockEntity.pipePressurizerPos = null
+            if (blockEntity is ItemPipeBlockEntity) blockEntity.pipePressurizerPos = null
         }
     }
 
     fun markPipe(pipe: BlockPos) {
         val level = getLevel() ?: return
         val blockEntity = level.getBlockEntity(pipe)
-        if (blockEntity !is PipeBlockEntity) return
+        if (blockEntity !is ItemPipeBlockEntity) return
         for (dir in Direction.stream()) {
             val newBlockPos = pipe.relative(dir)
             val pipeState = blockEntity.pipeState.getState(dir)
@@ -76,7 +76,7 @@ class PipePressurizerBlockEntity(pos: BlockPos, state: BlockState) :
             val directionalPosition = blocksToScan.pop() ?: continue
             if (connectedPipes.contains(directionalPosition.blockPos)) continue
             val blockEntity = level.getBlockEntity(directionalPosition.blockPos) ?: continue
-            if (blockEntity !is PipeBlockEntity) continue
+            if (blockEntity !is ItemPipeBlockEntity) continue
             if (blockEntity.pipeState.getState(directionalPosition.direction.opposite) == PipeLikeState.None) continue
 
             markPipe(directionalPosition.blockPos)

@@ -13,17 +13,15 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker
 import net.minecraft.world.level.block.entity.BlockEntityType
 import net.minecraft.world.level.block.state.BlockBehaviour
 import net.minecraft.world.level.block.state.BlockState
-import redcrafter07.processed.ProcessedMod
-import redcrafter07.processed.block.tile_entities.ModTileEntities
-import redcrafter07.processed.block.tile_entities.PipePressurizerBlockEntity
+import redcrafter07.processed.block.tile_entities.ItemPipePressurizerBlockEntity
 
-class PipePressurizerBlock : Block(
+class ItemPipePressurizerBlock : Block(
     BlockBehaviour.Properties.of().isRedstoneConductor { _, _, _ -> false }.sound(
         SoundType.STONE
     )
 ), EntityBlock {
     override fun newBlockEntity(pos: BlockPos, state: BlockState): BlockEntity? {
-        return PipePressurizerBlockEntity(pos, state)
+        return ItemPipePressurizerBlockEntity(pos, state)
     }
 
     override fun playerWillDestroy(
@@ -33,7 +31,7 @@ class PipePressurizerBlock : Block(
         p_49855_: Player
     ): BlockState {
         val blockEntity = level.getBlockEntity(blockPos)
-        if (blockEntity is PipePressurizerBlockEntity) blockEntity.unlink(level)
+        if (blockEntity is ItemPipePressurizerBlockEntity) blockEntity.unlink(level)
         return super.playerWillDestroy(level, blockPos, p_49854_, p_49855_)
     }
 
@@ -46,7 +44,7 @@ class PipePressurizerBlock : Block(
         otherBlockPos: BlockPos
     ): BlockState {
         val blockEntity = level.getBlockEntity(myBlockPos)
-        if (blockEntity !is PipePressurizerBlockEntity) return myBlockState
+        if (blockEntity !is ItemPipePressurizerBlockEntity) return myBlockState
         blockEntity.scanNetwork(level, myBlockPos)
         return myBlockState
     }
@@ -57,7 +55,7 @@ class PipePressurizerBlock : Block(
         blockEntityType: BlockEntityType<T>
     ): BlockEntityTicker<T>? {
         return BlockEntityTicker { a, b, c, d ->
-            if (d is PipePressurizerBlockEntity) d.tick(a, b, c)
+            if (d is ItemPipePressurizerBlockEntity) d.tick(a, b, c)
         }
     }
 }
