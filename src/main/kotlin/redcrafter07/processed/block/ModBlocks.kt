@@ -1,16 +1,12 @@
 package redcrafter07.processed.block
 
-import net.minecraft.core.BlockPos
 import net.minecraft.world.item.Item
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.Blocks
-import net.minecraft.world.level.block.SoundType
 import net.minecraft.world.level.block.state.BlockBehaviour
-import net.minecraft.world.level.block.state.BlockState
 import net.neoforged.neoforge.registries.DeferredBlock
 import net.neoforged.neoforge.registries.DeferredRegister
 import redcrafter07.processed.ProcessedMod
-import redcrafter07.processed.block.tile_entities.PipePressurizerBlockEntity
 import redcrafter07.processed.item.ModItems
 import java.util.function.Supplier
 
@@ -22,7 +18,7 @@ object ModBlocks {
     val BLITZ_ORE = registerBlock("blitz_ore") {
         Block(BlockBehaviour.Properties.ofFullCopy(Blocks.DIAMOND_ORE).explosionResistance(1200f))
     }
-    val BLOCK_PIPE = registerBlock("pipe") { BlockPipe() }
+    val BLOCK_ITEM_PIPE = registerBlock("item_pipe") { BlockPipe() }
     val BLOCK_PIPE_PRESSURIZER = registerBlock("pipe_pressurizer") { PipePressurizerBlock() }
 
     private fun <T : Block> registerBlock(id: String, block: Supplier<T>): DeferredBlock<T> {
