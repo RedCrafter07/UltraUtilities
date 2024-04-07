@@ -1,6 +1,6 @@
 {
   "item_group.processed.main": "Processed",
-  "item.processed.hold_shift": "§7Hold §8[§2SHIFT§8] §7for more information.",
+  "item.processed.hold_shift": "§8Hold §7[§2SHIFT§7] §8for more information.",
   "item.processed.blitz_orb": "Blitz Orb",
   "item.processed.wrench": "Wrench",
   "item.processed.wrench.tooltip": "§7Tweak other blocks from Processed!",
