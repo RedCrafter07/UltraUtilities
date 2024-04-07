@@ -130,7 +130,7 @@ class BlockItemPipe : Block(Properties.of().sound(SoundType.STONE).isRedstoneCon
                 Capabilities.ItemHandler.BLOCK, otherBlockPos, direction.opposite
             ) != null
         ) return myPipeState
-        if (otherBlockEntity is PipePressurizerBlockEntity) return PipeLikeState.Normal
+        if (otherBlockEntity is PipePressurizerBlockEntity && (direction != Direction.DOWN && direction != Direction.UP)) return PipeLikeState.Normal
         if (otherBlockEntity !is ItemPipeBlockEntity) return PipeLikeState.None
         if (otherBlockEntity.pipeState.getState(direction.opposite) == PipeLikeState.None) return PipeLikeState.None
         return PipeLikeState.Normal
