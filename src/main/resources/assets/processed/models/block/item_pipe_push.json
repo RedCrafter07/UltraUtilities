@@ -1,0 +1,11 @@
+{
+  "parent": "processed:block/pipe_components/push",
+  "texture_size": [
+    64,
+    64
+  ],
+  "textures": {
+    "0": "processed:block/pipe",
+    "particle": "processed:block/pipe"
+  }
+}
