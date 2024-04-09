@@ -19,7 +19,7 @@ Planned Features:
 - More unique textures
 - And many more!
 
-**Info**: This Mod is in the early alpha. It's not released yet. You can watch and star [this repository](https://github.com/processed/processed) to get it as one of the first.
+**Info:** This Mod is in the early alpha. It's not released yet. You can watch and star [this repository](https://github.com/ProcessedMod/Processed) to get it as one of the first.
 
 You can make suggestions in the issues tab. Thanks!
 
