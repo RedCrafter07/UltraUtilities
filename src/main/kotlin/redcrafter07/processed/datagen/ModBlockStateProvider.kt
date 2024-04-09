@@ -16,7 +16,7 @@ class ModBlockStateProvider(output: PackOutput, exFileHelper: ExistingFileHelper
         blockWithItem(ModBlocks.BLITZ_ORE);
         blockWithItem(ModBlocks.BLOCK_PIPE_PRESSURIZER)
 
-        pipeProvider.pipeBlock(ModBlocks.BLOCK_ITEM_PIPE, "block/pipe")
+        pipeProvider.pipeBlock(ModBlocks.BLOCK_ITEM_PIPE)
     }
 
     private fun blockWithItem(blockRegistryObject: DeferredBlock<*>) {

@@ -17,17 +17,17 @@ class PipeProvider(private val blockStateProvider: BlockStateProvider) {
     private val states = arrayOf("normal", "push", "pull")
 
 
-    fun pipeBlock(blockRegistryObject: DeferredBlock<*>, texturePath: String) {
+    fun pipeBlock(blockRegistryObject: DeferredBlock<*>) {
         val blockID = blockRegistryObject.id.path
 
         println("Registered $blockID")
 
-        pipeBlockModels(blockRegistryObject, texturePath)
+        pipeBlockModels(blockRegistryObject)
         pipeItemModel(blockID)
         pipeBlockStates(blockRegistryObject)
     }
 
-    private fun pipeBlockModels(blockRegistryObject: DeferredBlock<*>, texturePath: String) {
+    private fun pipeBlockModels(blockRegistryObject: DeferredBlock<*>) {
         val id = blockRegistryObject.id.path
 
         println("Registering models for $id.")
@@ -40,8 +40,8 @@ class PipeProvider(private val blockStateProvider: BlockStateProvider) {
             // this should be registered into the /pipe folder for the block models
             models().getBuilder("block/pipe/${id}_$state")
                 .parent(models().getExistingFile(modLoc("block/pipe_components/$state")))
-                .texture("0", texturePath)
-                .texture("particle", texturePath)
+                .texture("0", modLoc("block/pipe/$id"))
+                .texture("particle", modLoc("block/pipe/$id"))
         }
     }
 
