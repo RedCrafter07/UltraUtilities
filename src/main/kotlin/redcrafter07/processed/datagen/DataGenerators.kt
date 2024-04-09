@@ -9,24 +9,23 @@ import redcrafter07.processed.ProcessedMod
 object DataGenerators {
     @SubscribeEvent
     fun gatherData(event: GatherDataEvent) {
-        val generator = event.generator;
-        val packOutput = generator.packOutput;
-        val lookupProvider = event.lookupProvider;
-        val existingFileHelper = event.existingFileHelper;
+        val generator = event.generator
+        val packOutput = generator.packOutput
+        val lookupProvider = event.lookupProvider
+        val existingFileHelper = event.existingFileHelper
 
-        generator.addProvider(event.includeServer(), ModLootTableProvider.create(packOutput));
-        generator.addProvider(event.includeServer(), ModWorldGenProvider(packOutput, lookupProvider));
+        generator.addProvider(event.includeServer(), ModLootTableProvider.create(packOutput))
+        generator.addProvider(event.includeServer(), ModWorldGenProvider(packOutput, lookupProvider))
 
-        generator.addProvider(event.includeClient(), ModBlockStateProvider(packOutput, existingFileHelper));
-        generator.addProvider(event.includeClient(), ModItemModelProvider(packOutput, existingFileHelper));
+        generator.addProvider(event.includeClient(), ModBlockStateProvider(packOutput, existingFileHelper))
+        generator.addProvider(event.includeClient(), ModItemModelProvider(packOutput, existingFileHelper))
 
         val blockTagGenerator = generator.addProvider(
-            event.includeServer(),
-            ModBlockTagGenerator(packOutput, lookupProvider, existingFileHelper)
-        );
+            event.includeServer(), ModBlockTagGenerator(packOutput, lookupProvider, existingFileHelper)
+        )
         generator.addProvider(
             event.includeServer(),
             ModItemTagGenerator(packOutput, lookupProvider, blockTagGenerator.contentsGetter(), existingFileHelper)
-        );
+        )
     }
 }
