@@ -20,8 +20,6 @@ class PipeProvider(private val blockStateProvider: BlockStateProvider) {
     fun pipeBlock(blockRegistryObject: DeferredBlock<*>) {
         val blockID = blockRegistryObject.id.path
 
-        println("Registered $blockID")
-
         pipeBlockModels(blockRegistryObject)
         pipeItemModel(blockID)
         pipeBlockStates(blockRegistryObject)
@@ -30,18 +28,14 @@ class PipeProvider(private val blockStateProvider: BlockStateProvider) {
     private fun pipeBlockModels(blockRegistryObject: DeferredBlock<*>) {
         val id = blockRegistryObject.id.path
 
-        println("Registering models for $id.")
-
         val newStates = states.toMutableList().apply { add("center") }.toTypedArray()
 
         for (state in newStates) {
-            println("Registering model for $id with state $state.")
 
             // this should be registered into the /pipe folder for the block models
             models().getBuilder("block/pipe/${id}_$state")
                 .parent(models().getExistingFile(modLoc("block/pipe_components/$state")))
-                .texture("0", modLoc("block/pipe/$id"))
-                .texture("particle", modLoc("block/pipe/$id"))
+                .texture("0", modLoc("block/pipe/$id")).texture("particle", modLoc("block/pipe/$id"))
         }
     }
 
@@ -53,8 +47,6 @@ class PipeProvider(private val blockStateProvider: BlockStateProvider) {
         val block = blockRegistryObject.get()
         val id = blockRegistryObject.id.path
         val builder = getMultipartBuilder(block)
-
-        println("Registering states for $id.")
 
         builder.part().modelFile(models().getBuilder("block/pipe/${id}_center")).rotationY(0).uvLock(false).addModel()
             .end()
