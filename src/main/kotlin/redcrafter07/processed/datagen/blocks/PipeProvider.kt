@@ -31,14 +31,14 @@ class PipeProvider(private val blockStateProvider: BlockStateProvider) {
         for (state in newStates) {
 
             // this should be registered into the /pipe folder for the block models
-            models().getBuilder("block/pipe/${id}_$state")
+            models().getBuilder("block/pipe/${id}/$state")
                 .parent(models().getExistingFile(modLoc("block/pipe_components/$state")))
                 .texture("0", modLoc("block/pipe/$id")).texture("particle", modLoc("block/pipe/$id"))
         }
     }
 
     private fun pipeItemModel(blockID: String) {
-        itemModels().getBuilder(blockID).parent(models().getBuilder("block/pipe/${blockID}_center"))
+        itemModels().getBuilder(blockID).parent(models().getBuilder("block/pipe/${blockID}/center"))
     }
 
     private fun pipeBlockStates(blockRegistryObject: DeferredBlock<*>) {
@@ -46,7 +46,7 @@ class PipeProvider(private val blockStateProvider: BlockStateProvider) {
         val id = blockRegistryObject.id.path
         val builder = getMultipartBuilder(block)
 
-        builder.part().modelFile(models().getBuilder("block/pipe/${id}_center")).rotationY(0).uvLock(false).addModel()
+        builder.part().modelFile(models().getBuilder("block/pipe/${id}/center")).rotationY(0).uvLock(false).addModel()
             .end()
 
         for (state in states) {
@@ -69,7 +69,7 @@ class PipeProvider(private val blockStateProvider: BlockStateProvider) {
                 }
 
                 val newModelBuilder =
-                    builder.part().modelFile(models().getBuilder("block/pipe/${id}_$state")).uvLock(false)
+                    builder.part().modelFile(models().getBuilder("block/pipe/${id}/$state")).uvLock(false)
 
                 if (direction != "top" && direction != "bottom") newModelBuilder.rotationY(getRotationY(direction))
                 else newModelBuilder.rotationX(getRotationX(direction))
