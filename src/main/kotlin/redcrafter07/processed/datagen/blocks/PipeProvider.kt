@@ -1,17 +1,15 @@
 package redcrafter07.processed.datagen.blocks
 
-import net.minecraft.world.level.block.Block
 import net.neoforged.neoforge.client.model.generators.BlockStateProvider
 import net.neoforged.neoforge.registries.DeferredBlock
 import redcrafter07.processed.block.*
 
 class PipeProvider(private val blockStateProvider: BlockStateProvider) {
 
-    //destructure properties from blockStateProvider
-    private fun models() = blockStateProvider.models()
-    private fun itemModels() = blockStateProvider.itemModels()
-    private fun modLoc(path: String) = blockStateProvider.modLoc(path)
-    private fun getMultipartBuilder(block: Block) = blockStateProvider.getMultipartBuilder(block)
+    private val models = blockStateProvider::models
+    private val itemModels = blockStateProvider::itemModels
+    private val modLoc = blockStateProvider::modLoc
+    private val getMultipartBuilder = blockStateProvider::getMultipartBuilder
 
     private val directions = arrayOf("north", "east", "south", "west", "top", "bottom")
     private val states = arrayOf("normal", "push", "pull")
