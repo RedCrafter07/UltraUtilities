@@ -26,5 +26,8 @@
   "item.processed.wrench.mode.config": "§9Config",
   "item.processed.wrench.mode.upgrade": "§2Upgrade",
   "item.processed.wrench.mode.rotate": "§3Rotate",
-  "item.processed.wrench.name": "Wrench §7[%d§7]"
+  "item.processed.wrench.name": "Wrench §7[%d§7]",
+  "processed.screen.block_config.title": "Block Configuration",
+  "processed.screen.block_config.upgrades": "Upgrades",
+  "processed.screen.block_config.io": "Input/Output"
 }

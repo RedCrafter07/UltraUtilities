@@ -5,6 +5,7 @@ import net.minecraft.client.Minecraft
 import net.neoforged.fml.common.Mod
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent
 import net.neoforged.fml.event.lifecycle.FMLDedicatedServerSetupEvent
+import net.neoforged.neoforge.client.event.TextureAtlasStitchedEvent
 import net.neoforged.neoforge.common.NeoForge
 import org.apache.logging.log4j.Level
 import org.apache.logging.log4j.LogManager

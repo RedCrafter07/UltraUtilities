@@ -1,7 +1,9 @@
 package redcrafter07.processed.item
 
+import net.minecraft.client.Minecraft
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.MutableComponent
+import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.InteractionResult
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.player.Player
@@ -12,6 +14,7 @@ import net.minecraft.world.level.block.DirectionalBlock
 import net.minecraft.world.level.block.HorizontalDirectionalBlock
 import net.minecraft.world.level.block.state.properties.BlockStateProperties
 import redcrafter07.processed.block.WrenchInteractableBlock
+import redcrafter07.processed.gui.ConfigScreen
 
 class WrenchItem : ModItem(Properties().stacksTo(1), "wrench") {
     fun getMode(stack: ItemStack): WrenchMode {
@@ -29,6 +32,10 @@ class WrenchItem : ModItem(Properties().stacksTo(1), "wrench") {
     }
 
     override fun onItemUseFirst(stack: ItemStack, context: UseOnContext): InteractionResult {
+        if (context.level.isClientSide) Minecraft.getInstance().setScreen(ConfigScreen())
+
+        return InteractionResult.SUCCESS
+
         val wrenchMode = getMode(stack)
 
         return when (wrenchMode) {
