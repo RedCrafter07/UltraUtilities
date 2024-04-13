@@ -27,6 +27,15 @@ class WrenchItem : ModItem(Properties().stacksTo(1), "wrench") {
     }
 
     override fun onItemUseFirst(stack: ItemStack, context: UseOnContext): InteractionResult {
+        val wrenchMode = getMode(stack)
+
+        return when (wrenchMode) {
+            WrenchMode.Config -> configure(stack, context)
+            else -> InteractionResult.PASS
+        }
+    }
+
+    private fun configure(stack: ItemStack, context: UseOnContext): InteractionResult {
         val blockState = context.level.getBlockState(context.clickedPos) ?: return super.onItemUseFirst(stack, context)
         val block = blockState.block
 
@@ -40,7 +49,6 @@ class WrenchItem : ModItem(Properties().stacksTo(1), "wrench") {
             blockEntity.onWrenchUse(context, blockState)
             return InteractionResult.SUCCESS
         }
-        return super.onItemUseFirst(stack, context)
     }
 
     override fun use(level: Level, player: Player, hand: InteractionHand): InteractionResultHolder<ItemStack> {
