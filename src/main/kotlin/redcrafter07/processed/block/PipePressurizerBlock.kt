@@ -27,12 +27,12 @@ class PipePressurizerBlock : Block(
     override fun playerWillDestroy(
         level: Level,
         blockPos: BlockPos,
-        p_49854_: BlockState,
-        p_49855_: Player
+        blockState: BlockState,
+        player: Player
     ): BlockState {
         val blockEntity = level.getBlockEntity(blockPos)
         if (blockEntity is PipePressurizerBlockEntity) blockEntity.unlink(level)
-        return super.playerWillDestroy(level, blockPos, p_49854_, p_49855_)
+        return super.playerWillDestroy(level, blockPos, blockState, player)
     }
 
     override fun updateShape(
@@ -54,8 +54,8 @@ class PipePressurizerBlock : Block(
         blockState: BlockState,
         blockEntityType: BlockEntityType<T>
     ): BlockEntityTicker<T>? {
-        return BlockEntityTicker { a, b, c, d ->
-            if (d is PipePressurizerBlockEntity) d.tick(a, b, c)
+        return BlockEntityTicker { lv, pos, state, ticker ->
+            if (ticker is PipePressurizerBlockEntity) ticker.tick(lv, pos, state)
         }
     }
 }
