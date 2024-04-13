@@ -11,6 +11,14 @@ enum class WrenchMode {
         }
     }
 
+    fun previous(): WrenchMode {
+        return when (this) {
+            Config -> Rotate
+            Upgrade -> Config
+            Rotate -> Upgrade
+        }
+    }
+
     fun translation(): String {
         val prefix = "item.processed.wrench.mode"
         val suffix = when (this) {
