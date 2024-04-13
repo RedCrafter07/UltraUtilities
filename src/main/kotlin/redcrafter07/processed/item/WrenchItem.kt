@@ -2,9 +2,8 @@ package redcrafter07.processed.item
 
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.MutableComponent
-import net.minecraft.world.InteractionHand
 import net.minecraft.world.InteractionResult
-import net.minecraft.world.InteractionResultHolder
+import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.context.UseOnContext
@@ -15,7 +14,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties
 import redcrafter07.processed.block.WrenchInteractableBlock
 
 class WrenchItem : ModItem(Properties().stacksTo(1), "wrench") {
-    private fun getMode(stack: ItemStack): WrenchMode {
+    fun getMode(stack: ItemStack): WrenchMode {
         val nbt = stack.orCreateTag
         return WrenchMode.Config.load(nbt.getShort("mode").toUShort())
     }
@@ -27,19 +26,6 @@ class WrenchItem : ModItem(Properties().stacksTo(1), "wrench") {
         nbt.putShort("mode", WrenchMode.Config.save().toShort())
 
         return stack
-    }
-
-    override fun use(level: Level, player: Player, hand: InteractionHand): InteractionResultHolder<ItemStack> {
-        //check if player clicks in the air
-        val targetBlock = level.getBlockState(player.blockPosition())
-        if (level.isClientSide || !targetBlock.isAir) return InteractionResultHolder.pass(player.getItemInHand(hand))
-
-        val stack = player.getItemInHand(hand)
-        val mode = getMode(stack).next()
-        val nbt = stack.orCreateTag
-        nbt.putShort("mode", mode.save().toShort())
-
-        return InteractionResultHolder.success(stack)
     }
 
     override fun onItemUseFirst(stack: ItemStack, context: UseOnContext): InteractionResult {
@@ -94,12 +80,6 @@ class WrenchItem : ModItem(Properties().stacksTo(1), "wrench") {
     override fun getAdditionalTooltip(stack: ItemStack, world: Level?): MutableComponent {
         return Component.translatable(
             "item.processed.wrench.mode", Component.translatable(getMode(stack).translation())
-        )
-    }
-
-    override fun getName(stack: ItemStack): Component {
-        return Component.translatable(
-            "item.processed.wrench.name", Component.translatable(getMode(stack).translation())
         )
     }
 }
