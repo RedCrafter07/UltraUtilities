@@ -39,12 +39,6 @@ class WrenchItem : ModItem(Properties().stacksTo(1), "wrench") {
         val nbt = stack.orCreateTag
         nbt.putShort("mode", mode.save().toShort())
 
-        player.displayClientMessage(
-            Component.translatable(
-                "item.processed.wrench.mode", Component.translatable(mode.translation())
-            ), true
-        )
-
         return InteractionResultHolder.success(stack)
     }
 
