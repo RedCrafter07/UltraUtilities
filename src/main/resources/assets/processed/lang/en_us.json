@@ -21,5 +21,10 @@
   "processed.pipe_state.title.push": "§aPush",
   "processed.pipe_state.title.pull": "§cPull",
   "processed.pipe_state.title.none": "§4None",
-  "processed.pipe_state": "§7State: %d"
+  "processed.pipe_state": "§7State: %d",
+  "item.processed.wrench.mode": "§7Mode: %d",
+  "item.processed.wrench.mode.config": "§9Config",
+  "item.processed.wrench.mode.upgrade": "§2Upgrade",
+  "item.processed.wrench.mode.rotate": "§3Rotate",
+  "item.processed.wrench.name": "Wrench §7[%d§7]"
 }
