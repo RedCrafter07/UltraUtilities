@@ -5,10 +5,12 @@ import net.minecraft.client.Minecraft
 import net.neoforged.fml.common.Mod
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent
 import net.neoforged.fml.event.lifecycle.FMLDedicatedServerSetupEvent
+import net.neoforged.neoforge.common.NeoForge
 import org.apache.logging.log4j.Level
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import redcrafter07.processed.block.tile_entities.ModTileEntities
+import redcrafter07.processed.events.MouseScrollHandler
 import redcrafter07.processed.item.ModItemGroup
 import redcrafter07.processed.item.ModItems
 import thedarkcolour.kotlinforforge.neoforge.forge.MOD_BUS
@@ -57,7 +59,7 @@ object ProcessedMod {
      * Fired on the mod specific event bus.
      */
     private fun onClientSetup(event: FMLClientSetupEvent) {
-        LOGGER.log(Level.INFO, "Initializing client...")
+        NeoForge.EVENT_BUS.register(MouseScrollHandler)
     }
 
     /**
