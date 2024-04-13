@@ -22,7 +22,6 @@ object ModBlocks {
     val BLOCK_PIPE_PRESSURIZER = registerBlock("pipe_pressurizer") { PipePressurizerBlock() }
 
     private fun <T : Block> registerBlock(id: String, block: Supplier<T>): DeferredBlock<T> {
-        // this will call registerItem later, that's why it's not implemented yet
         val regBlock = BLOCKS.register(id, block)
 
         registerBlockItem(id, regBlock)
