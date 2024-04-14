@@ -15,15 +15,13 @@ data class WrenchModeChangePacket(val state: WrenchMode) : CustomPacketPayload {
         val ID = ResourceLocation(ProcessedMod.ID, "p_wrench_mode_change")
     }
 
-    fun handle_server(payload: WrenchModeChangePacket, context: PlayPayloadContext) {
+    fun handle_server(context: PlayPayloadContext) {
         val player = context.player.getOrNull() ?: return
         val item = player.mainHandItem
         if (item.item is WrenchItem) {
-            WrenchItem.setMode(item, payload.state)
+            WrenchItem.setMode(item, state)
         }
     }
-
-    fun handle_client(payload: WrenchModeChangePacket, context: PlayPayloadContext) {}
 
     constructor(buffer: FriendlyByteBuf) : this(WrenchMode.load(buffer.readByte()))
 

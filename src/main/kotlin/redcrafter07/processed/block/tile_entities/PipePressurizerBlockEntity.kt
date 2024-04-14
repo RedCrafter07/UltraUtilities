@@ -5,7 +5,6 @@ import net.minecraft.core.Direction
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.LevelAccessor
-import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.state.BlockState
 import net.neoforged.neoforge.capabilities.Capabilities
 import net.neoforged.neoforge.items.IItemHandler
@@ -37,6 +36,7 @@ class PipePressurizerBlockEntity(pos: BlockPos, state: BlockState) :
     }
 
     fun unlink(level: LevelAccessor) {
+        this.setChanged()
         pushingTo.clear()
         pullingFrom.clear()
         for (pipe in connectedPipes) {
@@ -61,6 +61,7 @@ class PipePressurizerBlockEntity(pos: BlockPos, state: BlockState) :
                 pullingFrom.push(DirectionalPosition(newBlockPos, dir.opposite))
             }
         }
+        this.setChanged()
     }
 
     fun scanNetwork(level: LevelAccessor, myBlockPos: BlockPos) {
@@ -90,6 +91,7 @@ class PipePressurizerBlockEntity(pos: BlockPos, state: BlockState) :
                 blocksToScan.push(newBlockPos)
             }
         }
+        this.setChanged()
     }
 
     companion object {
@@ -164,10 +166,10 @@ class PipePressurizerBlockEntity(pos: BlockPos, state: BlockState) :
 
     override fun load(nbt: CompoundTag) {
         super.load(nbt)
-        val ints = nbt.getIntArray("blocks");
+        val integers = nbt.getIntArray("blocks");
         var idx = 0;
-        while (idx + 3 <= ints.count()) {
-            connectedPipes.push(BlockPos(ints[idx], ints[idx + 1], ints[idx + 2]))
+        while (idx + 3 <= integers.count()) {
+            connectedPipes.push(BlockPos(integers[idx], integers[idx + 1], integers[idx + 2]))
             idx += 3
         }
 

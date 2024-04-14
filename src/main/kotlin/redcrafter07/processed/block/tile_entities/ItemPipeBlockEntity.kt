@@ -8,8 +8,13 @@ import redcrafter07.processed.block.DirectionalPipeLikeState
 
 class ItemPipeBlockEntity(pos: BlockPos, state: BlockState) :
     BlockEntity(ModTileEntities.PIPE_BLOCK_ENTITY.get(), pos, state) {
-    val pipeState = DirectionalPipeLikeState()
+    val pipeState = DirectionalPipeLikeState(this)
     var pipePressurizerPos: BlockPos? = null
+        get() = field
+        set(value) {
+            field = value
+            this.setChanged()
+        }
 
     override fun saveAdditional(nbt: CompoundTag) {
         super.saveAdditional(nbt)

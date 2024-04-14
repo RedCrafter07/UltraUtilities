@@ -5,6 +5,7 @@ import net.minecraft.nbt.CompoundTag
 import net.minecraft.network.chat.Component
 import net.minecraft.util.StringRepresentable
 import net.minecraft.world.level.block.Block
+import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.block.state.properties.EnumProperty
 import net.minecraft.world.phys.shapes.BooleanOp
@@ -72,7 +73,7 @@ enum class PipeLikeState : StringRepresentable {
         }
     }
 }
-class DirectionalPipeLikeState {
+class DirectionalPipeLikeState(val blockEntity: BlockEntity) {
     private var stateNorth: PipeLikeState = PipeLikeState.Normal
     private var stateSouth: PipeLikeState = PipeLikeState.Normal
     private var stateWest: PipeLikeState = PipeLikeState.Normal
@@ -100,6 +101,7 @@ class DirectionalPipeLikeState {
             Direction.WEST -> stateWest = value
             Direction.EAST -> stateEast = value
         }
+        blockEntity.setChanged()
     }
 
     fun saveToNBT(name: String, nbt: CompoundTag) {

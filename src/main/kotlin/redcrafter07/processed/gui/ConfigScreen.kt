@@ -1,5 +1,6 @@
 package redcrafter07.processed.gui
 
+import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.Button
 import net.minecraft.client.gui.screens.Screen
@@ -9,6 +10,7 @@ import net.minecraft.resources.ResourceLocation
 import redcrafter07.processed.ProcessedMod
 import redcrafter07.processed.block.tile_entities.IoSide
 import redcrafter07.processed.block.tile_entities.ProcessedMachine
+import redcrafter07.processed.network.IOChangePacket
 
 class ConfigScreen(val machine: ProcessedMachine, val blockPos: BlockPos) :
     Screen(Component.translatable("processed.screen.block_config.title")) {
@@ -18,15 +20,16 @@ class ConfigScreen(val machine: ProcessedMachine, val blockPos: BlockPos) :
         val menuResource = ResourceLocation(ProcessedMod.ID, "textures/gui/gui_base_inventory.png")
     }
 
-    private var topX = 0;
-    private var topY = 0;
-    private var isIo = true;
+    private var topX = 0
+    private var topY = 0
+    private var isIo = true
+    private var isItem = true
 
     override fun init() {
         super.init()
 
-        this.topX = (this.width - menuWidth) / 2;
-        this.topY = (this.height - menuHeight) / 2;
+        this.topX = (this.width - menuWidth) / 2
+        this.topY = (this.height - menuHeight) / 2
 
 
         this.addRenderableWidget(
@@ -44,18 +47,32 @@ class ConfigScreen(val machine: ProcessedMachine, val blockPos: BlockPos) :
 
         if (isIo) {
             for (side in IoSide.entries) {
-                val pos = side.getButtonPos();
+                val pos = side.getButtonPos()
                 this.addRenderableWidget(
                     IoToggleButton(
                         this.topX + pos.x,
                         this.topY + pos.y,
                         side.toComponent(),
-                        machine.getSide(true, side)
+                        machine.getSide(isItem, side)
                     ) { _, newState ->
-                        machine.setSide(true, side, newState)
+                        machine.setSide(isItem, side, newState)
+                        Minecraft.getInstance().connection?.send(IOChangePacket(blockPos, newState, side, isItem))
                     }
                 )
             }
+
+            this.addRenderableWidget(
+                Button.builder(Component.literal("I"), this::ioSwitchToItems)
+                    .pos(this.topX + 77, this.topY + 32)
+                    .size(14, 14)
+                    .build()
+            ).active = !isItem
+            this.addRenderableWidget(
+                Button.builder(Component.literal("F"), this::ioSwitchToFluids)
+                    .pos(this.topX + 77, this.topY + 50)
+                    .size(14, 14)
+                    .build()
+            ).active = isItem
         }
     }
 
@@ -67,11 +84,22 @@ class ConfigScreen(val machine: ProcessedMachine, val blockPos: BlockPos) :
 
     private fun switchToIo(button: Button) {
         this.isIo = true
+        this.isItem = true
         this.rebuildWidgets()
     }
 
     private fun switchToUpgrades(button: Button) {
         this.isIo = false
+        this.rebuildWidgets()
+    }
+
+    private fun ioSwitchToItems(button: Button) {
+        this.isItem = true
+        this.rebuildWidgets()
+    }
+
+    private fun ioSwitchToFluids(button: Button) {
+        this.isItem = false
         this.rebuildWidgets()
     }
 

@@ -15,6 +15,11 @@ object NetworkHandler {
         register.play(
             WrenchModeChangePacket.ID,
             ::WrenchModeChangePacket
-        ) { payload, context -> if (context.flow.isClientbound) payload.handle_client(payload, context) else payload.handle_server(payload, context) }
+        ) { payload, context -> if (!context.flow.isClientbound) payload.handle_server(context) }
+
+        register.play(
+            IOChangePacket.ID,
+            ::IOChangePacket
+        ) { payload, context -> if (!context.flow.isClientbound) payload.handle_server(context) }
     }
 }

@@ -9,6 +9,7 @@ import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.entity.BlockEntityType
 import net.minecraft.world.level.block.state.BlockState
 import org.joml.Vector2i
+import redcrafter07.processed.ProcessedMod
 import redcrafter07.processed.block.WrenchInteractableBlock
 import redcrafter07.processed.gui.ConfigScreen
 
@@ -162,6 +163,7 @@ open class ProcessedMachine(blockEntityType: BlockEntityType<*>, blockPos: Block
     fun setSide(itemOrFluid: Boolean, side: IoSide, value: IoState) {
         if (itemOrFluid) sides[side.save().toInt()] = value
         else sides[side.save().toInt() + 6] = value
+        this.setChanged()
     }
 
     override fun load(nbt: CompoundTag) {
@@ -175,7 +177,8 @@ open class ProcessedMachine(blockEntityType: BlockEntityType<*>, blockPos: Block
 
     override fun saveAdditional(nbt: CompoundTag) {
         super.saveAdditional(nbt)
-        nbt.putByteArray("io_states", sides.map { it.save() }.toList())
+        val list= sides.map { it.save() }.toList();
+        nbt.putByteArray("io_states", list)
     }
 
     override fun onWrenchUse(context: UseOnContext, state: BlockState) {
