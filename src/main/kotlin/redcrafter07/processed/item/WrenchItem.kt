@@ -32,10 +32,6 @@ class WrenchItem : ModItem(Properties().stacksTo(1), "wrench") {
     }
 
     override fun onItemUseFirst(stack: ItemStack, context: UseOnContext): InteractionResult {
-        if (context.level.isClientSide) Minecraft.getInstance().setScreen(ConfigScreen())
-
-        return InteractionResult.SUCCESS
-
         val wrenchMode = getMode(stack)
 
         return when (wrenchMode) {
