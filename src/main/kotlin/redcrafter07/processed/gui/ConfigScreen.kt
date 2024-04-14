@@ -6,10 +6,8 @@ import net.minecraft.client.gui.screens.Screen
 import net.minecraft.core.BlockPos
 import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceLocation
-import net.minecraft.world.level.block.entity.BlockEntity
 import redcrafter07.processed.ProcessedMod
-import redcrafter07.processed.block.tile_entities.IOSide
-import redcrafter07.processed.block.tile_entities.IoState
+import redcrafter07.processed.block.tile_entities.IoSide
 import redcrafter07.processed.block.tile_entities.ProcessedMachine
 
 class ConfigScreen(val machine: ProcessedMachine, val blockPos: BlockPos) :
@@ -45,7 +43,7 @@ class ConfigScreen(val machine: ProcessedMachine, val blockPos: BlockPos) :
         )
 
         if (isIo) {
-            for (side in IOSide.entries) {
+            for (side in IoSide.entries) {
                 val pos = side.getButtonPos();
                 this.addRenderableWidget(
                     IoToggleButton(

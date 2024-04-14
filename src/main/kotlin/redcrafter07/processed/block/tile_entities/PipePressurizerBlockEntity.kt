@@ -14,7 +14,7 @@ import redcrafter07.processed.block.PipeLikeState
 import java.util.Stack
 
 class PipePressurizerBlockEntity(pos: BlockPos, state: BlockState) :
-    BlockEntity(ModTileEntities.PIPE_PRESSURIZER_BLOCK_ENTITY.get(), pos, state) {
+    ProcessedMachine(ModTileEntities.PIPE_PRESSURIZER_BLOCK_ENTITY.get(), pos, state) {
     val connectedPipes: Stack<BlockPos> = Stack()
     private var pushingTo: Stack<DirectionalPosition> = Stack()
     private var pullingFrom: Stack<DirectionalPosition> = Stack()

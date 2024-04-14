@@ -30,21 +30,23 @@ enum class WrenchMode {
         return "$prefix.$suffix"
     }
 
-    fun save(): UShort {
+    fun save(): Byte {
         return when (this) {
-            Config -> 0.toUShort()
-            Upgrade -> 1.toUShort()
-            Rotate -> 2.toUShort()
-            else -> 0.toUShort()
+            Config -> 0.toByte()
+            Upgrade -> 1.toByte()
+            Rotate -> 2.toByte()
+            else -> 0.toByte()
         }
     }
 
-    fun load(value: UShort): WrenchMode {
-        return when (value.toInt()) {
-            0 -> Config
-            1 -> Upgrade
-            2 -> Rotate
-            else -> Config
+    companion object {
+        fun load(value: Byte): WrenchMode {
+            return when (value.toInt()) {
+                0 -> Config
+                1 -> Upgrade
+                2 -> Rotate
+                else -> Config
+            }
         }
     }
 }

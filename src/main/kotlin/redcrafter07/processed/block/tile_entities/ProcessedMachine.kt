@@ -11,7 +11,6 @@ import net.minecraft.world.level.block.state.BlockState
 import org.joml.Vector2i
 import redcrafter07.processed.block.WrenchInteractableBlock
 import redcrafter07.processed.gui.ConfigScreen
-import java.util.*
 
 enum class IoState {
     None,
@@ -81,7 +80,7 @@ enum class IoState {
     }
 }
 
-enum class IOSide {
+enum class IoSide {
     Top,
     Bottom,
     Left,
@@ -89,14 +88,28 @@ enum class IOSide {
     Front,
     Back;
 
-    fun toInt(): Int {
+    companion object {
+        fun load(value: Byte): IoSide {
+            return when (value.toInt()) {
+                0 -> Top
+                1 -> Bottom
+                2 -> Left
+                3 -> Right
+                4 -> Front
+                5 -> Back
+                else -> Top
+            }
+        }
+    }
+
+    fun save(): Byte {
         return when (this) {
-            Top -> 0
-            Bottom -> 1
-            Left -> 2
-            Right -> 3
-            Front -> 4
-            Back -> 5
+            Top -> 0.toByte()
+            Bottom -> 1.toByte()
+            Left -> 2.toByte()
+            Right -> 3.toByte()
+            Front -> 4.toByte()
+            Back -> 5.toByte()
         }
     }
 
@@ -123,7 +136,7 @@ enum class IOSide {
     }
 }
 
-class ProcessedMachine(blockEntityType: BlockEntityType<*>, blockPos: BlockPos, blockState: BlockState) : BlockEntity(
+open class ProcessedMachine(blockEntityType: BlockEntityType<*>, blockPos: BlockPos, blockState: BlockState) : BlockEntity(
     blockEntityType,
     blockPos, blockState
 ), WrenchInteractableBlock {
@@ -142,13 +155,13 @@ class ProcessedMachine(blockEntityType: BlockEntityType<*>, blockPos: BlockPos, 
         IoState.None
     )
 
-    fun getSide(itemOrFluid: Boolean, side: IOSide): IoState {
-        return if (itemOrFluid) sides[side.toInt()] else sides[side.toInt() + 6]
+    fun getSide(itemOrFluid: Boolean, side: IoSide): IoState {
+        return if (itemOrFluid) sides[side.save().toInt()] else sides[side.save().toInt() + 6]
     }
 
-    fun setSide(itemOrFluid: Boolean, side: IOSide, value: IoState) {
-        if (itemOrFluid) sides[side.toInt()] = value
-        else sides[side.toInt() + 6] = value
+    fun setSide(itemOrFluid: Boolean, side: IoSide, value: IoState) {
+        if (itemOrFluid) sides[side.save().toInt()] = value
+        else sides[side.save().toInt() + 6] = value
     }
 
     override fun load(nbt: CompoundTag) {

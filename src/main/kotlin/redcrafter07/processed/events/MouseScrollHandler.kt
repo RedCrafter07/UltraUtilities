@@ -4,13 +4,16 @@ import net.minecraft.client.Minecraft
 import net.neoforged.bus.api.SubscribeEvent
 import net.neoforged.fml.common.Mod
 import net.neoforged.neoforge.client.event.InputEvent
+import redcrafter07.processed.ProcessedMod
 import redcrafter07.processed.item.WrenchItem
 import redcrafter07.processed.item.WrenchMode
+import redcrafter07.processed.network.WrenchModeChangePacket
 
-@Mod.EventBusSubscriber
+@Mod.EventBusSubscriber(modid = ProcessedMod.ID)
 object MouseScrollHandler {
     @SubscribeEvent
     fun onMouseScroll(event: InputEvent.MouseScrollingEvent) {
+        val connection = Minecraft.getInstance().connection ?: return
         val player = Minecraft.getInstance().player
 
         if (player != null && player.isShiftKeyDown) {
@@ -18,13 +21,14 @@ object MouseScrollHandler {
 
             if (itemStack.item is WrenchItem) {
                 val nbt = itemStack.orCreateTag
-                val mode = WrenchMode.Config.load(nbt.getShort("mode").toUShort())
+                val mode = WrenchMode.load(nbt.getByte("mode"))
                 val newMode = if (event.scrollDeltaY > 0) mode.next() else mode.previous()
                 nbt.putShort("mode", newMode.save().toShort())
 
                 player.inventory.setChanged()
-
                 event.isCanceled = true
+
+                connection.send(WrenchModeChangePacket(newMode))
             }
         }
     }
