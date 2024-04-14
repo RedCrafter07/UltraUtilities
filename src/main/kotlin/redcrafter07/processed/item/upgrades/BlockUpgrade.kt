@@ -1,25 +1,25 @@
 package redcrafter07.processed.item.upgrades
 
-enum class BlockUpgrades {
+enum class BlockUpgrade {
     Speed, Efficiency, Capacity, Range, Energy, AreaOfEffect;
 
     companion object {
-        private var validUpgrades: Array<BlockUpgrades> = entries.toTypedArray()
+        private var validUpgrades: Array<BlockUpgrade> = entries.toTypedArray()
 
-        fun fromString(string: String): BlockUpgrades {
+        fun fromString(string: String): BlockUpgrade {
             return valueOf(string)
         }
 
-        fun fromInt(int: Int): BlockUpgrades {
+        fun fromInt(int: Int): BlockUpgrade {
             return entries[int]
         }
 
-        fun validUpgrades(upgrades: Array<BlockUpgrades>): Array<BlockUpgrades> {
+        fun validUpgrades(upgrades: Array<BlockUpgrade>): Array<BlockUpgrade> {
             this.validUpgrades = entries.filter { it !in upgrades }.toTypedArray()
             return entries.filter { it !in upgrades }.toTypedArray()
         }
 
-        fun getItemNameForUpgrade(upgrade: BlockUpgrades): String {
+        fun getItemNameForUpgrade(upgrade: BlockUpgrade): String {
             val uppercaseIndexes =
                 upgrade.toString().toCharArray().mapIndexed { index, c -> if (c.isUpperCase()) index else null }
                     .filterNotNull()
