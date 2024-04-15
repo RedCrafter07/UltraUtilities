@@ -3,7 +3,12 @@ package redcrafter07.processed.block.tile_entities
 import net.minecraft.client.Minecraft
 import net.minecraft.core.BlockPos
 import net.minecraft.nbt.CompoundTag
+import net.minecraft.network.Connection
 import net.minecraft.network.chat.Component
+import net.minecraft.network.protocol.Packet
+import net.minecraft.network.protocol.game.ClientGamePacketListener
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket
+import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.item.context.UseOnContext
 import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.entity.BlockEntityType
@@ -173,6 +178,13 @@ open class ProcessedMachine(blockEntityType: BlockEntityType<*>, blockPos: Block
         for (index in 0..<12) {
             sides[index] = if (byteArray.size <= index) IoState.None else IoState.load(byteArray[index])
         }
+    }
+
+    override fun getUpdatePacket(): Packet<ClientGamePacketListener>? {
+        return ClientboundBlockEntityDataPacket.create(this)
+    }
+    override fun getUpdateTag(): CompoundTag {
+        return saveWithoutMetadata()
     }
 
     override fun saveAdditional(nbt: CompoundTag) {

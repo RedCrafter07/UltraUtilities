@@ -23,8 +23,9 @@ data class IOChangePacket(val block: BlockPos, val state: IoState, val side: IoS
             val level = context.level().getOrNull()
             if (level != null) {
                 val blockEntity = level.getBlockEntity(block)
-                if (blockEntity is ProcessedMachine) blockEntity.setSide(itemOrFluid, side, state)
-                blockEntity?.setChanged()
+                if (blockEntity is ProcessedMachine) {
+                    blockEntity.setSide(itemOrFluid, side, state)
+                }
             }
         }
     }

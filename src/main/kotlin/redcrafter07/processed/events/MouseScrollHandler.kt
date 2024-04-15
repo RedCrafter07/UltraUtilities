@@ -1,6 +1,7 @@
 package redcrafter07.processed.events
 
 import net.minecraft.client.Minecraft
+import net.minecraft.network.chat.Component
 import net.neoforged.bus.api.SubscribeEvent
 import net.neoforged.fml.common.Mod
 import net.neoforged.neoforge.client.event.InputEvent
@@ -29,6 +30,11 @@ object MouseScrollHandler {
                 event.isCanceled = true
 
                 connection.send(WrenchModeChangePacket(newMode))
+                player.displayClientMessage(
+                    Component.translatable(
+                        "item.processed.wrench.mode", Component.translatable(mode.translation())
+                    ), true
+                )
             }
         }
     }

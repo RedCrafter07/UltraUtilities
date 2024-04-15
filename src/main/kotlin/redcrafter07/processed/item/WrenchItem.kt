@@ -9,6 +9,7 @@ import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.DirectionalBlock
 import net.minecraft.world.level.block.HorizontalDirectionalBlock
 import net.minecraft.world.level.block.state.properties.BlockStateProperties
+import redcrafter07.processed.ProcessedMod
 import redcrafter07.processed.block.WrenchInteractableBlock
 
 class WrenchItem : ModItem(Properties().stacksTo(1), "wrench") {
@@ -31,6 +32,8 @@ class WrenchItem : ModItem(Properties().stacksTo(1), "wrench") {
 
     override fun onItemUseFirst(stack: ItemStack, context: UseOnContext): InteractionResult {
         val wrenchMode = getMode(stack)
+        val nbt = context.level.getBlockEntity(context.clickedPos)?.serializeNBT()
+        if (nbt != null) ProcessedMod.LOGGER.info("NBT: $nbt")
 
         return when (wrenchMode) {
             WrenchMode.Config -> configure(stack, context)
