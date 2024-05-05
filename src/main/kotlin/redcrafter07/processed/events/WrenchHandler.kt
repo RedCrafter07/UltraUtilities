@@ -2,13 +2,11 @@ package redcrafter07.processed.events
 
 import net.minecraft.client.Minecraft
 import net.minecraft.network.chat.Component
-import net.minecraft.world.InteractionResult
 import net.neoforged.api.distmarker.Dist
 import net.neoforged.api.distmarker.OnlyIn
 import net.neoforged.bus.api.SubscribeEvent
 import net.neoforged.fml.common.Mod
 import net.neoforged.neoforge.client.event.InputEvent
-import net.neoforged.neoforge.event.entity.player.UseItemOnBlockEvent
 import redcrafter07.processed.ProcessedMod
 import redcrafter07.processed.item.WrenchItem
 import redcrafter07.processed.item.WrenchMode

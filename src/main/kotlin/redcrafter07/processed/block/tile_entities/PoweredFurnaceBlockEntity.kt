@@ -13,11 +13,17 @@ import net.minecraft.world.inventory.ContainerData
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
+import net.minecraft.world.item.crafting.RecipeHolder
+import net.minecraft.world.item.crafting.RecipeType
+import net.minecraft.world.item.crafting.SmeltingRecipe
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.state.BlockState
 import net.neoforged.neoforge.items.ItemStackHandler
+import net.neoforged.neoforge.registries.DeferredHolder
 import redcrafter07.processed.ProcessedMod
 import redcrafter07.processed.gui.PoweredFurnaceMenu
+import java.util.Optional
+import kotlin.jvm.optionals.getOrNull
 
 class PoweredFurnaceBlockEntity(pos: BlockPos, state: BlockState) :
     TieredProcessedMachine(ModTileEntities.POWERED_FURNACE.get(), pos, state), MenuProvider {
@@ -66,8 +72,8 @@ class PoweredFurnaceBlockEntity(pos: BlockPos, state: BlockState) :
     }
 
     fun tick(level: Level, pos: BlockPos, state: BlockState) {
-        if (hasRecipe()) {
-            progress++
+        if (hasRecipeAndSync()) {
+            progress += tier.multiplier_speed // we could also just do `maxProgress = recipe.cookingTime` in `hasRecipeAndSync`, but this takes less computation power!
 
             if (progress > maxProgress) {
                 progress = 0
@@ -81,7 +87,8 @@ class PoweredFurnaceBlockEntity(pos: BlockPos, state: BlockState) :
     }
 
     private fun craftItem() {
-        val result = ItemStack(Items.IRON_INGOT, 1)
+        val recipe = getCurrentRecipe() ?: return
+        val result = recipe.getResultItem(level?.registryAccess() ?: return)
         this.itemHandler.extractItem(SLOT_INPUT, 1, false)
 
         this.itemHandler.setStackInSlot(
@@ -90,11 +97,20 @@ class PoweredFurnaceBlockEntity(pos: BlockPos, state: BlockState) :
         )
     }
 
-    private fun hasRecipe(): Boolean {
-        val hasCraftingItem = itemHandler.getStackInSlot(SLOT_INPUT).item == Items.RAW_IRON
-        val result = ItemStack(Items.IRON_INGOT)
+    private fun hasRecipeAndSync(): Boolean {
+        val recipe = getCurrentRecipe() ?: return false
+        val result = recipe.getResultItem(level?.registryAccess() ?: return false)
+        if (!canInsertAmountIntoOutputSlot(result.count) || !canInsertItemIntoOutputSlot(result.item)) return false
+        maxProgress = recipe.cookingTime
 
-        return hasCraftingItem && canInsertAmountIntoOutputSlot(result.count) && canInsertItemIntoOutputSlot(result.item)
+        return true
+    }
+
+    private fun getCurrentRecipe(): SmeltingRecipe? {
+        val inventory = SimpleContainer(this.itemHandler.getStackInSlot(SLOT_INPUT))
+        val level = this.level ?: return null
+
+        return level.recipeManager.getRecipeFor(RecipeType.SMELTING, inventory, level).map { recipe -> recipe.value }.getOrNull()
     }
 
     private fun canInsertItemIntoOutputSlot(item: Item): Boolean {

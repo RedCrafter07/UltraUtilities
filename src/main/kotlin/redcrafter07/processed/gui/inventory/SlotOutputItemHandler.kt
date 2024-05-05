@@ -1,4 +1,4 @@
-package redcrafter07.processed.gui.inventoryutils;
+package redcrafter07.processed.gui.inventory;
 
 import net.minecraft.world.Container
 import net.minecraft.world.SimpleContainer

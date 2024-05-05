@@ -9,14 +9,14 @@ import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.entity.player.Inventory
 import redcrafter07.processed.ProcessedMod
 
-class PoweredFurnaceScreen(p_97741_: PoweredFurnaceMenu, p_97742_: Inventory, component: Component) :
-    AbstractContainerScreen<PoweredFurnaceMenu>(p_97741_, p_97742_, Component.empty()) {
+class PoweredFurnaceScreen(menu: PoweredFurnaceMenu, inventory: Inventory, component: Component) :
+    AbstractContainerScreen<PoweredFurnaceMenu>(menu, inventory, Component.empty()) {
     companion object {
         val TEXTURE = ResourceLocation(ProcessedMod.ID, "textures/gui/powered_furnace.png")
     }
 
     // stop the labels (like `Furnace`) from rendering
-    override fun renderLabels(p_281635_: GuiGraphics, p_282681_: Int, p_283686_: Int) {}
+    override fun renderLabels(guiGraphics: GuiGraphics, p_282681_: Int, p_283686_: Int) {}
 
     override fun renderBg(guiGraphics: GuiGraphics, partialTick: Float, mouseX: Int, mouseY: Int) {
         RenderSystem.setShader(GameRenderer::getPositionTexShader)
@@ -28,7 +28,7 @@ class PoweredFurnaceScreen(p_97741_: PoweredFurnaceMenu, p_97742_: Inventory, co
         renderProgressArrow(guiGraphics, x, y)
     }
 
-    fun renderProgressArrow(guiGraphics: GuiGraphics, x: Int, y: Int) {
+    private fun renderProgressArrow(guiGraphics: GuiGraphics, x: Int, y: Int) {
         if (menu.isCrafting()) {
             guiGraphics.blit(TEXTURE, x + 85, y + 30, 176, 0, 8, menu.getScaledProgress());
         }
