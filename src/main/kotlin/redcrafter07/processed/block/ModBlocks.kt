@@ -20,7 +20,7 @@ object ModBlocks {
     }
     val BLOCK_ITEM_PIPE = registerBlock("item_pipe") { BlockItemPipe() }
     val BLOCK_PIPE_PRESSURIZER = registerBlock("pipe_pressurizer") { PipePressurizerBlock() }
-    val BLOCKS_MACHINE = registerTieredBlock("machine", ProcessedTiers.machine) { tier -> MachineBlock(tier) };
+    val BLOCKS_POWERED_FURNACE = registerTieredBlock("machine", ProcessedTiers.machine) { tier -> PoweredFurnace(tier) };
 
     private fun <T : Block> registerTieredBlock(
         id: String,
