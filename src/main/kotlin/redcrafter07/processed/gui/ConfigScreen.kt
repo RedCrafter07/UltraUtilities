@@ -12,7 +12,6 @@ import net.minecraft.resources.ResourceLocation
 import redcrafter07.processed.ProcessedMod
 import redcrafter07.processed.block.tile_entities.IoSide
 import redcrafter07.processed.block.tile_entities.ProcessedMachine
-import redcrafter07.processed.gui.PoweredFurnaceScreen.Companion.TEXTURE
 import redcrafter07.processed.network.IOChangePacket
 
 class ConfigScreen(val machine: ProcessedMachine, val blockPos: BlockPos) :
@@ -20,7 +19,7 @@ class ConfigScreen(val machine: ProcessedMachine, val blockPos: BlockPos) :
     companion object {
         const val imageWidth = 176
         const val imageHeight = 166
-        val menuResource = ResourceLocation(ProcessedMod.ID, "textures/gui/gui_base_inventory.png")
+        val TEXTURE = ResourceLocation(ProcessedMod.ID, "textures/gui/gui_base_inventory.png")
     }
 
     private var topX = 0
@@ -68,7 +67,7 @@ class ConfigScreen(val machine: ProcessedMachine, val blockPos: BlockPos) :
         RenderSystem.setShaderTexture(0, TEXTURE)
         val x = (width - imageWidth) / 2
         val y = (height - imageHeight) / 2
-        graphics.blit(TEXTURE, x, y, 0, 0, imageWidth, imageHeight);
+        graphics.blit(TEXTURE, x, y, 0, 0, imageWidth, imageHeight)
     }
 
     private fun ioSwitchToItems(button: Button) {

@@ -2,17 +2,13 @@ package redcrafter07.processed.item
 
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.MutableComponent
-import net.minecraft.world.InteractionHand
 import net.minecraft.world.InteractionResult
-import net.minecraft.world.InteractionResultHolder
-import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.context.UseOnContext
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.DirectionalBlock
 import net.minecraft.world.level.block.HorizontalDirectionalBlock
 import net.minecraft.world.level.block.state.properties.BlockStateProperties
-import redcrafter07.processed.ProcessedMod
 import redcrafter07.processed.block.WrenchInteractableBlock
 
 class WrenchItem : ModItem(Properties().stacksTo(1), "wrench") {
@@ -33,7 +29,8 @@ class WrenchItem : ModItem(Properties().stacksTo(1), "wrench") {
         return setMode(super.getDefaultInstance(), WrenchMode.Config)
     }
 
-    override fun onItemUseFirst(stack: ItemStack, context: UseOnContext): InteractionResult {
+    override fun useOn(context: UseOnContext): InteractionResult {
+        val stack = context.player?.getItemInHand(context.hand) ?: return InteractionResult.PASS
         val wrenchMode = getMode(stack)
 
         return when (wrenchMode) {

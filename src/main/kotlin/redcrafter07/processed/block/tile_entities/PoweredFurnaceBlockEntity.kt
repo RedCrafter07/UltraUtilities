@@ -12,17 +12,12 @@ import net.minecraft.world.inventory.AbstractContainerMenu
 import net.minecraft.world.inventory.ContainerData
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
-import net.minecraft.world.item.Items
-import net.minecraft.world.item.crafting.RecipeHolder
 import net.minecraft.world.item.crafting.RecipeType
 import net.minecraft.world.item.crafting.SmeltingRecipe
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.state.BlockState
 import net.neoforged.neoforge.items.ItemStackHandler
-import net.neoforged.neoforge.registries.DeferredHolder
-import redcrafter07.processed.ProcessedMod
 import redcrafter07.processed.gui.PoweredFurnaceMenu
-import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
 class PoweredFurnaceBlockEntity(pos: BlockPos, state: BlockState) :
