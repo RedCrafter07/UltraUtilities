@@ -4,14 +4,17 @@ import redcrafter07.processed.block.ModBlocks
 import net.minecraft.client.Minecraft
 import net.neoforged.fml.common.Mod
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent
 import net.neoforged.fml.event.lifecycle.FMLDedicatedServerSetupEvent
-import net.neoforged.neoforge.client.event.TextureAtlasStitchedEvent
 import net.neoforged.neoforge.common.NeoForge
 import org.apache.logging.log4j.Level
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import redcrafter07.processed.block.tile_entities.ModTileEntities
-import redcrafter07.processed.events.MouseScrollHandler
+import redcrafter07.processed.events.Capabilities
+import redcrafter07.processed.events.MenuScreens
+import redcrafter07.processed.events.WrenchHandler
+import redcrafter07.processed.gui.ModMenuTypes
 import redcrafter07.processed.item.ModItemGroup
 import redcrafter07.processed.item.ModItems
 import thedarkcolour.kotlinforforge.neoforge.forge.MOD_BUS
@@ -41,6 +44,8 @@ object ProcessedMod {
         ModItemGroup.CREATIVE_MODE_TABS.register(MOD_BUS);
         ModTileEntities.BLOCK_TYPES.register(MOD_BUS);
 
+        ModMenuTypes.MENUS.register(MOD_BUS)
+
         val obj = runForDist(
             clientTarget = {
                 MOD_BUS.addListener(::onClientSetup)
@@ -50,6 +55,7 @@ object ProcessedMod {
                 MOD_BUS.addListener(::onServerSetup)
                 "test"
             })
+        MOD_BUS.addListener(::onCommonSetup)
 
         println(obj)
     }
@@ -60,13 +66,18 @@ object ProcessedMod {
      * Fired on the mod specific event bus.
      */
     private fun onClientSetup(event: FMLClientSetupEvent) {
-        NeoForge.EVENT_BUS.register(MouseScrollHandler)
     }
 
     /**
      * Fired on the global Forge bus.
      */
     private fun onServerSetup(event: FMLDedicatedServerSetupEvent) {
+        MOD_BUS.register(Capabilities)
         LOGGER.log(Level.INFO, "Server starting...")
+    }
+
+    private fun onCommonSetup(event: FMLCommonSetupEvent) {
+        NeoForge.EVENT_BUS.register(WrenchHandler)
+        MOD_BUS.register(MenuScreens)
     }
 }

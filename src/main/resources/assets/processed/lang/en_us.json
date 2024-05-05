@@ -43,5 +43,9 @@
   "processed.side.left": "Left",
   "processed.side.right": "Right",
   "processed.side.front": "Front",
-  "processed.side.back": "Back"
+  "processed.side.back": "Back",
+  "processed.screen.powered_furnace.name": "%d Powered Furnace",
+  "processed.tier_1": "Basic",
+  "processed.tier_2": "Advanced",
+  "processed.tier_3": "Very Advanced"
 }

@@ -17,11 +17,11 @@ object ModTileEntities {
 
     val PIPE_BLOCK_ENTITY = register(
         "item_pipe_block_entity", ::ItemPipeBlockEntity,
-        ModBlocks.BLOCK_ITEM_PIPE.get()
+        ModBlocks.BLOCK_ITEM_PIPE
     )
     val PIPE_PRESSURIZER_BLOCK_ENTITY =
-        register("pipe_pressurizer_block_entity", ::PipePressurizerBlockEntity, ModBlocks.BLOCK_PIPE_PRESSURIZER.get())
-    val MACHINE = register_blocks("powered_furnace", ::PoweredFurnaceBlockEntity, ModBlocks.BLOCKS_POWERED_FURNACE)
+        register("pipe_pressurizer_block_entity", ::PipePressurizerBlockEntity, ModBlocks.BLOCK_PIPE_PRESSURIZER)
+    val POWERED_FURNACE = register_blocks("powered_furnace", ::PoweredFurnaceBlockEntity, ModBlocks.BLOCKS_POWERED_FURNACE)
 
     fun <TEntity : BlockEntity> register_blocks(
         name: String,
@@ -39,8 +39,8 @@ object ModTileEntities {
     fun <T : BlockEntity> register(
         name: String,
         blockEntity: BlockEntitySupplier<T>,
-        block: Block,
+        block: DeferredBlock<*>,
     ): DeferredHolder<BlockEntityType<*>, BlockEntityType<T>> {
-        return BLOCK_TYPES.register(name, Supplier { BlockEntityType.Builder.of(blockEntity, block).build(null) })
+        return BLOCK_TYPES.register(name, Supplier { BlockEntityType.Builder.of(blockEntity, block.get()).build(null) })
     }
 }

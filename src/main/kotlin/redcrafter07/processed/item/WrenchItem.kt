@@ -2,7 +2,10 @@ package redcrafter07.processed.item
 
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.MutableComponent
+import net.minecraft.world.InteractionHand
 import net.minecraft.world.InteractionResult
+import net.minecraft.world.InteractionResultHolder
+import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.context.UseOnContext
 import net.minecraft.world.level.Level
@@ -32,13 +35,10 @@ class WrenchItem : ModItem(Properties().stacksTo(1), "wrench") {
 
     override fun onItemUseFirst(stack: ItemStack, context: UseOnContext): InteractionResult {
         val wrenchMode = getMode(stack)
-        val nbt = context.level.getBlockEntity(context.clickedPos)?.serializeNBT()
-        if (nbt != null) ProcessedMod.LOGGER.info("NBT: $nbt")
 
         return when (wrenchMode) {
             WrenchMode.Config -> configure(stack, context)
             WrenchMode.Rotate -> rotate(stack, context)
-            else -> InteractionResult.PASS
         }
     }
 

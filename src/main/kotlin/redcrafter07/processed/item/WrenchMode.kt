@@ -1,12 +1,11 @@
 package redcrafter07.processed.item
 
 enum class WrenchMode {
-    Config, Upgrade, Rotate;
+    Config, Rotate;
 
     fun next(): WrenchMode {
         return when (this) {
-            Config -> Upgrade
-            Upgrade -> Rotate
+            Config -> Rotate
             Rotate -> Config
         }
     }
@@ -14,8 +13,7 @@ enum class WrenchMode {
     fun previous(): WrenchMode {
         return when (this) {
             Config -> Rotate
-            Upgrade -> Config
-            Rotate -> Upgrade
+            Rotate -> Config
         }
     }
 
@@ -23,7 +21,6 @@ enum class WrenchMode {
         val prefix = "item.processed.wrench.mode"
         val suffix = when (this) {
             Config -> "config"
-            Upgrade -> "upgrade"
             Rotate -> "rotate"
         }
 
@@ -33,7 +30,6 @@ enum class WrenchMode {
     fun save(): Byte {
         return when (this) {
             Config -> 0.toByte()
-            Upgrade -> 1.toByte()
             Rotate -> 2.toByte()
             else -> 0.toByte()
         }
@@ -43,7 +39,6 @@ enum class WrenchMode {
         fun load(value: Byte): WrenchMode {
             return when (value.toInt()) {
                 0 -> Config
-                1 -> Upgrade
                 2 -> Rotate
                 else -> Config
             }
