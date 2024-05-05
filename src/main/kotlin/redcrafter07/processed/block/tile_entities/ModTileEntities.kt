@@ -14,6 +14,7 @@ object ModTileEntities {
 
     val PIPE_BLOCK_ENTITY = register("item_pipe_block_entity") { BlockEntityType.Builder.of(::ItemPipeBlockEntity, ModBlocks.BLOCK_ITEM_PIPE.get()) };
     val PIPE_PRESSURIZER_BLOCK_ENTITY = register("pipe_pressurizer_block_entity") { BlockEntityType.Builder.of(::PipePressurizerBlockEntity, ModBlocks.BLOCK_PIPE_PRESSURIZER.get()) };
+    val MACHINE = register("machine") { BlockEntityType.Builder.of(::MachineBlockEntity, *ModBlocks.BLOCKS_MACHINE.map { block -> block.get() }.toTypedArray()) };
     
     fun <T: BlockEntity> register(name: String, supplier: Supplier<BlockEntityType.Builder<T>>): DeferredHolder<BlockEntityType<*>, BlockEntityType<T>> {
         return BLOCK_TYPES.register(name, Supplier { supplier.get().build(null) });

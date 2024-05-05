@@ -3,18 +3,16 @@ package redcrafter07.processed.block.tile_entities
 import net.minecraft.client.Minecraft
 import net.minecraft.core.BlockPos
 import net.minecraft.nbt.CompoundTag
-import net.minecraft.network.Connection
 import net.minecraft.network.chat.Component
 import net.minecraft.network.protocol.Packet
 import net.minecraft.network.protocol.game.ClientGamePacketListener
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket
-import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.item.context.UseOnContext
 import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.entity.BlockEntityType
 import net.minecraft.world.level.block.state.BlockState
 import org.joml.Vector2i
-import redcrafter07.processed.ProcessedMod
+import redcrafter07.processed.block.ProcessedTier
 import redcrafter07.processed.block.WrenchInteractableBlock
 import redcrafter07.processed.gui.ConfigScreen
 
@@ -142,10 +140,11 @@ enum class IoSide {
     }
 }
 
-open class ProcessedMachine(blockEntityType: BlockEntityType<*>, blockPos: BlockPos, blockState: BlockState) : BlockEntity(
-    blockEntityType,
-    blockPos, blockState
-), WrenchInteractableBlock {
+open class ProcessedMachine(blockEntityType: BlockEntityType<*>, blockPos: BlockPos, blockState: BlockState) :
+    BlockEntity(
+        blockEntityType,
+        blockPos, blockState
+    ), WrenchInteractableBlock {
     private var sides: Array<IoState> = arrayOf(
         IoState.None,
         IoState.None,
@@ -183,20 +182,39 @@ open class ProcessedMachine(blockEntityType: BlockEntityType<*>, blockPos: Block
     override fun getUpdatePacket(): Packet<ClientGamePacketListener>? {
         return ClientboundBlockEntityDataPacket.create(this)
     }
+
     override fun getUpdateTag(): CompoundTag {
         return saveWithoutMetadata()
     }
 
     override fun saveAdditional(nbt: CompoundTag) {
         super.saveAdditional(nbt)
-        val list= sides.map { it.save() }.toList();
+        val list = sides.map { it.save() }.toList()
         nbt.putByteArray("io_states", list)
     }
 
     override fun onWrenchUse(context: UseOnContext, state: BlockState) {
-        val me = context.level.getBlockEntity(context.clickedPos) ?: return;
-        if (me !is ProcessedMachine) return;
+        val me = context.level.getBlockEntity(context.clickedPos) ?: return
+        if (me !is ProcessedMachine) return
 
         if (context.level.isClientSide) Minecraft.getInstance().setScreen(ConfigScreen(this, context.clickedPos))
+    }
+}
+
+open class TieredProcessedMachine(
+    blockEntityType: BlockEntityType<*>,
+    blockPos: BlockPos,
+    blockState: BlockState,
+) : ProcessedMachine(blockEntityType, blockPos, blockState) {
+    var tier: ProcessedTier = ProcessedTier(1, 1, 1);
+
+    override fun load(nbt: CompoundTag) {
+        super.load(nbt)
+        tier = ProcessedTier.load("machine_tier", nbt);
+    }
+
+    override fun saveAdditional(nbt: CompoundTag) {
+        super.saveAdditional(nbt)
+        tier.save("machine_tier", nbt);
     }
 }
