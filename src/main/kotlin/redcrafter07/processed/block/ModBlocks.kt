@@ -18,9 +18,9 @@ object ModBlocks {
     val BLITZ_ORE = registerBlock("blitz_ore") {
         Block(BlockBehaviour.Properties.ofFullCopy(Blocks.DIAMOND_ORE).explosionResistance(1200f))
     }
-    val BLOCK_ITEM_PIPE = registerBlock("item_pipe") { BlockItemPipe() }
-    val BLOCK_PIPE_PRESSURIZER = registerBlock("pipe_pressurizer") { PipePressurizerBlock() }
-    val BLOCKS_POWERED_FURNACE = registerTieredBlock("machine", ProcessedTiers.machine) { tier -> PoweredFurnace(tier) };
+    val BLOCK_ITEM_PIPE = registerBlock("item_pipe", ::BlockItemPipe)
+    val BLOCK_PIPE_PRESSURIZER = registerBlock("pipe_pressurizer", ::PipePressurizerBlock)
+    val BLOCKS_POWERED_FURNACE = registerTieredBlock("machine", ProcessedTiers.machine, ::PoweredFurnace)
 
     private fun <T : Block> registerTieredBlock(
         id: String,
