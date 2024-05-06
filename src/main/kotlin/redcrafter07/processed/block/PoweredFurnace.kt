@@ -32,7 +32,7 @@ class PoweredFurnace(private val tier: ProcessedTier): Block(Properties.of().sou
     ) {
         if (state.block != newState.block) {
             val blockEntity = level.getBlockEntity(pos);
-            if (blockEntity is PoweredFurnaceBlockEntity) blockEntity.drops()
+            if (blockEntity is PoweredFurnaceBlockEntity) blockEntity.dropItems()
 
         }
 

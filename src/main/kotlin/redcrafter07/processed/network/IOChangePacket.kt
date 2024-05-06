@@ -6,13 +6,13 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 import net.minecraft.resources.ResourceLocation
 import net.neoforged.neoforge.network.handling.PlayPayloadContext
 import redcrafter07.processed.ProcessedMod
-import redcrafter07.processed.block.tile_entities.IoSide
+import redcrafter07.processed.block.tile_entities.BlockSide
 import redcrafter07.processed.block.tile_entities.IoState
 import redcrafter07.processed.block.tile_entities.ProcessedMachine
 import kotlin.jvm.optionals.getOrNull
 
 @JvmRecord
-data class IOChangePacket(val block: BlockPos, val state: IoState, val side: IoSide, val itemOrFluid: Boolean) :
+data class IOChangePacket(val block: BlockPos, val state: IoState, val side: BlockSide, val itemOrFluid: Boolean) :
     CustomPacketPayload {
     companion object {
         val ID = ResourceLocation(ProcessedMod.ID, "p_io_change")
@@ -25,6 +25,7 @@ data class IOChangePacket(val block: BlockPos, val state: IoState, val side: IoS
                 val blockEntity = level.getBlockEntity(block)
                 if (blockEntity is ProcessedMachine) {
                     blockEntity.setSide(itemOrFluid, side, state)
+                    blockEntity.invalidateCapabilities()
                 }
             }
         }
@@ -33,7 +34,7 @@ data class IOChangePacket(val block: BlockPos, val state: IoState, val side: IoS
     constructor(buffer: FriendlyByteBuf) : this(
         buffer.readBlockPos(),
         IoState.load(buffer.readByte()),
-        IoSide.load(buffer.readByte()),
+        BlockSide.load(buffer.readByte()),
         buffer.readBoolean()
     )
 

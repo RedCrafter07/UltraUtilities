@@ -10,7 +10,7 @@ import net.minecraft.core.BlockPos
 import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceLocation
 import redcrafter07.processed.ProcessedMod
-import redcrafter07.processed.block.tile_entities.IoSide
+import redcrafter07.processed.block.tile_entities.BlockSide
 import redcrafter07.processed.block.tile_entities.ProcessedMachine
 import redcrafter07.processed.network.IOChangePacket
 
@@ -31,7 +31,7 @@ class ConfigScreen(val machine: ProcessedMachine, val blockPos: BlockPos) :
 
         this.topX = (this.width - imageWidth) / 2
         this.topY = (this.height - imageHeight) / 2
-        for (side in IoSide.entries) {
+        for (side in BlockSide.entries) {
             val pos = side.getButtonPos()
             this.addRenderableWidget(
                 IoToggleButton(
@@ -41,6 +41,7 @@ class ConfigScreen(val machine: ProcessedMachine, val blockPos: BlockPos) :
                     machine.getSide(isItem, side)
                 ) { _, newState ->
                     machine.setSide(isItem, side, newState)
+                    machine.invalidateCapabilities()
                     Minecraft.getInstance().connection?.send(IOChangePacket(blockPos, newState, side, isItem))
                 }
             )

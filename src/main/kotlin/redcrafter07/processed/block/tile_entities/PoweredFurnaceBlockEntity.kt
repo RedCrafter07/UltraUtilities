@@ -3,7 +3,6 @@ package redcrafter07.processed.block.tile_entities
 import net.minecraft.core.BlockPos
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.network.chat.Component
-import net.minecraft.world.Containers
 import net.minecraft.world.MenuProvider
 import net.minecraft.world.SimpleContainer
 import net.minecraft.world.entity.player.Inventory
@@ -16,24 +15,20 @@ import net.minecraft.world.item.crafting.RecipeType
 import net.minecraft.world.item.crafting.SmeltingRecipe
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.state.BlockState
-import net.neoforged.neoforge.items.ItemStackHandler
 import redcrafter07.processed.gui.PoweredFurnaceMenu
 import kotlin.jvm.optionals.getOrNull
 
 class PoweredFurnaceBlockEntity(pos: BlockPos, state: BlockState) :
     TieredProcessedMachine(ModTileEntities.POWERED_FURNACE.get(), pos, state), MenuProvider {
-    companion object {
-        private val SLOT_INPUT = 0
-        private val SLOT_OUTPUT = 1
-    }
-
-    val itemHandler = ItemStackHandler(2)
 
     protected val data: ContainerData
     private var progress = 0
     private var maxProgress = 78
 
     init {
+        useItemCapability(IoState.Input)
+        useItemCapability(IoState.Output)
+
         this.data = object : ContainerData {
             override fun get(index: Int): Int {
                 return when (index) {
@@ -57,15 +52,6 @@ class PoweredFurnaceBlockEntity(pos: BlockPos, state: BlockState) :
         }
     }
 
-    fun drops() {
-        val inventory = SimpleContainer(itemHandler.slots)
-        for (i in 0..<inventory.containerSize) {
-            inventory.setItem(i, itemHandler.getStackInSlot(i))
-        }
-
-        this.level?.let { Containers.dropContents(it, this.worldPosition, inventory) }
-    }
-
     fun tick(level: Level, pos: BlockPos, state: BlockState) {
         if (hasRecipeAndSync()) {
             progress += tier.multiplier_speed // we could also just do `maxProgress = recipe.cookingTime` in `hasRecipeAndSync`, but this takes less computation power!
@@ -84,11 +70,11 @@ class PoweredFurnaceBlockEntity(pos: BlockPos, state: BlockState) :
     private fun craftItem() {
         val recipe = getCurrentRecipe() ?: return
         val result = recipe.getResultItem(level?.registryAccess() ?: return)
-        this.itemHandler.extractItem(SLOT_INPUT, 1, false)
+        inputItemHandler.extractItem(0, 1, false)
 
-        this.itemHandler.setStackInSlot(
-            SLOT_OUTPUT,
-            ItemStack(result.item, itemHandler.getStackInSlot(SLOT_OUTPUT).count + result.count)
+        outputItemHandler.setStackInSlot(
+            0,
+            ItemStack(result.item, outputItemHandler.getStackInSlot(0).count + result.count)
         )
     }
 
@@ -102,18 +88,18 @@ class PoweredFurnaceBlockEntity(pos: BlockPos, state: BlockState) :
     }
 
     private fun getCurrentRecipe(): SmeltingRecipe? {
-        val inventory = SimpleContainer(this.itemHandler.getStackInSlot(SLOT_INPUT))
+        val inventory = SimpleContainer(inputItemHandler.getStackInSlot(0))
         val level = this.level ?: return null
 
         return level.recipeManager.getRecipeFor(RecipeType.SMELTING, inventory, level).map { recipe -> recipe.value }.getOrNull()
     }
 
     private fun canInsertItemIntoOutputSlot(item: Item): Boolean {
-        return itemHandler.getStackInSlot(SLOT_OUTPUT).isEmpty || itemHandler.getStackInSlot(SLOT_OUTPUT).`is`(item)
+        return outputItemHandler.getStackInSlot(0).let { it.isEmpty || it.`is`(item) }
     }
 
     private fun canInsertAmountIntoOutputSlot(count: Int): Boolean {
-        return itemHandler.getStackInSlot(SLOT_OUTPUT).count + count <= itemHandler.getStackInSlot(SLOT_OUTPUT).maxStackSize
+        return outputItemHandler.getStackInSlot(0).let { it.count + count <= it.maxStackSize }
     }
 
     override fun createMenu(containerId: Int, playerInventory: Inventory, player: Player): AbstractContainerMenu {
@@ -126,13 +112,11 @@ class PoweredFurnaceBlockEntity(pos: BlockPos, state: BlockState) :
 
     override fun saveAdditional(nbt: CompoundTag) {
         super.saveAdditional(nbt)
-        nbt.put("inventory", itemHandler.serializeNBT())
         nbt.putInt("powered_furnace.progress", progress)
     }
 
     override fun load(nbt: CompoundTag) {
         super.load(nbt)
-        itemHandler.deserializeNBT(nbt.get("inventory") as CompoundTag)
-        progress = nbt.getInt("powered_furance.progress")
+        progress = nbt.getInt("powered_furnace.progress")
     }
 }

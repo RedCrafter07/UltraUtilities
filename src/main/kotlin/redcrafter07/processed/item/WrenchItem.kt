@@ -23,6 +23,9 @@ class WrenchItem : ModItem(Properties().stacksTo(1), "wrench") {
             nbt.putByte("mode", mode.save())
             return stack
         }
+
+        private val facingProperties =
+            listOf(DirectionalBlock.FACING, HorizontalDirectionalBlock.FACING, BlockStateProperties.HORIZONTAL_FACING, BlockStateProperties.FACING)
     }
 
     override fun getDefaultInstance(): ItemStack {
@@ -42,10 +45,7 @@ class WrenchItem : ModItem(Properties().stacksTo(1), "wrench") {
     private fun rotate(stack: ItemStack, context: UseOnContext): InteractionResult {
         val blockState = context.level.getBlockState(context.clickedPos) ?: return super.onItemUseFirst(stack, context)
 
-        val properties =
-            listOf(DirectionalBlock.FACING, HorizontalDirectionalBlock.FACING, BlockStateProperties.HORIZONTAL_FACING)
-
-        for (property in properties) {
+        for (property in facingProperties) {
             if (blockState.hasProperty(property)) {
                 val facing = blockState.getValue(property)
                 val newFacing =

@@ -16,7 +16,7 @@ class PoweredFurnaceScreen(menu: PoweredFurnaceMenu, inventory: Inventory, compo
     }
 
     // stop the labels (like `Furnace`) from rendering
-    override fun renderLabels(guiGraphics: GuiGraphics, p_282681_: Int, p_283686_: Int) {}
+    override fun renderLabels(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int) {}
 
     override fun renderBg(guiGraphics: GuiGraphics, partialTick: Float, mouseX: Int, mouseY: Int) {
         RenderSystem.setShader(GameRenderer::getPositionTexShader)

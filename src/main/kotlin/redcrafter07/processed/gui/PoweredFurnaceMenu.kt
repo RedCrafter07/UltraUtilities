@@ -30,8 +30,8 @@ class PoweredFurnaceMenu(id: Int, inventory: Inventory, entity: BlockEntity?, va
         checkContainerSize(inventory, 2)
         blockEntity = entity as PoweredFurnaceBlockEntity
         level = inventory.player.level()
-        addSlot(SlotItemHandler(blockEntity.itemHandler, 0, 80, 11))
-        addSlot(SlotOutputItemHandler(blockEntity.itemHandler, 1, 80, 59))
+        addSlot(SlotItemHandler(blockEntity.inputItemHandler, 0, 80, 11))
+        addSlot(SlotOutputItemHandler(blockEntity.outputItemHandler, 0, 80, 59))
         addDataSlots(data)
     }
 
