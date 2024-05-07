@@ -1,0 +1,27 @@
+{
+  "variants": {
+    "facing=down": {
+      "model": "processed:block/powered_furnace",
+      "x": 90
+    },
+    "facing=east": {
+      "model": "processed:block/powered_furnace",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "processed:block/powered_furnace"
+    },
+    "facing=south": {
+      "model": "processed:block/powered_furnace",
+      "y": 180
+    },
+    "facing=up": {
+      "model": "processed:block/powered_furnace",
+      "x": 270
+    },
+    "facing=west": {
+      "model": "processed:block/powered_furnace",
+      "y": 270
+    }
+  }
+}

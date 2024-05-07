@@ -52,7 +52,7 @@ class PoweredFurnaceBlockEntity(pos: BlockPos, state: BlockState) :
         }
     }
 
-    fun tick(level: Level, pos: BlockPos, state: BlockState) {
+    override fun tick(level: Level, pos: BlockPos, state: BlockState) {
         if (hasRecipeAndSync()) {
             progress += tier.multiplier_speed // we could also just do `maxProgress = recipe.cookingTime` in `hasRecipeAndSync`, but this takes less computation power!
 

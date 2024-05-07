@@ -11,6 +11,7 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket
 import net.minecraft.world.Containers
 import net.minecraft.world.SimpleContainer
 import net.minecraft.world.item.context.UseOnContext
+import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.entity.BlockEntityType
 import net.minecraft.world.level.block.state.BlockState
@@ -100,142 +101,64 @@ enum class IoState {
 // Top:     Up
 // Front:   North
 // Back:    South
-// Left:    West
-// Right:   East
+// Left:    East
+// Right:   West
 
 // Direction translation Matrix. Do LOOKUP[Facing.3dData][Direction.3dData] and you get the "real" direction! (its like Direction + Direction)
 val DIRECTION_LOOKUP: List<List<Direction>> = listOf(
     listOf(
-        // ---{ rotation in direction: Down (Facing Bottom) }---
-        // front side: bottom
-        // back side: top
-        // left side: left
-        // right side: right
-        // top side: front
-        // bottom side: back
-
-        // Down
-        Direction.SOUTH,
-        // Up
-        Direction.NORTH,
-        // Front
-        Direction.DOWN,
-        // Back
-        Direction.UP,
-        // Left
-        Direction.WEST,
-        // Right
-        Direction.EAST
+        // ---{ Facing: Down }---
+        Direction.NORTH, // Bottom: Front (North)
+        Direction.SOUTH, // Top: Back (South)
+        Direction.UP,    // North: Up (Up)
+        Direction.DOWN,  // South: Down (Down)
+        Direction.EAST,  // East: Left (East)
+        Direction.WEST   // West: Right (West)
     ),
     listOf(
-        // ---{ rotation in direction: Up (Facing Top) }---
-        // front side: Top
-        // back side: Bottom
-        // left side: Left
-        // right side: Right
-        // top side: Back
-        // bottom side: Front
-
-        // Down
-        Direction.NORTH,
-        // Up
-        Direction.SOUTH,
-        // Front
-        Direction.UP,
-        // Back
-        Direction.SOUTH,
-        // Left
-        Direction.WEST,
-        // Right
-        Direction.EAST
+        // ---{ Facing: Up }---
+        Direction.SOUTH, // Bottom: Back (South)
+        Direction.NORTH, // Top: Front (North)
+        Direction.DOWN,  // North: Down (Down)
+        Direction.UP,    // South: Up (Up)
+        Direction.WEST,  // West: Right (West)
+        Direction.EAST   // East: Left (East)
     ),
     listOf(
-        // ---{ rotation in direction: N/A (Facing North) }---
-        // front side: front
-        // back side: back
-        // left side: left
-        // right side: right
-        // top side: top
-        // bottom side: bottom
-
-        // Down
-        Direction.DOWN,
-        // Up
-        Direction.UP,
-        // Front
-        Direction.NORTH,
-        // Back
-        Direction.SOUTH,
-        // Left
-        Direction.WEST,
-        // Right
-        Direction.EAST
+        // ---{ Facing: North }---
+        Direction.DOWN,  // Bottom: Down (Down)
+        Direction.UP,    // Top: Top (Up)
+        Direction.NORTH, // North: Front (North)
+        Direction.SOUTH, // South: Back (South)
+        Direction.WEST,  // West: Right (West)
+        Direction.EAST   // East: Left (East)
     ),
     listOf(
-        // ---{ 2x rotation in direction: Right (Facing South) }---
-        // front side: back
-        // back side: front
-        // left side: right
-        // right side: left
-        // top side: top
-        // bottom side: bottom
-
-        // Down
-        Direction.DOWN,
-        // Up
-        Direction.UP,
-        // Front
-        Direction.SOUTH,
-        // Back
-        Direction.NORTH,
-        // Left
-        Direction.EAST,
-        // Right
-        Direction.WEST,
+        // ---{ Facing: South }---
+        Direction.DOWN,  // Bottom: Down (Down)
+        Direction.UP,    // Top: Up (Up)
+        Direction.SOUTH, // North: Back (South)
+        Direction.NORTH, // South: Front (North)
+        Direction.EAST,  // West: Left (East)
+        Direction.WEST,  // East: Right (West)
     ),
     listOf(
-        // ---{ rotation in direction: Left (Facing West) }---
-        // front side: left
-        // back side: right
-        // left side: back
-        // right side: front
-        // top side: top
-        // bottom side: bottom
-
-        // Down
-        Direction.DOWN,
-        // Up
-        Direction.UP,
-        // Front
-        Direction.WEST,
-        // Back
-        Direction.EAST,
-        // Left
-        Direction.SOUTH,
-        // Right
-        Direction.NORTH
+        // ---{ Facing: West }---
+        Direction.DOWN,  // Bottom: Down (Down)
+        Direction.UP,    // Top: Up (Up)
+        Direction.WEST,  // South: Right (West)
+        Direction.EAST,  // North: Left (East)
+        Direction.NORTH, // West: Front (North)
+        Direction.SOUTH, // East: Back (South)
     ),
     listOf(
-        // ---{ rotation in direction: Right (Facing East) }---
-        // front side: right
-        // back side: left
-        // left side: front
-        // right side: back
-        // top side: top
-        // bottom side: bottom
-
-        // Down
-        Direction.DOWN,
-        // Up
-        Direction.UP,
-        // Front
-        Direction.EAST,
-        // Back
-        Direction.WEST,
-        // Left
-        Direction.NORTH,
-        // Right
-        Direction.SOUTH
+        // ---{ Facing: East }---
+        Direction.DOWN,  // Bottom: Down (Down)
+        Direction.UP,    // Top: Up (Up)
+        Direction.WEST,  // North: Left (West)
+        Direction.EAST,  // South: Right (East)
+        Direction.SOUTH, // West: Back (South)
+        Direction.NORTH, // East: Front (North)
     ),
 )
 
@@ -266,8 +189,8 @@ enum class BlockSide {
                 Direction.DOWN -> Bottom
                 Direction.NORTH -> Front
                 Direction.SOUTH -> Back
-                Direction.WEST -> Left
-                Direction.EAST -> Right
+                Direction.WEST -> Right
+                Direction.EAST -> Left
             }
         }
 
@@ -406,6 +329,14 @@ abstract class ProcessedMachine(blockEntityType: BlockEntityType<*>, blockPos: B
         return capabilityHandlers.getFluidHandlerForState(getSide(false, side))
     }
 
+    open fun clientTick(level: Level, pos: BlockPos, state: BlockState) {
+    }
+
+    open fun serverTick(level: Level, pos: BlockPos, state: BlockState) {
+    }
+
+    open fun tick(level: Level, pos: BlockPos, state: BlockState) {
+    }
 
     /// ###########################################
     /// #  E N E R G Y   C A P A B I L I T I E S  #
@@ -704,16 +635,16 @@ abstract class ProcessedMachine(blockEntityType: BlockEntityType<*>, blockPos: B
             ProcessedMod.LOGGER.info("me: {}", this)
 
             // energy
-            val energyStoreNbt = energyStore?.serializeNBT();
+            val energyStoreNbt = energyStore?.serializeNBT()
 
             if (energyStoreNbt != null) tag.put("energyStore", energyStoreNbt)
 
 
             // items
-            val inputItemNbt = inputItemHandler?.serializeNBT();
-            val outputItemNbt = outputItemHandler?.serializeNBT();
-            val additionalItemNbt = additionalItemHandler?.serializeNBT();
-            val auxiliaryItemNbt = auxiliaryItemHandler?.serializeNBT();
+            val inputItemNbt = inputItemHandler?.serializeNBT()
+            val outputItemNbt = outputItemHandler?.serializeNBT()
+            val additionalItemNbt = additionalItemHandler?.serializeNBT()
+            val auxiliaryItemNbt = auxiliaryItemHandler?.serializeNBT()
 
             if (inputItemNbt != null) tag.put("inputItemNbt", inputItemNbt)
             if (outputItemNbt != null) tag.put("outputItemNbt", outputItemNbt)
@@ -722,10 +653,10 @@ abstract class ProcessedMachine(blockEntityType: BlockEntityType<*>, blockPos: B
 
 
             // fluids
-            val inputFluidNbt = inputFluidHandler?.serializeNBT();
-            val outputFluidNbt = outputFluidHandler?.serializeNBT();
-            val additionalFluidNbt = additionalFluidHandler?.serializeNBT();
-            val auxiliaryFluidNbt = auxiliaryFluidHandler?.serializeNBT();
+            val inputFluidNbt = inputFluidHandler?.serializeNBT()
+            val outputFluidNbt = outputFluidHandler?.serializeNBT()
+            val additionalFluidNbt = additionalFluidHandler?.serializeNBT()
+            val auxiliaryFluidNbt = auxiliaryFluidHandler?.serializeNBT()
 
             if (inputFluidNbt != null) tag.put("inputFluidNbt", inputFluidNbt)
             if (outputFluidNbt != null) tag.put("outputFluidNbt", outputFluidNbt)
@@ -742,14 +673,34 @@ abstract class ProcessedMachine(blockEntityType: BlockEntityType<*>, blockPos: B
             // items
             if (tag.contains("inputItemNbt", 10)) inputItemHandler?.deserializeNBT(tag.getCompound("inputItemNbt"))
             if (tag.contains("outputItemNbt", 10)) outputItemHandler?.deserializeNBT(tag.getCompound("outputItemNbt"))
-            if (tag.contains("additionalItemNbt", 10)) additionalItemHandler?.deserializeNBT(tag.getCompound("additionalItemNbt"))
-            if (tag.contains("auxiliaryItemNbt", 10)) auxiliaryItemHandler?.deserializeNBT(tag.getCompound("auxiliaryItemNbt"))
+            if (tag.contains(
+                    "additionalItemNbt",
+                    10
+                )
+            ) additionalItemHandler?.deserializeNBT(tag.getCompound("additionalItemNbt"))
+            if (tag.contains(
+                    "auxiliaryItemNbt",
+                    10
+                )
+            ) auxiliaryItemHandler?.deserializeNBT(tag.getCompound("auxiliaryItemNbt"))
 
             // fluids
             if (tag.contains("inputFluidNbt", 10)) inputFluidHandler?.deserializeNBT(tag.getCompound("inputFluidNbt"))
-            if (tag.contains("outputFluidNbt", 10)) outputFluidHandler?.deserializeNBT(tag.getCompound("outputFluidNbt"))
-            if (tag.contains("additionalFluidNbt", 10)) additionalFluidHandler?.deserializeNBT(tag.getCompound("additionalFluidNbt"))
-            if (tag.contains("auxiliaryFluidNbt", 10)) auxiliaryFluidHandler?.deserializeNBT(tag.getCompound("auxiliaryFluidNbt"))
+            if (tag.contains(
+                    "outputFluidNbt",
+                    10
+                )
+            ) outputFluidHandler?.deserializeNBT(tag.getCompound("outputFluidNbt"))
+            if (tag.contains(
+                    "additionalFluidNbt",
+                    10
+                )
+            ) additionalFluidHandler?.deserializeNBT(tag.getCompound("additionalFluidNbt"))
+            if (tag.contains(
+                    "auxiliaryFluidNbt",
+                    10
+                )
+            ) auxiliaryFluidHandler?.deserializeNBT(tag.getCompound("auxiliaryFluidNbt"))
         }
     }
 }

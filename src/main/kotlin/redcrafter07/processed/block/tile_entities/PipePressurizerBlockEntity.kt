@@ -177,7 +177,7 @@ class PipePressurizerBlockEntity(pos: BlockPos, state: BlockState) :
         pullingFrom = loadStackOfDirectionalPosition(nbt, "pulling")
     }
 
-    fun tick(level: Level, myPos: BlockPos, state: BlockState) {
+    override fun tick(level: Level, myPos: BlockPos, state: BlockState) {
         if (tickCooldown > 0) {
             --tickCooldown;
             return

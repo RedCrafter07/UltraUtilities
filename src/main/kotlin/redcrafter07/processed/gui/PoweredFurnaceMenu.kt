@@ -7,7 +7,7 @@ import net.minecraft.world.inventory.*
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.entity.BlockEntity
 import net.neoforged.neoforge.items.SlotItemHandler
-import redcrafter07.processed.block.PoweredFurnace
+import redcrafter07.processed.block.PoweredFurnaceBlock
 import redcrafter07.processed.block.tile_entities.PoweredFurnaceBlockEntity
 import redcrafter07.processed.gui.inventory.ProcessedContainerMenu
 import redcrafter07.processed.gui.inventory.SlotOutputItemHandler
@@ -51,7 +51,7 @@ class PoweredFurnaceMenu(id: Int, inventory: Inventory, entity: BlockEntity?, va
 
     override fun stillValid(player: Player): Boolean {
         return ContainerLevelAccess.create(level, blockEntity.blockPos).evaluate { level, pos ->
-            if (level.getBlockState(pos).block !is PoweredFurnace) false else player.distanceToSqr(
+            if (level.getBlockState(pos).block !is PoweredFurnaceBlock) false else player.distanceToSqr(
                 pos.x.toDouble() + 0.5,
                 pos.y.toDouble() + 0.5,
                 pos.z.toDouble() + 0.5

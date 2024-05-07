@@ -9,8 +9,6 @@ import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.EntityBlock
 import net.minecraft.world.level.block.SoundType
 import net.minecraft.world.level.block.entity.BlockEntity
-import net.minecraft.world.level.block.entity.BlockEntityTicker
-import net.minecraft.world.level.block.entity.BlockEntityType
 import net.minecraft.world.level.block.state.BlockBehaviour
 import net.minecraft.world.level.block.state.BlockState
 import redcrafter07.processed.block.tile_entities.PipePressurizerBlockEntity
@@ -22,6 +20,19 @@ class PipePressurizerBlock : Block(
 ), EntityBlock {
     override fun newBlockEntity(pos: BlockPos, state: BlockState): BlockEntity? {
         return PipePressurizerBlockEntity(pos, state)
+    }
+
+    override fun onRemove(
+        blockState: BlockState,
+        level: Level,
+        pos: BlockPos,
+        newBlockState: BlockState,
+        isMoving: Boolean
+    ) {
+        val blockEntity = level.getBlockEntity(pos)
+        if (blockEntity is PipePressurizerBlockEntity) blockEntity.unlink(level)
+
+        super.onRemove(blockState, level, pos, newBlockState, isMoving)
     }
 
     override fun playerWillDestroy(
@@ -47,15 +58,5 @@ class PipePressurizerBlock : Block(
         if (blockEntity !is PipePressurizerBlockEntity) return myBlockState
         blockEntity.scanNetwork(level, myBlockPos)
         return myBlockState
-    }
-
-    override fun <T : BlockEntity?> getTicker(
-        level: Level,
-        blockState: BlockState,
-        blockEntityType: BlockEntityType<T>
-    ): BlockEntityTicker<T>? {
-        return BlockEntityTicker { lv, pos, state, ticker ->
-            if (ticker is PipePressurizerBlockEntity) ticker.tick(lv, pos, state)
-        }
     }
 }
