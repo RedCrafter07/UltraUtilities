@@ -104,6 +104,8 @@ enum class IoState {
 // Left:    East
 // Right:   West
 
+// bugs:
+
 // Direction translation Matrix. Do LOOKUP[Facing.3dData][Direction.3dData] and you get the "real" direction! (its like Direction + Direction)
 val DIRECTION_LOOKUP: List<List<Direction>> = listOf(
     listOf(
@@ -112,8 +114,8 @@ val DIRECTION_LOOKUP: List<List<Direction>> = listOf(
         Direction.SOUTH, // Top: Back (South)
         Direction.UP,    // North: Up (Up)
         Direction.DOWN,  // South: Down (Down)
-        Direction.EAST,  // East: Left (East)
-        Direction.WEST   // West: Right (West)
+        Direction.WEST,  // West: Right (West)
+        Direction.EAST   // East: Left (East)
     ),
     listOf(
         // ---{ Facing: Up }---
@@ -146,8 +148,8 @@ val DIRECTION_LOOKUP: List<List<Direction>> = listOf(
         // ---{ Facing: West }---
         Direction.DOWN,  // Bottom: Down (Down)
         Direction.UP,    // Top: Up (Up)
-        Direction.WEST,  // South: Right (West)
         Direction.EAST,  // North: Left (East)
+        Direction.WEST,  // South: Right (West)
         Direction.NORTH, // West: Front (North)
         Direction.SOUTH, // East: Back (South)
     ),
@@ -195,8 +197,6 @@ enum class BlockSide {
         }
 
         fun getFacing(machineFacing: Direction, direction: Direction): BlockSide {
-            if (machineFacing == Direction.NORTH) return fromDirection(direction)
-            if (direction == Direction.NORTH) return fromDirection(machineFacing)
             return fromDirection(DIRECTION_LOOKUP[machineFacing.get3DDataValue()][direction.get3DDataValue()])
         }
     }
@@ -231,6 +231,17 @@ enum class BlockSide {
             Right -> Component.translatable("processed.side.right")
             Front -> Component.translatable("processed.side.front")
             Back -> Component.translatable("processed.side.back")
+        }
+    }
+
+    override fun toString(): String {
+        return when (this) {
+            Top -> "Top"
+            Bottom -> "Bottom"
+            Left -> "Left"
+            Right -> "Right"
+            Front -> "Front"
+            Back -> "Back"
         }
     }
 }

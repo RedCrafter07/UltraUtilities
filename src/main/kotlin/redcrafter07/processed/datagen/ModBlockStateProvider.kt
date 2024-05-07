@@ -2,6 +2,7 @@ package redcrafter07.processed.datagen
 
 import net.minecraft.data.PackOutput
 import net.neoforged.neoforge.client.model.generators.BlockStateProvider
+import net.neoforged.neoforge.client.model.generators.ModelFile
 import net.neoforged.neoforge.common.data.ExistingFileHelper
 import net.neoforged.neoforge.registries.DeferredBlock
 import redcrafter07.processed.ProcessedMod
@@ -13,13 +14,17 @@ class ModBlockStateProvider(output: PackOutput, exFileHelper: ExistingFileHelper
     private val pipeProvider = PipeProvider(this)
 
     override fun registerStatesAndModels() {
-        blockWithItem(ModBlocks.BLITZ_ORE);
+        blockWithItem(ModBlocks.BLITZ_ORE)
         blockWithItem(ModBlocks.BLOCK_PIPE_PRESSURIZER)
 
         pipeProvider.pipeBlock(ModBlocks.BLOCK_ITEM_PIPE)
     }
 
+    private fun blockWithItem(blockRegistryObject: DeferredBlock<*>, model: ModelFile) {
+        simpleBlockWithItem(blockRegistryObject.get(), model)
+    }
+
     private fun blockWithItem(blockRegistryObject: DeferredBlock<*>) {
-        simpleBlockWithItem(blockRegistryObject.get(), cubeAll(blockRegistryObject.get()));
+        simpleBlockWithItem(blockRegistryObject.get(), cubeAll(blockRegistryObject.get()))
     }
 }

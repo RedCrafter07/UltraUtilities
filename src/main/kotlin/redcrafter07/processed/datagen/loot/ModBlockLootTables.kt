@@ -19,6 +19,8 @@ class ModBlockLootTables : BlockLootSubProvider(setOf(), FeatureFlags.REGISTRY.a
         createOreLootTable(ModBlocks.BLITZ_ORE.get(), ModItems.BLITZ_ORB.get(), 1f, 3f)
         this.dropSelf(ModBlocks.BLOCK_ITEM_PIPE.get())
         this.dropSelf(ModBlocks.BLOCK_PIPE_PRESSURIZER.get())
+
+        ModBlocks.BLOCKS_POWERED_FURNACE.forEach { this.dropSelf(it.get()) }
     }
 
     private fun createOreLootTable(block: Block, item: Item, min: Float, max: Float) {

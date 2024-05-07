@@ -1,7 +1,6 @@
 package redcrafter07.processed.events
 
 import net.minecraft.core.Direction
-import net.minecraft.world.InteractionResult
 import net.minecraft.world.level.block.DirectionalBlock
 import net.minecraft.world.level.block.HorizontalDirectionalBlock
 import net.minecraft.world.level.block.state.BlockState

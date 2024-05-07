@@ -1,8 +1,6 @@
 package redcrafter07.processed.block.tile_entities.capabilities
 
 import net.minecraft.nbt.CompoundTag
-import net.minecraft.nbt.IntTag
-import net.minecraft.nbt.Tag
 import kotlin.math.min
 
 class SimpleEnergyStore(protected var capacity: Int, protected val maxReceive: Int, protected val maxExtract: Int, protected var energy: Int) :

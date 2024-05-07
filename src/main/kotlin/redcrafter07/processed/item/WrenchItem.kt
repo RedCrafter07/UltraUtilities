@@ -25,7 +25,12 @@ class WrenchItem : ModItem(Properties().stacksTo(1), "wrench") {
         }
 
         private val facingProperties =
-            listOf(DirectionalBlock.FACING, HorizontalDirectionalBlock.FACING, BlockStateProperties.HORIZONTAL_FACING, BlockStateProperties.FACING)
+            listOf(
+                DirectionalBlock.FACING,
+                HorizontalDirectionalBlock.FACING,
+                BlockStateProperties.HORIZONTAL_FACING,
+                BlockStateProperties.FACING
+            )
     }
 
     override fun getDefaultInstance(): ItemStack {

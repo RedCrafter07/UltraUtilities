@@ -2,7 +2,6 @@ package redcrafter07.processed.block.tile_entities.capabilities
 
 import net.minecraft.core.NonNullList
 import net.minecraft.world.item.ItemStack
-import net.neoforged.neoforge.items.ItemStackHandler
 
 class SimpleOutputItemStore(items: NonNullList<ItemStack>) : SimpleInputItemStore(items) {
     constructor(size: Int) : this(NonNullList.withSize(size, ItemStack.EMPTY))
