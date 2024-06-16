@@ -3,11 +3,15 @@ package redcrafter07.processed.block.tile_entities
 import net.minecraft.client.Minecraft
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
+import net.minecraft.core.HolderLookup.Provider
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.network.chat.Component
+import net.minecraft.network.codec.ByteBufCodecs
 import net.minecraft.network.protocol.Packet
 import net.minecraft.network.protocol.game.ClientGamePacketListener
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket
+import net.minecraft.util.ByIdMap
+import net.minecraft.util.StringRepresentable
 import net.minecraft.world.Containers
 import net.minecraft.world.SimpleContainer
 import net.minecraft.world.item.context.UseOnContext
@@ -20,46 +24,37 @@ import net.neoforged.neoforge.energy.IEnergyStorage
 import net.neoforged.neoforge.fluids.capability.IFluidHandler
 import net.neoforged.neoforge.items.IItemHandler
 import net.neoforged.neoforge.items.IItemHandlerModifiable
+import net.neoforged.neoforge.items.wrapper.EmptyItemHandler
 import org.joml.Vector2i
 import redcrafter07.processed.ProcessedMod
 import redcrafter07.processed.block.ProcessedTier
 import redcrafter07.processed.block.WrenchInteractableBlock
 import redcrafter07.processed.block.tile_entities.capabilities.*
 import redcrafter07.processed.gui.ConfigScreen
-import net.neoforged.neoforge.items.wrapper.EmptyHandler as EmptyItemHandler
 
-enum class IoState {
-    None,
-    Input,
-    Output,
-    InputOutput,
-    Additional,
-    Auxiliary;
+enum class IoState(private val id: Int, private val stateName: String) : StringRepresentable {
+    None(0, "none"),
+    Input(1, "input"),
+    Output(2, "output"),
+    InputOutput(3, "input_output"),
+    Additional(4, "additional"),
+    Auxiliary(5, "auxiliary");
 
 
     companion object {
-        fun load(value: Byte): IoState {
-            return when (value.toInt()) {
-                0 -> None
-                1 -> Input
-                2 -> Output
-                3 -> InputOutput
-                4 -> Additional
-                5 -> Auxiliary
-                else -> Input
-            }
-        }
+        val BY_ID =
+            ByIdMap.continuous(IoState::getId, IoState.entries.toTypedArray(), ByIdMap.OutOfBoundsStrategy.ZERO)
+
+        val CODEC = StringRepresentable.fromEnum(IoState::values)
+        val STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, IoState::getId)
     }
 
-    fun save(): Byte {
-        return when (this) {
-            None -> 0.toByte()
-            Input -> 1.toByte()
-            Output -> 2.toByte()
-            InputOutput -> 3.toByte()
-            Additional -> 4.toByte()
-            Auxiliary -> 5.toByte()
-        }
+    override fun getSerializedName(): String {
+        return stateName
+    }
+
+    fun getId(): Int {
+        return id
     }
 
     fun next(): IoState {
@@ -85,14 +80,7 @@ enum class IoState {
     }
 
     fun toComponent(): Component {
-        return when (this) {
-            None -> Component.translatable("processed.io_state.none")
-            Input -> Component.translatable("processed.io_state.input")
-            Output -> Component.translatable("processed.io_state.output")
-            InputOutput -> Component.translatable("processed.io_state.input_output")
-            Additional -> Component.translatable("processed.io_state.additional")
-            Auxiliary -> Component.translatable("processed.io_state.auxiliary")
-        }
+        return Component.translatable("processed.io_state.$stateName")
     }
 }
 
@@ -164,27 +152,15 @@ val DIRECTION_LOOKUP: List<List<Direction>> = listOf(
     ),
 )
 
-enum class BlockSide {
-    Top,
-    Bottom,
-    Left,
-    Right,
-    Front,
-    Back;
+enum class BlockSide(private val id: Int, private val stateName: String) : StringRepresentable {
+    Top(0, "top"),
+    Bottom(1, "bottom"),
+    Left(2, "left"),
+    Right(3, "right"),
+    Front(4, "front"),
+    Back(5, "back");
 
     companion object {
-        fun load(value: Byte): BlockSide {
-            return when (value.toInt()) {
-                0 -> Top
-                1 -> Bottom
-                2 -> Left
-                3 -> Right
-                4 -> Front
-                5 -> Back
-                else -> Top
-            }
-        }
-
         fun fromDirection(direction: Direction): BlockSide {
             return when (direction) {
                 Direction.UP -> Top
@@ -199,17 +175,21 @@ enum class BlockSide {
         fun getFacing(machineFacing: Direction, direction: Direction): BlockSide {
             return fromDirection(DIRECTION_LOOKUP[machineFacing.get3DDataValue()][direction.get3DDataValue()])
         }
+
+        val DEFAULT = Front
+
+        val BY_ID = ByIdMap.continuous(BlockSide::getId, entries.toTypedArray(), ByIdMap.OutOfBoundsStrategy.ZERO)
+
+        val CODEC = StringRepresentable.fromEnum(BlockSide::values)
+        val STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, BlockSide::getId)
     }
 
-    fun save(): Byte {
-        return when (this) {
-            Top -> 0.toByte()
-            Bottom -> 1.toByte()
-            Left -> 2.toByte()
-            Right -> 3.toByte()
-            Front -> 4.toByte()
-            Back -> 5.toByte()
-        }
+    override fun getSerializedName(): String {
+        return stateName
+    }
+
+    fun getId(): Int {
+        return id
     }
 
     fun getButtonPos(): Vector2i {
@@ -286,39 +266,39 @@ abstract class ProcessedMachine(blockEntityType: BlockEntityType<*>, blockPos: B
     private val capabilityHandlers = CapabilityHandlers()
 
     fun getSide(itemOrFluid: Boolean, side: BlockSide): IoState {
-        return if (itemOrFluid) sides[side.save().toInt()] else sides[side.save().toInt() + 6]
+        return if (itemOrFluid) sides[side.getId()] else sides[side.getId() + 6]
     }
 
     fun setSide(itemOrFluid: Boolean, side: BlockSide, value: IoState) {
-        if (itemOrFluid) sides[side.save().toInt()] = value
-        else sides[side.save().toInt() + 6] = value
+        if (itemOrFluid) sides[side.getId()] = value
+        else sides[side.getId() + 6] = value
         this.setChanged()
     }
 
-    override fun load(nbt: CompoundTag) {
-        super.load(nbt)
+    override fun loadAdditional(nbt: CompoundTag, provider: Provider) {
+        super.loadAdditional(nbt, provider)
 
         val byteArray = nbt.getByteArray("io_states")
         for (index in 0..<12) {
-            sides[index] = if (byteArray.size <= index) IoState.None else IoState.load(byteArray[index])
+            sides[index] = if (byteArray.size <= index) IoState.None else IoState.BY_ID.apply(byteArray[index].toInt())
         }
 
-        capabilityHandlers.deserializeNBT(nbt.getCompound("capability_handlers"))
+        capabilityHandlers.deserializeNBT(provider, nbt.getCompound("capability_handlers"))
     }
 
-    override fun saveAdditional(nbt: CompoundTag) {
-        super.saveAdditional(nbt)
-        val list = sides.map { it.save() }.toList()
+    override fun saveAdditional(nbt: CompoundTag, provider: Provider) {
+        super.saveAdditional(nbt, provider)
+        val list = sides.map { it.getId().toByte() }.toList()
         nbt.putByteArray("io_states", list)
-        nbt.put("capability_handlers", capabilityHandlers.serializeNBT())
+        nbt.put("capability_handlers", capabilityHandlers.serializeNBT(provider))
     }
 
     override fun getUpdatePacket(): Packet<ClientGamePacketListener>? {
         return ClientboundBlockEntityDataPacket.create(this)
     }
 
-    override fun getUpdateTag(): CompoundTag {
-        return saveWithoutMetadata()
+    override fun getUpdateTag(provider: Provider): CompoundTag {
+        return saveWithoutMetadata(provider)
     }
 
     override fun onWrenchUse(context: UseOnContext, state: BlockState) {
@@ -638,24 +618,20 @@ abstract class ProcessedMachine(blockEntityType: BlockEntityType<*>, blockPos: B
             }
         }
 
-        override fun serializeNBT(): CompoundTag {
+        override fun serializeNBT(provider: Provider): CompoundTag {
             val tag = CompoundTag()
 
-            ProcessedMod.LOGGER.info("output: {}", inputItemHandler)
-            ProcessedMod.LOGGER.info("input: {}", outputItemHandler)
-            ProcessedMod.LOGGER.info("me: {}", this)
-
             // energy
-            val energyStoreNbt = energyStore?.serializeNBT()
+            val energyStoreNbt = energyStore?.serializeNBT(provider)
 
             if (energyStoreNbt != null) tag.put("energyStore", energyStoreNbt)
 
 
             // items
-            val inputItemNbt = inputItemHandler?.serializeNBT()
-            val outputItemNbt = outputItemHandler?.serializeNBT()
-            val additionalItemNbt = additionalItemHandler?.serializeNBT()
-            val auxiliaryItemNbt = auxiliaryItemHandler?.serializeNBT()
+            val inputItemNbt = inputItemHandler?.serializeNBT(provider)
+            val outputItemNbt = outputItemHandler?.serializeNBT(provider)
+            val additionalItemNbt = additionalItemHandler?.serializeNBT(provider)
+            val auxiliaryItemNbt = auxiliaryItemHandler?.serializeNBT(provider)
 
             if (inputItemNbt != null) tag.put("inputItemNbt", inputItemNbt)
             if (outputItemNbt != null) tag.put("outputItemNbt", outputItemNbt)
@@ -664,10 +640,10 @@ abstract class ProcessedMachine(blockEntityType: BlockEntityType<*>, blockPos: B
 
 
             // fluids
-            val inputFluidNbt = inputFluidHandler?.serializeNBT()
-            val outputFluidNbt = outputFluidHandler?.serializeNBT()
-            val additionalFluidNbt = additionalFluidHandler?.serializeNBT()
-            val auxiliaryFluidNbt = auxiliaryFluidHandler?.serializeNBT()
+            val inputFluidNbt = inputFluidHandler?.serializeNBT(provider)
+            val outputFluidNbt = outputFluidHandler?.serializeNBT(provider)
+            val additionalFluidNbt = additionalFluidHandler?.serializeNBT(provider)
+            val auxiliaryFluidNbt = auxiliaryFluidHandler?.serializeNBT(provider)
 
             if (inputFluidNbt != null) tag.put("inputFluidNbt", inputFluidNbt)
             if (outputFluidNbt != null) tag.put("outputFluidNbt", outputFluidNbt)
@@ -677,41 +653,41 @@ abstract class ProcessedMachine(blockEntityType: BlockEntityType<*>, blockPos: B
             return tag
         }
 
-        override fun deserializeNBT(tag: CompoundTag) {
+        override fun deserializeNBT(provider: Provider, tag: CompoundTag) {
             // energy
-            if (tag.contains("energyStore", 10)) energyStore?.deserializeNBT(tag.getCompound("energyStore"))
+            if (tag.contains("energyStore", 10)) energyStore?.deserializeNBT(provider, tag.getCompound("energyStore"))
 
             // items
-            if (tag.contains("inputItemNbt", 10)) inputItemHandler?.deserializeNBT(tag.getCompound("inputItemNbt"))
-            if (tag.contains("outputItemNbt", 10)) outputItemHandler?.deserializeNBT(tag.getCompound("outputItemNbt"))
+            if (tag.contains("inputItemNbt", 10)) inputItemHandler?.deserializeNBT(provider, tag.getCompound("inputItemNbt"))
+            if (tag.contains("outputItemNbt", 10)) outputItemHandler?.deserializeNBT(provider, tag.getCompound("outputItemNbt"))
             if (tag.contains(
                     "additionalItemNbt",
                     10
                 )
-            ) additionalItemHandler?.deserializeNBT(tag.getCompound("additionalItemNbt"))
+            ) additionalItemHandler?.deserializeNBT(provider, tag.getCompound("additionalItemNbt"))
             if (tag.contains(
                     "auxiliaryItemNbt",
                     10
                 )
-            ) auxiliaryItemHandler?.deserializeNBT(tag.getCompound("auxiliaryItemNbt"))
+            ) auxiliaryItemHandler?.deserializeNBT(provider, tag.getCompound("auxiliaryItemNbt"))
 
             // fluids
-            if (tag.contains("inputFluidNbt", 10)) inputFluidHandler?.deserializeNBT(tag.getCompound("inputFluidNbt"))
+            if (tag.contains("inputFluidNbt", 10)) inputFluidHandler?.deserializeNBT(provider, tag.getCompound("inputFluidNbt"))
             if (tag.contains(
                     "outputFluidNbt",
                     10
                 )
-            ) outputFluidHandler?.deserializeNBT(tag.getCompound("outputFluidNbt"))
+            ) outputFluidHandler?.deserializeNBT(provider, tag.getCompound("outputFluidNbt"))
             if (tag.contains(
                     "additionalFluidNbt",
                     10
                 )
-            ) additionalFluidHandler?.deserializeNBT(tag.getCompound("additionalFluidNbt"))
+            ) additionalFluidHandler?.deserializeNBT(provider, tag.getCompound("additionalFluidNbt"))
             if (tag.contains(
                     "auxiliaryFluidNbt",
                     10
                 )
-            ) auxiliaryFluidHandler?.deserializeNBT(tag.getCompound("auxiliaryFluidNbt"))
+            ) auxiliaryFluidHandler?.deserializeNBT(provider, tag.getCompound("auxiliaryFluidNbt"))
         }
     }
 }
@@ -723,13 +699,13 @@ abstract class TieredProcessedMachine(
 ) : ProcessedMachine(blockEntityType, blockPos, blockState) {
     var tier: ProcessedTier = ProcessedTier(1, 1, 1)
 
-    override fun load(nbt: CompoundTag) {
-        super.load(nbt)
+    override fun loadAdditional(nbt: CompoundTag, provider: Provider) {
+        super.loadAdditional(nbt, provider)
         tier = ProcessedTier.load("machine_tier", nbt)
     }
 
-    override fun saveAdditional(nbt: CompoundTag) {
-        super.saveAdditional(nbt)
+    override fun saveAdditional(nbt: CompoundTag, provider: Provider) {
+        super.saveAdditional(nbt, provider)
         tier.save("machine_tier", nbt)
     }
 }

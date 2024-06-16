@@ -10,26 +10,26 @@ import redcrafter07.processed.ProcessedMod
 
 object ProcessedTags {
     object Items {
-        val FORGE_INGOT_BLITZ = forgeTag("ingots/blitz");
+        val FORGE_INGOT_BLITZ = commonTag("ingots/blitz")
 
-        fun forgeTag(name: String): TagKey<Item> {
-            return ItemTags.create(ResourceLocation("forge", name));
+        fun commonTag(name: String): TagKey<Item> {
+            return ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", name))
         }
 
         fun tag(name: String): TagKey<Item> {
-            return ItemTags.create(ResourceLocation(ProcessedMod.ID, name));
+            return ItemTags.create(ProcessedMod.rl(name))
         }
     }
 
     object Blocks {
-        val FORGE_ORE_BLITZ = forgeTag("ores/blitz");
+        val FORGE_ORE_BLITZ = commonTag("ores/blitz")
 
-        fun forgeTag(name: String): TagKey<Block> {
-            return BlockTags.create(ResourceLocation("forge", name));
+        fun commonTag(name: String): TagKey<Block> {
+            return BlockTags.create(ResourceLocation.fromNamespaceAndPath("c", name))
         }
 
         fun tag(name: String): TagKey<Block> {
-            return BlockTags.create(ResourceLocation(ProcessedMod.ID, name));
+            return BlockTags.create(ProcessedMod.rl(name))
         }
     }
 }

@@ -1,11 +1,11 @@
 package redcrafter07.processed.datagen
 
 import net.neoforged.bus.api.SubscribeEvent
-import net.neoforged.fml.common.Mod
+import net.neoforged.fml.common.EventBusSubscriber
 import net.neoforged.neoforge.data.event.GatherDataEvent
 import redcrafter07.processed.ProcessedMod
 
-@Mod.EventBusSubscriber(modid = ProcessedMod.ID, bus = Mod.EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = ProcessedMod.ID, bus = EventBusSubscriber.Bus.MOD)
 object DataGenerators {
     @SubscribeEvent
     fun gatherData(event: GatherDataEvent) {
@@ -14,7 +14,7 @@ object DataGenerators {
         val lookupProvider = event.lookupProvider
         val existingFileHelper = event.existingFileHelper
 
-        generator.addProvider(event.includeServer(), ModLootTableProvider.create(packOutput))
+        generator.addProvider(event.includeServer(), ModLootTableProvider.create(packOutput, lookupProvider))
         generator.addProvider(event.includeServer(), ModWorldGenProvider(packOutput, lookupProvider))
 
         generator.addProvider(event.includeClient(), ModBlockStateProvider(packOutput, existingFileHelper))

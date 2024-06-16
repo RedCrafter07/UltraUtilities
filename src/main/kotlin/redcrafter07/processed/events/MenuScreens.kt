@@ -1,13 +1,13 @@
 package redcrafter07.processed.events
 
 import net.neoforged.bus.api.SubscribeEvent
-import net.neoforged.fml.common.Mod
+import net.neoforged.fml.common.EventBusSubscriber
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent
 import redcrafter07.processed.ProcessedMod
 import redcrafter07.processed.gui.ModMenuTypes
 import redcrafter07.processed.gui.PoweredFurnaceScreen
 
-@Mod.EventBusSubscriber(modid = ProcessedMod.ID, bus = Mod.EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = ProcessedMod.ID, bus = EventBusSubscriber.Bus.MOD)
 object MenuScreens {
     @SubscribeEvent
     fun onRegisterMenuScreens(event: RegisterMenuScreensEvent) {

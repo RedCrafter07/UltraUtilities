@@ -1,5 +1,6 @@
 package redcrafter07.processed.block.tile_entities.capabilities
 
+import net.minecraft.core.HolderLookup.Provider
 import net.minecraft.nbt.CompoundTag
 import kotlin.math.min
 
@@ -45,13 +46,13 @@ class SimpleEnergyStore(protected var capacity: Int, protected val maxReceive: I
         return this.maxReceive > 0
     }
 
-    override fun serializeNBT(): CompoundTag {
+    override fun serializeNBT(provider: Provider): CompoundTag {
         val tag = CompoundTag()
         tag.putInt("energy", energy)
         return tag
     }
 
-    override fun deserializeNBT(tag: CompoundTag) {
+    override fun deserializeNBT(provider: Provider, tag: CompoundTag) {
         this.energy = tag.getInt("energy")
     }
 

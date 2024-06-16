@@ -5,7 +5,7 @@ import net.minecraft.network.chat.Component
 
 class ProcessedTier(val tier: Int, val multiplier_speed: Int, val multiplier_energy: Int) {
     fun named(): String {
-        return "tier_" + tier; }
+        return "tier_$tier"; }
 
     fun translated(): Component {
         return Component.translatable("processed." + named())

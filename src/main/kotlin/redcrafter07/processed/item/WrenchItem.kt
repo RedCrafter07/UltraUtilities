@@ -4,23 +4,22 @@ import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.MutableComponent
 import net.minecraft.world.InteractionResult
 import net.minecraft.world.item.ItemStack
+import net.minecraft.world.item.TooltipFlag
 import net.minecraft.world.item.context.UseOnContext
-import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.DirectionalBlock
 import net.minecraft.world.level.block.HorizontalDirectionalBlock
 import net.minecraft.world.level.block.state.properties.BlockStateProperties
 import redcrafter07.processed.block.WrenchInteractableBlock
+import redcrafter07.processed.item.DataComponents.WRENCH_MODE
 
 class WrenchItem : ModItem(Properties().stacksTo(1), "wrench") {
     companion object {
         fun getMode(stack: ItemStack): WrenchMode {
-            val nbt = stack.orCreateTag
-            return WrenchMode.load(nbt.getByte("mode"))
+            return stack.getOrDefault(WRENCH_MODE, WrenchMode.Rotate)
         }
 
         fun setMode(stack: ItemStack, mode: WrenchMode): ItemStack {
-            val nbt = stack.orCreateTag
-            nbt.putByte("mode", mode.save())
+            stack.set(WRENCH_MODE, mode)
             return stack
         }
 
@@ -83,7 +82,7 @@ class WrenchItem : ModItem(Properties().stacksTo(1), "wrench") {
         return InteractionResult.PASS
     }
 
-    override fun getAdditionalTooltip(stack: ItemStack, world: Level?): MutableComponent {
+    override fun getAdditionalTooltip(stack: ItemStack, context: TooltipContext, flag: TooltipFlag): MutableComponent? {
         return Component.translatable(
             "item.processed.wrench.mode", Component.translatable(getMode(stack).translation())
         )

@@ -1,51 +1,46 @@
 package redcrafter07.processed.network
 
 import net.minecraft.core.BlockPos
-import net.minecraft.network.FriendlyByteBuf
+import net.minecraft.network.codec.ByteBufCodecs
+import net.minecraft.network.codec.StreamCodec
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
-import net.minecraft.resources.ResourceLocation
-import net.neoforged.neoforge.network.handling.PlayPayloadContext
+import net.neoforged.neoforge.network.handling.IPayloadContext
 import redcrafter07.processed.ProcessedMod
 import redcrafter07.processed.block.tile_entities.BlockSide
 import redcrafter07.processed.block.tile_entities.IoState
 import redcrafter07.processed.block.tile_entities.ProcessedMachine
-import kotlin.jvm.optionals.getOrNull
 
 @JvmRecord
 data class IOChangePacket(val block: BlockPos, val state: IoState, val side: BlockSide, val itemOrFluid: Boolean) :
     CustomPacketPayload {
     companion object {
-        val ID = ResourceLocation(ProcessedMod.ID, "p_io_change")
+        val TYPE = CustomPacketPayload.Type<IOChangePacket>(ProcessedMod.rl("p_io_change"))
+        val CODEC = StreamCodec.composite(
+            BlockPos.STREAM_CODEC,
+            IOChangePacket::block,
+            IoState.STREAM_CODEC,
+            IOChangePacket::state,
+            BlockSide.STREAM_CODEC,
+            IOChangePacket::side,
+            ByteBufCodecs.BOOL,
+            IOChangePacket::itemOrFluid,
+            ::IOChangePacket
+        )
     }
 
-    fun handle_server(context: PlayPayloadContext) {
-        context.workHandler.execute {
-            val level = context.level().getOrNull()
-            if (level != null) {
-                val blockEntity = level.getBlockEntity(block)
-                if (blockEntity is ProcessedMachine) {
-                    blockEntity.setSide(itemOrFluid, side, state)
-                    blockEntity.invalidateCapabilities()
-                }
+    fun handleServer(context: IPayloadContext) {
+        context.enqueueWork {
+            val level = context.player().level()
+            val blockEntity = level.getBlockEntity(block)
+            if (blockEntity is ProcessedMachine) {
+                blockEntity.setSide(itemOrFluid, side, state)
+                blockEntity.invalidateCapabilities()
             }
+
         }
     }
 
-    constructor(buffer: FriendlyByteBuf) : this(
-        buffer.readBlockPos(),
-        IoState.load(buffer.readByte()),
-        BlockSide.load(buffer.readByte()),
-        buffer.readBoolean()
-    )
-
-    override fun write(buf: FriendlyByteBuf) {
-        buf.writeBlockPos(block)
-        buf.writeByte(state.save())
-        buf.writeByte(side.save())
-        buf.writeBoolean(itemOrFluid)
-    }
-
-    override fun id(): ResourceLocation {
-        return ID
+    override fun type(): CustomPacketPayload.Type<out CustomPacketPayload> {
+        return TYPE
     }
 }

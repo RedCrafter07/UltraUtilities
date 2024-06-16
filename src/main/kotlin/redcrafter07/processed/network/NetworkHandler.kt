@@ -1,25 +1,27 @@
 package redcrafter07.processed.network
 
 import net.neoforged.bus.api.SubscribeEvent
-import net.neoforged.fml.common.Mod
-import net.neoforged.neoforge.network.event.RegisterPayloadHandlerEvent
+import net.neoforged.fml.common.EventBusSubscriber
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent
 import redcrafter07.processed.ProcessedMod
 
-@Mod.EventBusSubscriber(modid = ProcessedMod.ID, bus = Mod.EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
 object NetworkHandler {
     @SubscribeEvent
-    fun registerNetworkHandlers(event: RegisterPayloadHandlerEvent) {
+    fun registerNetworkHandlers(event: RegisterPayloadHandlersEvent) {
         val register = event.registrar(ProcessedMod.ID)
         ProcessedMod.LOGGER.info("Registering packets!")
 
-        register.play(
-            WrenchModeChangePacket.ID,
-            ::WrenchModeChangePacket
-        ) { payload, context -> if (!context.flow.isClientbound) payload.handle_server(context) }
+        register.playToServer(
+            WrenchModeChangePacket.TYPE,
+            WrenchModeChangePacket.CODEC,
+            WrenchModeChangePacket::handleServer // note: you need DirectionalPayloadHandler if you handle more than 1 direction
+        )
 
-        register.play(
-            IOChangePacket.ID,
-            ::IOChangePacket
-        ) { payload, context -> if (!context.flow.isClientbound) payload.handle_server(context) }
+        register.playToServer(
+            IOChangePacket.TYPE,
+            IOChangePacket.CODEC,
+            IOChangePacket::handleServer
+        )
     }
 }

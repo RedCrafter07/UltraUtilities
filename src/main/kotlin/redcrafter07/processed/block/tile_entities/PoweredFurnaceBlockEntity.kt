@@ -1,10 +1,10 @@
 package redcrafter07.processed.block.tile_entities
 
 import net.minecraft.core.BlockPos
+import net.minecraft.core.HolderLookup.Provider
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.network.chat.Component
 import net.minecraft.world.MenuProvider
-import net.minecraft.world.SimpleContainer
 import net.minecraft.world.entity.player.Inventory
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.inventory.AbstractContainerMenu
@@ -12,6 +12,7 @@ import net.minecraft.world.inventory.ContainerData
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.crafting.RecipeType
+import net.minecraft.world.item.crafting.SingleRecipeInput
 import net.minecraft.world.item.crafting.SmeltingRecipe
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.state.BlockState
@@ -88,10 +89,13 @@ class PoweredFurnaceBlockEntity(pos: BlockPos, state: BlockState) :
     }
 
     private fun getCurrentRecipe(): SmeltingRecipe? {
-        val inventory = SimpleContainer(inputItemHandler.getStackInSlot(0))
         val level = this.level ?: return null
 
-        return level.recipeManager.getRecipeFor(RecipeType.SMELTING, inventory, level).map { recipe -> recipe.value }.getOrNull()
+        return level.recipeManager.getRecipeFor(
+            RecipeType.SMELTING,
+            SingleRecipeInput(inputItemHandler.getStackInSlot(0)),
+            level
+        ).map { recipe -> recipe.value }.getOrNull()
     }
 
     private fun canInsertItemIntoOutputSlot(item: Item): Boolean {
@@ -110,13 +114,13 @@ class PoweredFurnaceBlockEntity(pos: BlockPos, state: BlockState) :
         return Component.translatable("processed.screen.powered_furnace.name", tier.translated())
     }
 
-    override fun saveAdditional(nbt: CompoundTag) {
-        super.saveAdditional(nbt)
+    override fun saveAdditional(nbt: CompoundTag, provider: Provider) {
+        super.saveAdditional(nbt, provider)
         nbt.putInt("powered_furnace.progress", progress)
     }
 
-    override fun load(nbt: CompoundTag) {
-        super.load(nbt)
+    override fun loadAdditional(nbt: CompoundTag, provider: Provider) {
+        super.loadAdditional(nbt, provider)
         progress = nbt.getInt("powered_furnace.progress")
     }
 }

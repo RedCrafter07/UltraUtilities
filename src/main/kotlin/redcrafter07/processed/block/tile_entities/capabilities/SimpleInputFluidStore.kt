@@ -1,12 +1,14 @@
 package redcrafter07.processed.block.tile_entities.capabilities
 
+import net.minecraft.core.HolderLookup.Provider
 import net.minecraft.core.NonNullList
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.ListTag
 import net.neoforged.neoforge.fluids.FluidStack
 import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction
 
-open class SimpleInputFluidStore(protected var tanks: NonNullList<FluidStack>, protected var capacity: Int) : IProcessedFluidHandler<CompoundTag> {
+open class SimpleInputFluidStore(protected var tanks: NonNullList<FluidStack>, protected var capacity: Int) :
+    IProcessedFluidHandler<CompoundTag> {
 
     constructor(size: Int, capacity: Int) : this(NonNullList.withSize(size, FluidStack.EMPTY), capacity)
     constructor() : this(NonNullList.of(FluidStack.EMPTY), 1000)
@@ -40,7 +42,7 @@ open class SimpleInputFluidStore(protected var tanks: NonNullList<FluidStack>, p
         var fluidLeft = stack.amount
         for (slot in 0..<tanks.size) {
             if (tanks[slot].amount >= capacity) continue
-            if (tanks[slot].isEmpty || tanks[slot].isFluidEqual(stack)) {
+            if (tanks[slot].isEmpty || FluidStack.isSameFluidSameComponents(tanks[slot], stack)) {
                 val amount = capacity.coerceAtMost(tanks[slot].amount + fluidLeft)
                 fluidLeft -= amount - tanks[slot].amount
 
@@ -61,7 +63,11 @@ open class SimpleInputFluidStore(protected var tanks: NonNullList<FluidStack>, p
         var amountLeft = stack.amount
 
         for (slot in 0..<tanks.size) {
-            if (tanks[slot].isEmpty || tanks[slot].amount < 1 || !tanks[slot].isFluidEqual(stack)) continue
+            if (tanks[slot].isEmpty || tanks[slot].amount < 1 || !FluidStack.isSameFluidSameComponents(
+                    tanks[slot],
+                    stack
+                )
+            ) continue
 
             if (tanks[slot].amount <= amountLeft) {
                 if (fluid.isEmpty) fluid = stack.copyWithAmount(tanks[slot].amount)
@@ -155,14 +161,14 @@ open class SimpleInputFluidStore(protected var tanks: NonNullList<FluidStack>, p
         return tanks[tank]
     }
 
-    override fun serializeNBT(): CompoundTag {
+    override fun serializeNBT(provider: Provider): CompoundTag {
         val nbtListTag = ListTag()
 
         for (i in 0..<tanks.size) {
             if (!tanks[i].isEmpty && tanks[i].amount > 0) {
                 val tag = CompoundTag()
                 tag.putInt("Slot", i)
-                tanks[i].writeToNBT(tag)
+                tag.put("Fluid", tanks[i].saveOptional(provider))
                 nbtListTag.add(tag)
             }
         }
@@ -173,14 +179,15 @@ open class SimpleInputFluidStore(protected var tanks: NonNullList<FluidStack>, p
         return nbt
     }
 
-    override fun deserializeNBT(nbt: CompoundTag) {
+    override fun deserializeNBT(provider: Provider, nbt: CompoundTag) {
         setSize(if (nbt.contains("Size", 3)) nbt.getInt("Size") else tanks.size)
         val tagList = nbt.getList("Fluids", 10)
 
         for (i in 0..<tagList.size) {
             val tag = tagList.getCompound(i)
             val slot = tag.getInt("Slot")
-            if (slot >= 0 && slot < tanks.size) tanks[slot] = FluidStack.loadFluidStackFromNBT(tag)
+            if (slot >= 0 && slot < tanks.size) tanks[slot] =
+                FluidStack.parseOptional(provider, tag.getCompound("Fluid") ?: continue)
         }
 
         onLoad()

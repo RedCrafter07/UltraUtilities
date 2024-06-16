@@ -12,12 +12,12 @@ import redcrafter07.processed.item.ModItems
 class ModItemModelProvider(output: PackOutput, existingFileHelper: ExistingFileHelper) :
     ItemModelProvider(output, ProcessedMod.ID, existingFileHelper) {
     override fun registerModels() {
-        simpleItem(ModItems.BLITZ_ORB);
-        simpleItem(ModItems.WRENCH);
+        simpleItem(ModItems.BLITZ_ORB)
+        simpleItem(ModItems.WRENCH)
     }
 
     private fun simpleItem(item: DeferredItem<*>): ItemModelBuilder {
-        return withExistingParent(item.id.path, ResourceLocation("item/generated"))
-            .texture("layer0", ResourceLocation(ProcessedMod.ID, "item/" + item.id.path));
+        return withExistingParent(item.id.path, ResourceLocation.withDefaultNamespace("item/generated"))
+            .texture("layer0", ProcessedMod.rl("item/${item.id.path}"))
     }
 }

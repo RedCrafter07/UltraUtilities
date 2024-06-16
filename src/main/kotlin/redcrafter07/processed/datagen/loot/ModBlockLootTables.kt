@@ -1,5 +1,7 @@
 package redcrafter07.processed.datagen.loot
 
+import net.minecraft.core.HolderLookup.Provider
+import net.minecraft.core.registries.Registries
 import net.minecraft.data.loot.BlockLootSubProvider
 import net.minecraft.world.flag.FeatureFlags
 import net.minecraft.world.item.Item
@@ -14,7 +16,8 @@ import net.neoforged.neoforge.registries.DeferredHolder
 import redcrafter07.processed.block.ModBlocks
 import redcrafter07.processed.item.ModItems
 
-class ModBlockLootTables : BlockLootSubProvider(setOf(), FeatureFlags.REGISTRY.allFlags()) {
+class ModBlockLootTables(provider: Provider) :
+    BlockLootSubProvider(setOf(), FeatureFlags.REGISTRY.allFlags(), provider) {
     override fun generate() {
         createOreLootTable(ModBlocks.BLITZ_ORE.get(), ModItems.BLITZ_ORB.get(), 1f, 3f)
         this.dropSelf(ModBlocks.BLOCK_ITEM_PIPE.get())
@@ -24,13 +27,15 @@ class ModBlockLootTables : BlockLootSubProvider(setOf(), FeatureFlags.REGISTRY.a
     }
 
     private fun createOreLootTable(block: Block, item: Item, min: Float, max: Float) {
+        val enchantments = registries.lookupOrThrow(Registries.ENCHANTMENT)
+
         this.add(
             block, createSilkTouchDispatchTable(
                 block, applyExplosionDecay(
                     block,
                     LootItem.lootTableItem(item)
                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(min, max)))
-                        .apply(ApplyBonusCount.addUniformBonusCount(Enchantments.BLOCK_FORTUNE))
+                        .apply(ApplyBonusCount.addUniformBonusCount(enchantments.getOrThrow(Enchantments.FORTUNE)))
                 ) as LootPoolEntryContainer.Builder<*>
             )
         )

@@ -2,6 +2,10 @@ package redcrafter07.processed.block
 
 import net.minecraft.core.BlockPos
 import net.minecraft.world.Containers
+import net.minecraft.world.InteractionHand
+import net.minecraft.world.ItemInteractionResult
+import net.minecraft.world.entity.player.Player
+import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.context.BlockPlaceContext
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.Block
@@ -12,13 +16,37 @@ import net.minecraft.world.level.block.entity.BlockEntityType
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.block.state.StateDefinition
 import net.minecraft.world.level.block.state.properties.BlockStateProperties
+import net.minecraft.world.level.block.state.properties.DirectionProperty
+import net.minecraft.world.phys.BlockHitResult
 import redcrafter07.processed.block.tile_entities.ProcessedMachine
 import redcrafter07.processed.block.tile_entities.capabilities.SimpleDroppingContainer
+import redcrafter07.processed.item.ModItems
 
 abstract class ProcessedBlock(properties: Properties) : Block(properties), EntityBlock {
     companion object {
-        val STATE_FACING = BlockStateProperties.FACING
-        val STATE_HORIZONTAL_FACING = BlockStateProperties.HORIZONTAL_FACING
+        val STATE_FACING: DirectionProperty = BlockStateProperties.FACING
+        val STATE_HORIZONTAL_FACING: DirectionProperty = BlockStateProperties.HORIZONTAL_FACING
+    }
+
+    override fun useItemOn(
+        item: ItemStack,
+        block: BlockState,
+        level: Level,
+        blockPos: BlockPos,
+        player: Player,
+        hand: InteractionHand,
+        hitResult: BlockHitResult
+    ): ItemInteractionResult {
+        if (item.`is`(ModItems.WRENCH)) return ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION
+        return super.useItemOn(
+            item,
+            block,
+            level,
+            blockPos,
+            player,
+            hand,
+            hitResult
+        )
     }
 
     protected open fun addBlockStateDefinition(stateDefinition: StateDefinition.Builder<Block, BlockState>) {}
@@ -28,27 +56,27 @@ abstract class ProcessedBlock(properties: Properties) : Block(properties), Entit
         addBlockStateDefinition(stateDefinition)
     }
 
-    open fun getBlockstate(context: BlockPlaceContext): BlockState? {
+    open fun getBlockState(context: BlockPlaceContext): BlockState? {
         return null
     }
 
     override fun getStateForPlacement(context: BlockPlaceContext): BlockState {
-        return (getBlockstate(context) ?: defaultBlockState() ?: stateDefinition.any()).setValue(
+        return (getBlockState(context) ?: defaultBlockState() ?: stateDefinition.any()).setValue(
             STATE_HORIZONTAL_FACING,
             context.horizontalDirection.opposite
         )
     }
 
     override fun <T : BlockEntity?> getTicker(
-        _level: Level,
-        _state: BlockState,
-        _blockEntityType: BlockEntityType<T>
+        level: Level,
+        state: BlockState,
+        blockEntityType: BlockEntityType<T>
     ): BlockEntityTicker<T>? {
-        return BlockEntityTicker { lv, pos, state, ticker ->
+        return BlockEntityTicker { lv, pos, tickState, ticker ->
             if (ticker is ProcessedMachine) {
-                if (lv.isClientSide) ticker.clientTick(lv, pos, state)
-                else ticker.serverTick(lv, pos, state)
-                ticker.tick(lv, pos, state)
+                if (lv.isClientSide) ticker.clientTick(lv, pos, tickState)
+                else ticker.serverTick(lv, pos, tickState)
+                ticker.tick(lv, pos, tickState)
             }
         }
     }
@@ -76,7 +104,7 @@ abstract class ProcessedBlock(properties: Properties) : Block(properties), Entit
 
 abstract class AllDirectionsProcessedBlock(properties: Properties) : ProcessedBlock(properties) {
     override fun getStateForPlacement(context: BlockPlaceContext): BlockState {
-        return (getBlockstate(context) ?: stateDefinition.any()).setValue(
+        return (getBlockState(context) ?: stateDefinition.any()).setValue(
             STATE_FACING,
             context.clickedFace
         )

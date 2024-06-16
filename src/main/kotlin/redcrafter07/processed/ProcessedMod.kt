@@ -1,19 +1,16 @@
 package redcrafter07.processed
 
-import redcrafter07.processed.block.ModBlocks
 import net.minecraft.client.Minecraft
+import net.minecraft.resources.ResourceLocation
 import net.neoforged.fml.common.Mod
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent
 import net.neoforged.fml.event.lifecycle.FMLDedicatedServerSetupEvent
-import net.neoforged.neoforge.common.NeoForge
 import org.apache.logging.log4j.Level
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
+import redcrafter07.processed.block.ModBlocks
 import redcrafter07.processed.block.tile_entities.ModTileEntities
-import redcrafter07.processed.events.Capabilities
-import redcrafter07.processed.events.MenuScreens
-import redcrafter07.processed.events.WrenchHandler
 import redcrafter07.processed.gui.ModMenuTypes
 import redcrafter07.processed.item.ModItemGroup
 import redcrafter07.processed.item.ModItems
@@ -35,14 +32,18 @@ object ProcessedMod {
     // the logger for our mod
     val LOGGER: Logger = LogManager.getLogger(ID)
 
+    fun rl(path: String): ResourceLocation {
+        return ResourceLocation.fromNamespaceAndPath(ID, path)
+    }
+
     init {
         LOGGER.log(Level.INFO, "Hello world!")
 
         // Register the KDeferredRegister to the mod-specific event bus
         ModBlocks.BLOCKS.register(MOD_BUS)
-        ModItems.ITEMS.register(MOD_BUS);
-        ModItemGroup.CREATIVE_MODE_TABS.register(MOD_BUS);
-        ModTileEntities.BLOCK_TYPES.register(MOD_BUS);
+        ModItems.ITEMS.register(MOD_BUS)
+        ModItemGroup.CREATIVE_MODE_TABS.register(MOD_BUS)
+        ModTileEntities.BLOCK_TYPES.register(MOD_BUS)
 
         ModMenuTypes.MENUS.register(MOD_BUS)
 
@@ -72,12 +73,12 @@ object ProcessedMod {
      * Fired on the global Forge bus.
      */
     private fun onServerSetup(event: FMLDedicatedServerSetupEvent) {
-        MOD_BUS.register(Capabilities)
+//        MOD_BUS.register(Capabilities)
         LOGGER.log(Level.INFO, "Server starting...")
     }
 
     private fun onCommonSetup(event: FMLCommonSetupEvent) {
-        NeoForge.EVENT_BUS.register(WrenchHandler)
-        MOD_BUS.register(MenuScreens)
+//        NeoForge.EVENT_BUS.register(WrenchHandler)
+//        MOD_BUS.register(MenuScreens)
     }
 }

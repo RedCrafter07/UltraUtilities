@@ -5,14 +5,13 @@ import net.minecraft.network.chat.Component
 import net.neoforged.api.distmarker.Dist
 import net.neoforged.api.distmarker.OnlyIn
 import net.neoforged.bus.api.SubscribeEvent
-import net.neoforged.fml.common.Mod
+import net.neoforged.fml.common.EventBusSubscriber
 import net.neoforged.neoforge.client.event.InputEvent
 import redcrafter07.processed.ProcessedMod
 import redcrafter07.processed.item.WrenchItem
-import redcrafter07.processed.item.WrenchMode
 import redcrafter07.processed.network.WrenchModeChangePacket
 
-@Mod.EventBusSubscriber(modid = ProcessedMod.ID)
+@EventBusSubscriber(modid = ProcessedMod.ID)
 object WrenchHandler {
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
@@ -24,10 +23,9 @@ object WrenchHandler {
             val itemStack = player.mainHandItem
 
             if (itemStack.item is WrenchItem) {
-                val nbt = itemStack.orCreateTag
-                val mode = WrenchMode.load(nbt.getByte("mode"))
+                val mode = WrenchItem.getMode(itemStack)
                 val newMode = if (event.scrollDeltaY > 0) mode.next() else mode.previous()
-                nbt.putShort("mode", newMode.save().toShort())
+                WrenchItem.setMode(itemStack, newMode)
 
                 player.inventory.setChanged()
                 event.isCanceled = true

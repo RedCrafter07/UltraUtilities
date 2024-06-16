@@ -5,14 +5,13 @@ import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen
 import net.minecraft.client.renderer.GameRenderer
 import net.minecraft.network.chat.Component
-import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.entity.player.Inventory
 import redcrafter07.processed.ProcessedMod
 
-class PoweredFurnaceScreen(menu: PoweredFurnaceMenu, inventory: Inventory, component: Component) :
+class PoweredFurnaceScreen(menu: PoweredFurnaceMenu, inventory: Inventory, val component: Component) :
     AbstractContainerScreen<PoweredFurnaceMenu>(menu, inventory, Component.empty()) {
     companion object {
-        val TEXTURE = ResourceLocation(ProcessedMod.ID, "textures/gui/powered_furnace.png")
+        val TEXTURE = ProcessedMod.rl("textures/gui/powered_furnace.png")
     }
 
     // stop the labels (like `Furnace`) from rendering
@@ -24,19 +23,19 @@ class PoweredFurnaceScreen(menu: PoweredFurnaceMenu, inventory: Inventory, compo
         RenderSystem.setShaderTexture(0, TEXTURE)
         val x = (width - imageWidth) / 2
         val y = (height - imageHeight) / 2
-        guiGraphics.blit(TEXTURE, x, y, 0, 0, imageWidth, imageHeight);
+        guiGraphics.blit(TEXTURE, x, y, 0, 0, imageWidth, imageHeight)
         renderProgressArrow(guiGraphics, x, y)
     }
 
     private fun renderProgressArrow(guiGraphics: GuiGraphics, x: Int, y: Int) {
         if (menu.isCrafting()) {
-            guiGraphics.blit(TEXTURE, x + 85, y + 30, 176, 0, 8, menu.getScaledProgress());
+            guiGraphics.blit(TEXTURE, x + 85, y + 30, 176, 0, 8, menu.getScaledProgress())
         }
     }
 
     override fun render(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) {
-        renderBackground(guiGraphics, mouseX, mouseY, delta);
-        super.render(guiGraphics, mouseX, mouseY, delta);
-        renderTooltip(guiGraphics, mouseX, mouseY);
+        renderBackground(guiGraphics, mouseX, mouseY, delta)
+        super.render(guiGraphics, mouseX, mouseY, delta)
+        renderTooltip(guiGraphics, mouseX, mouseY)
     }
 }

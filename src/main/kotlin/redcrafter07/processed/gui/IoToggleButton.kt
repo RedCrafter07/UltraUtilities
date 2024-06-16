@@ -5,19 +5,21 @@ import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.components.Tooltip
 import net.minecraft.client.gui.narration.NarrationElementOutput
 import net.minecraft.network.chat.Component
-import net.minecraft.resources.ResourceLocation
 import net.neoforged.api.distmarker.Dist
 import net.neoforged.api.distmarker.OnlyIn
 import redcrafter07.processed.ProcessedMod
 import redcrafter07.processed.block.tile_entities.IoState
 
 
-class IoToggleButton(x: Int, y: Int, val buttonName: Component, var state: IoState, private var onChange: OnChange) :
+class IoToggleButton(x: Int, y: Int, private val buttonName: Component, var state: IoState, private var onChange: OnChange) :
     AbstractWidget(
         x + 1, y + 1, 12, 12,
         Component.translatable("processed.io_button.message", buttonName, state.toComponent())
     ) {
-    val widgetsResourceLocation = ResourceLocation(ProcessedMod.ID, "textures/gui/widgets.png")
+
+    companion object {
+        private val widgetsResourceLocation = ProcessedMod.rl("textures/gui/widgets.png")
+    }
 
     @OnlyIn(Dist.CLIENT)
     fun interface OnChange {
@@ -29,7 +31,7 @@ class IoToggleButton(x: Int, y: Int, val buttonName: Component, var state: IoSta
     }
 
     override fun renderWidget(graphics: GuiGraphics, p1: Int, p2: Int, p3: Float) {
-        graphics.blit(widgetsResourceLocation, this.x - 1, this.y - 1, this.state.save().toInt() * 14, 0, 14, 14)
+        graphics.blit(widgetsResourceLocation, this.x - 1, this.y - 1, this.state.getId() * 14, 0, 14, 14)
     }
 
     override fun isValidClickButton(button: Int): Boolean {

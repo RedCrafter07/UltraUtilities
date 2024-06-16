@@ -2,6 +2,7 @@ package redcrafter07.processed.block.tile_entities
 
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
+import net.minecraft.core.HolderLookup.Provider
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.LevelAccessor
@@ -10,7 +11,7 @@ import net.neoforged.neoforge.capabilities.Capabilities
 import net.neoforged.neoforge.items.IItemHandler
 import redcrafter07.processed.ProcessedMod
 import redcrafter07.processed.block.PipeLikeState
-import java.util.Stack
+import java.util.*
 
 class PipePressurizerBlockEntity(pos: BlockPos, state: BlockState) :
     ProcessedMachine(ModTileEntities.PIPE_PRESSURIZER_BLOCK_ENTITY.get(), pos, state) {
@@ -67,7 +68,7 @@ class PipePressurizerBlockEntity(pos: BlockPos, state: BlockState) :
     fun scanNetwork(level: LevelAccessor, myBlockPos: BlockPos) {
         unlink(level)
         connectedPipes.clear()
-        val blocksToScan: Stack<DirectionalPosition> = Stack();
+        val blocksToScan: Stack<DirectionalPosition> = Stack()
         blocksToScan.push(DirectionalPosition(myBlockPos.relative(Direction.NORTH), Direction.NORTH))
         blocksToScan.push(DirectionalPosition(myBlockPos.relative(Direction.SOUTH), Direction.SOUTH))
         blocksToScan.push(DirectionalPosition(myBlockPos.relative(Direction.WEST), Direction.WEST))
@@ -82,7 +83,7 @@ class PipePressurizerBlockEntity(pos: BlockPos, state: BlockState) :
 
             markPipe(directionalPosition.blockPos)
             blockEntity.pipePressurizerPos = myBlockPos
-            connectedPipes.push(directionalPosition.blockPos);
+            connectedPipes.push(directionalPosition.blockPos)
             for (direction in Direction.stream()) {
                 val newBlockPos = DirectionalPosition(directionalPosition.blockPos.relative(direction), direction)
                 if (blockEntity.pipeState.getState(direction) == PipeLikeState.None) continue
@@ -132,9 +133,9 @@ class PipePressurizerBlockEntity(pos: BlockPos, state: BlockState) :
         }
 
         private fun loadStackOfDirectionalPosition(nbt: CompoundTag, name: String): Stack<DirectionalPosition> {
-            val ints = nbt.getIntArray(name);
+            val ints = nbt.getIntArray(name)
             val stack: Stack<DirectionalPosition> = Stack()
-            var idx = 0;
+            var idx = 0
             while (idx + 4 <= ints.count()) {
                 stack.push(
                     DirectionalPosition(
@@ -149,8 +150,8 @@ class PipePressurizerBlockEntity(pos: BlockPos, state: BlockState) :
         }
     }
 
-    override fun saveAdditional(nbt: CompoundTag) {
-        super.saveAdditional(nbt)
+    override fun saveAdditional(nbt: CompoundTag, provider: Provider) {
+        super.saveAdditional(nbt, provider)
         val ints: Stack<Int> = Stack()
 
         for (pipe in connectedPipes) {
@@ -164,10 +165,10 @@ class PipePressurizerBlockEntity(pos: BlockPos, state: BlockState) :
         saveStackOfDirectionalPosition(nbt, "pulling", pullingFrom)
     }
 
-    override fun load(nbt: CompoundTag) {
-        super.load(nbt)
-        val integers = nbt.getIntArray("blocks");
-        var idx = 0;
+    override fun loadAdditional(nbt: CompoundTag, provider: Provider) {
+        super.loadAdditional(nbt, provider)
+        val integers = nbt.getIntArray("blocks")
+        var idx = 0
         while (idx + 3 <= integers.count()) {
             connectedPipes.push(BlockPos(integers[idx], integers[idx + 1], integers[idx + 2]))
             idx += 3
@@ -177,16 +178,18 @@ class PipePressurizerBlockEntity(pos: BlockPos, state: BlockState) :
         pullingFrom = loadStackOfDirectionalPosition(nbt, "pulling")
     }
 
-    override fun tick(level: Level, myPos: BlockPos, state: BlockState) {
+    override fun tick(level: Level, pos: BlockPos, state: BlockState) {
         if (tickCooldown > 0) {
-            --tickCooldown;
+            --tickCooldown
             return
         }
-        var capability: IItemHandler? = null;
+        var capability: IItemHandler? = null
         var slot = 0
 
-        for (pos in pullingFrom) {
-            val localCapability = level.getCapability(Capabilities.ItemHandler.BLOCK, pos.blockPos, pos.direction) ?: continue
+        for (pullingPos in pullingFrom) {
+            val localCapability =
+                level.getCapability(Capabilities.ItemHandler.BLOCK, pullingPos.blockPos, pullingPos.direction)
+                    ?: continue
             for (localSlot in 0..<localCapability.slots) {
                 val item = localCapability.extractItem(localSlot, 1, true)
                 if (item.isEmpty) continue
@@ -198,8 +201,10 @@ class PipePressurizerBlockEntity(pos: BlockPos, state: BlockState) :
         }
         if (capability == null) return
         ProcessedMod.LOGGER.info("got item!")
-        for (pos in pushingTo) {
-            val localCapability = level.getCapability(Capabilities.ItemHandler.BLOCK, pos.blockPos, pos.direction) ?: continue
+        for (pushingPos in pushingTo) {
+            val localCapability =
+                level.getCapability(Capabilities.ItemHandler.BLOCK, pushingPos.blockPos, pushingPos.direction)
+                    ?: continue
             for (localSlot in 0..<localCapability.slots) {
                 val item = capability.extractItem(slot, 1, true)
                 if (localCapability.insertItem(localSlot, item, true).isEmpty) {

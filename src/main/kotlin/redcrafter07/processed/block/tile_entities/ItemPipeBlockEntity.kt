@@ -1,6 +1,7 @@
 package redcrafter07.processed.block.tile_entities
 
 import net.minecraft.core.BlockPos
+import net.minecraft.core.HolderLookup.Provider
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.network.protocol.Packet
 import net.minecraft.network.protocol.game.ClientGamePacketListener
@@ -19,8 +20,8 @@ class ItemPipeBlockEntity(pos: BlockPos, state: BlockState) :
             this.setChanged()
         }
 
-    override fun saveAdditional(nbt: CompoundTag) {
-        super.saveAdditional(nbt)
+    override fun saveAdditional(nbt: CompoundTag, provider: Provider) {
+        super.saveAdditional(nbt, provider)
         pipeState.saveToNBT("state", nbt)
         val pipePressurizerPos = pipePressurizerPos
         if (pipePressurizerPos == null) {
@@ -30,8 +31,8 @@ class ItemPipeBlockEntity(pos: BlockPos, state: BlockState) :
         }
     }
 
-    override fun load(nbt: CompoundTag) {
-        super.load(nbt)
+    override fun loadAdditional(nbt: CompoundTag, provider: Provider) {
+        super.loadAdditional(nbt, provider)
         pipeState.loadFromNBT("state", nbt)
         val arr = nbt.getIntArray("pipePressurizerPos")
         if (arr.count() == 3) {
@@ -42,7 +43,8 @@ class ItemPipeBlockEntity(pos: BlockPos, state: BlockState) :
     override fun getUpdatePacket(): Packet<ClientGamePacketListener>? {
         return ClientboundBlockEntityDataPacket.create(this)
     }
-    override fun getUpdateTag(): CompoundTag {
-        return saveWithoutMetadata()
+
+    override fun getUpdateTag(provider: Provider): CompoundTag {
+        return saveWithoutMetadata(provider)
     }
 }

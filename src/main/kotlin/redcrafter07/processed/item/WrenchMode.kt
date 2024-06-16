@@ -1,47 +1,36 @@
 package redcrafter07.processed.item
 
-enum class WrenchMode {
-    Config, Rotate;
+import net.minecraft.network.codec.ByteBufCodecs
+import net.minecraft.util.ByIdMap
+import net.minecraft.util.StringRepresentable
+
+enum class WrenchMode(private val id: Int, private val modeName: String) : StringRepresentable {
+    Config(0, "config"), Rotate(1, "rotate");
+
+    companion object {
+        val BY_ID = ByIdMap.continuous(WrenchMode::getId, entries.toTypedArray(), ByIdMap.OutOfBoundsStrategy.ZERO)
+
+        val CODEC = StringRepresentable.fromEnum(WrenchMode::values)
+        val STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, WrenchMode::getId)
+    }
+
+    override fun getSerializedName(): String {
+        return modeName
+    }
+
+    fun getId(): Int {
+        return id
+    }
 
     fun next(): WrenchMode {
-        return when (this) {
-            Config -> Rotate
-            Rotate -> Config
-        }
+        return BY_ID.apply(this.getId() + 1)
     }
 
     fun previous(): WrenchMode {
-        return when (this) {
-            Config -> Rotate
-            Rotate -> Config
-        }
+        return BY_ID.apply(this.getId() - 1)
     }
 
     fun translation(): String {
-        val prefix = "item.processed.wrench.mode"
-        val suffix = when (this) {
-            Config -> "config"
-            Rotate -> "rotate"
-        }
-
-        return "$prefix.$suffix"
-    }
-
-    fun save(): Byte {
-        return when (this) {
-            Config -> 0.toByte()
-            Rotate -> 2.toByte()
-            else -> 0.toByte()
-        }
-    }
-
-    companion object {
-        fun load(value: Byte): WrenchMode {
-            return when (value.toInt()) {
-                0 -> Config
-                2 -> Rotate
-                else -> Config
-            }
-        }
+        return "item.processed.wrench.mode.$modeName"
     }
 }
