@@ -7,8 +7,8 @@ import redcrafter07.processed.ProcessedMod
 import java.util.function.Supplier
 import java.util.function.UnaryOperator
 
-object DataComponents {
-    val DATA_COMPONENTS = DeferredRegister.createDataComponents(ProcessedMod.ID)
+object ModDataComponents {
+    val DATA_COMPONENTS: DeferredRegister.DataComponents = DeferredRegister.createDataComponents(ProcessedMod.ID)
 
     val WRENCH_MODE = register("wrench_mode") { builder ->
         builder.persistent(WrenchMode.CODEC).networkSynchronized(WrenchMode.STREAM_CODEC)

@@ -9,7 +9,6 @@ import net.minecraft.world.level.LevelAccessor
 import net.minecraft.world.level.block.state.BlockState
 import net.neoforged.neoforge.capabilities.Capabilities
 import net.neoforged.neoforge.items.IItemHandler
-import redcrafter07.processed.ProcessedMod
 import redcrafter07.processed.block.PipeLikeState
 import java.util.*
 
@@ -200,7 +199,6 @@ class PipePressurizerBlockEntity(pos: BlockPos, state: BlockState) :
             if (capability != null) break
         }
         if (capability == null) return
-        ProcessedMod.LOGGER.info("got item!")
         for (pushingPos in pushingTo) {
             val localCapability =
                 level.getCapability(Capabilities.ItemHandler.BLOCK, pushingPos.blockPos, pushingPos.direction)

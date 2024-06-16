@@ -6,25 +6,17 @@ import net.minecraft.world.item.CreativeModeTab
 import net.minecraft.world.item.ItemStack
 import net.neoforged.neoforge.registries.DeferredRegister
 import redcrafter07.processed.ProcessedMod
-import redcrafter07.processed.block.ModBlocks
 import java.util.function.Supplier
 
 object ModItemGroup {
-    val CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, ProcessedMod.ID)
+    val CREATIVE_MODE_TABS: DeferredRegister<CreativeModeTab> = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, ProcessedMod.ID)
 
-    val MAIN_TAB = registerCreativeModeTab("processed") {
+    val MAIN_TAB = CREATIVE_MODE_TABS.register("processed", Supplier {
         CreativeModeTab.builder().title(Component.translatable("item_group." + ProcessedMod.ID + ".main"))
             .icon { ItemStack(ModItems.BLITZ_ORB.get()) }.displayItems { _, output ->
                 for (i in ModItems.ITEMS.entries) {
                     output.accept(i.get())
                 }
-                for (i in ModBlocks.BLOCKS.entries) {
-                    output.accept(i.get())
-                }
             }.build()
-    }
-
-    private fun registerCreativeModeTab(name: String, tab: Supplier<CreativeModeTab>) {
-        CREATIVE_MODE_TABS.register(name, tab)
-    }
+    })
 }

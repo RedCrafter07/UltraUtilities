@@ -12,6 +12,7 @@ import org.apache.logging.log4j.Logger
 import redcrafter07.processed.block.ModBlocks
 import redcrafter07.processed.block.tile_entities.ModTileEntities
 import redcrafter07.processed.gui.ModMenuTypes
+import redcrafter07.processed.item.ModDataComponents
 import redcrafter07.processed.item.ModItemGroup
 import redcrafter07.processed.item.ModItems
 import thedarkcolour.kotlinforforge.neoforge.forge.MOD_BUS
@@ -20,7 +21,7 @@ import thedarkcolour.kotlinforforge.neoforge.forge.runForDist
 /**
  * Main mod class. Should be an `object` declaration annotated with `@Mod`.
  * The modid should be declared in this object and should match the modId entry
- * in mods.toml.
+ * in neoforge.mods.toml.
  *
  * An example for blocks is in the `blocks` package of this mod.
  */
@@ -44,7 +45,7 @@ object ProcessedMod {
         ModItems.ITEMS.register(MOD_BUS)
         ModItemGroup.CREATIVE_MODE_TABS.register(MOD_BUS)
         ModTileEntities.BLOCK_TYPES.register(MOD_BUS)
-
+        ModDataComponents.DATA_COMPONENTS.register(MOD_BUS)
         ModMenuTypes.MENUS.register(MOD_BUS)
 
         val obj = runForDist(

@@ -8,7 +8,7 @@ enum class WrenchMode(private val id: Int, private val modeName: String) : Strin
     Config(0, "config"), Rotate(1, "rotate");
 
     companion object {
-        val BY_ID = ByIdMap.continuous(WrenchMode::getId, entries.toTypedArray(), ByIdMap.OutOfBoundsStrategy.ZERO)
+        val BY_ID = ByIdMap.continuous(WrenchMode::getId, entries.toTypedArray(), ByIdMap.OutOfBoundsStrategy.WRAP)
 
         val CODEC = StringRepresentable.fromEnum(WrenchMode::values)
         val STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, WrenchMode::getId)

@@ -43,7 +43,7 @@ enum class IoState(private val id: Int, private val stateName: String) : StringR
 
     companion object {
         val BY_ID =
-            ByIdMap.continuous(IoState::getId, IoState.entries.toTypedArray(), ByIdMap.OutOfBoundsStrategy.ZERO)
+            ByIdMap.continuous(IoState::getId, IoState.entries.toTypedArray(), ByIdMap.OutOfBoundsStrategy.WRAP)
 
         val CODEC = StringRepresentable.fromEnum(IoState::values)
         val STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, IoState::getId)
@@ -178,7 +178,7 @@ enum class BlockSide(private val id: Int, private val stateName: String) : Strin
 
         val DEFAULT = Front
 
-        val BY_ID = ByIdMap.continuous(BlockSide::getId, entries.toTypedArray(), ByIdMap.OutOfBoundsStrategy.ZERO)
+        val BY_ID = ByIdMap.continuous(BlockSide::getId, entries.toTypedArray(), ByIdMap.OutOfBoundsStrategy.WRAP)
 
         val CODEC = StringRepresentable.fromEnum(BlockSide::values)
         val STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, BlockSide::getId)
@@ -320,14 +320,9 @@ abstract class ProcessedMachine(blockEntityType: BlockEntityType<*>, blockPos: B
         return capabilityHandlers.getFluidHandlerForState(getSide(false, side))
     }
 
-    open fun clientTick(level: Level, pos: BlockPos, state: BlockState) {
-    }
-
-    open fun serverTick(level: Level, pos: BlockPos, state: BlockState) {
-    }
-
-    open fun tick(level: Level, pos: BlockPos, state: BlockState) {
-    }
+    open fun clientTick(level: Level, pos: BlockPos, state: BlockState) {}
+    open fun serverTick(level: Level, pos: BlockPos, state: BlockState) {}
+    open fun tick(level: Level, pos: BlockPos, state: BlockState) {}
 
     /// ###########################################
     /// #  E N E R G Y   C A P A B I L I T I E S  #

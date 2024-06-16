@@ -12,7 +12,7 @@ import redcrafter07.processed.block.ModBlocks
 import java.util.function.Supplier
 
 object ModTileEntities {
-    val BLOCK_TYPES = DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, ProcessedMod.ID)
+    val BLOCK_TYPES: DeferredRegister<BlockEntityType<*>> = DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, ProcessedMod.ID)
 
     val PIPE_BLOCK_ENTITY = register(
         "item_pipe_block_entity", ::ItemPipeBlockEntity,

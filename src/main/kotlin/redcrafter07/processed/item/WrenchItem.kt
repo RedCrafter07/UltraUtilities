@@ -10,7 +10,7 @@ import net.minecraft.world.level.block.DirectionalBlock
 import net.minecraft.world.level.block.HorizontalDirectionalBlock
 import net.minecraft.world.level.block.state.properties.BlockStateProperties
 import redcrafter07.processed.block.WrenchInteractableBlock
-import redcrafter07.processed.item.DataComponents.WRENCH_MODE
+import redcrafter07.processed.item.ModDataComponents.WRENCH_MODE
 
 class WrenchItem : ModItem(Properties().stacksTo(1), "wrench") {
     companion object {

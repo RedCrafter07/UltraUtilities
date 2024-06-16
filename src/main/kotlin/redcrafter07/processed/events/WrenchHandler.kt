@@ -24,7 +24,9 @@ object WrenchHandler {
 
             if (itemStack.item is WrenchItem) {
                 val mode = WrenchItem.getMode(itemStack)
+                ProcessedMod.LOGGER.info("Mode: $mode");
                 val newMode = if (event.scrollDeltaY > 0) mode.next() else mode.previous()
+                ProcessedMod.LOGGER.info("Mode: $mode, newMode: $newMode, scrollDelta: ${event.scrollDeltaY}");
                 WrenchItem.setMode(itemStack, newMode)
 
                 player.inventory.setChanged()

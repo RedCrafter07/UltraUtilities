@@ -12,9 +12,9 @@ import redcrafter07.processed.ProcessedMod
 import java.util.function.Supplier
 
 object ModMenuTypes {
-    val MENUS = DeferredRegister.create(Registries.MENU, ProcessedMod.ID)
+    val MENUS: DeferredRegister<MenuType<*>> = DeferredRegister.create(Registries.MENU, ProcessedMod.ID)
 
-    val POWERED_FURNACE_MENU = register("powered_furnace_menu", ::PoweredFurnaceMenu);
+    val POWERED_FURNACE_MENU = register("powered_furnace_menu", ::PoweredFurnaceMenu)
 
     fun <T : AbstractContainerMenu> register(
         name: String,
