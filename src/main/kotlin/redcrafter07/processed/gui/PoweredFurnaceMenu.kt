@@ -1,23 +1,27 @@
 package redcrafter07.processed.gui
 
 import net.minecraft.network.FriendlyByteBuf
+import net.minecraft.network.chat.Component
 import net.minecraft.world.entity.player.Inventory
 import net.minecraft.world.entity.player.Player
-import net.minecraft.world.inventory.*
+import net.minecraft.world.inventory.ContainerData
+import net.minecraft.world.inventory.ContainerLevelAccess
+import net.minecraft.world.inventory.SimpleContainerData
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.entity.BlockEntity
 import net.neoforged.neoforge.items.SlotItemHandler
 import redcrafter07.processed.block.PoweredFurnaceBlock
 import redcrafter07.processed.block.tile_entities.PoweredFurnaceBlockEntity
-import redcrafter07.processed.gui.inventory.ProcessedContainerMenu
+import redcrafter07.processed.gui.inventory.ProcessedMachineMenu
 import redcrafter07.processed.gui.inventory.SlotOutputItemHandler
+import redcrafter07.processed.gui.widgets.ProgressBarWidget
+import redcrafter07.processed.gui.widgets.ProgressBars
 
 
 class PoweredFurnaceMenu(id: Int, inventory: Inventory, entity: BlockEntity?, val data: ContainerData) :
-    ProcessedContainerMenu(ModMenuTypes.POWERED_FURNACE_MENU.get(), id, inventory) {
+    ProcessedMachineMenu(ModMenuTypes.POWERED_FURNACE_MENU.get(), id, inventory) {
     val blockEntity: PoweredFurnaceBlockEntity
     val level: Level
-
 
     constructor(id: Int, inventory: Inventory, extraData: FriendlyByteBuf) : this(
         id,
@@ -30,24 +34,29 @@ class PoweredFurnaceMenu(id: Int, inventory: Inventory, entity: BlockEntity?, va
         checkContainerSize(inventory, 2)
         blockEntity = entity as PoweredFurnaceBlockEntity
         level = inventory.player.level()
-        addSlot(SlotItemHandler(blockEntity.inputItemHandler, 0, 80, 11))
+        addSlot(SlotItemHandler(blockEntity.inputItemHandler, 0, 80, 21))
         addSlot(SlotOutputItemHandler(blockEntity.outputItemHandler, 0, 80, 59))
         addDataSlots(data)
     }
 
-    fun isCrafting(): Boolean {
-        return data.get(0) > 0
-    }
-
-    fun getScaledProgress(): Int {
+    private fun getProgress(): Double {
         val progress = data.get(0)
         val maxProgress = data.get(1)
-        val progressArrowSize = 26
 
-        return if (maxProgress != 0 && progress != 0) progress * progressArrowSize / maxProgress else 0
+        return if (maxProgress != 0 && progress != 0) progress.toDouble() / maxProgress.toDouble() else 0.0
     }
 
-    override fun customSlotCount(): Int {return 2}
+    override fun getProgressBar(offX: Int, offY: Int): ProgressBarWidget {
+        return ProgressBars.POWERED_FURNACE.create(offX + 85, offY + 40, this::getProgress)
+    }
+
+    override fun getTitle(): Component {
+        return blockEntity.displayName
+    }
+
+    override fun customSlotCount(): Int {
+        return 2
+    }
 
     override fun stillValid(player: Player): Boolean {
         return ContainerLevelAccess.create(level, blockEntity.blockPos).evaluate { level, pos ->

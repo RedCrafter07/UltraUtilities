@@ -39,14 +39,8 @@ enum class PipeLikeState : StringRepresentable {
             true -> "title."
             false -> ""
         }
-        val state = when (this) {
-            Normal -> "normal"
-            Pull -> "pull"
-            Push -> "push"
-            None -> "none"
-        }
 
-        val formattedString = Component.translatable("${base}.${addition}${state}")
+        val formattedString = Component.translatable("$base.$addition.${this.serializedName}")
 
         return formattedString
     }
@@ -73,6 +67,7 @@ enum class PipeLikeState : StringRepresentable {
         }
     }
 }
+
 class DirectionalPipeLikeState(val blockEntity: BlockEntity) {
     private var stateNorth: PipeLikeState = PipeLikeState.Normal
     private var stateSouth: PipeLikeState = PipeLikeState.Normal
@@ -126,28 +121,28 @@ class DirectionalPipeLikeState(val blockEntity: BlockEntity) {
     }
 }
 
-val SHAPE_CORE = Block.box(3.0, 3.0, 3.0, 13.0, 13.0, 13.0);
-val SHAPE_NORTH = Block.box(3.0, 3.0, 0.0, 13.0, 13.0, 3.0);
-val SHAPE_SOUTH = Block.box(3.0, 3.0, 13.0, 13.0, 13.0, 16.0);
-val SHAPE_WEST = Block.box(0.0, 3.0, 3.0, 3.0, 13.0, 13.0);
-val SHAPE_EAST = Block.box(13.0, 3.0, 3.0, 16.0, 13.0, 13.0);
-val SHAPE_TOP = Block.box(3.0, 13.0, 3.0, 13.0, 16.0, 13.0);
-val SHAPE_BOTTOM = Block.box(3.0, 0.0, 3.0, 13.0, 3.0, 13.0);
+val SHAPE_CORE = Block.box(3.0, 3.0, 3.0, 13.0, 13.0, 13.0)
+val SHAPE_NORTH = Block.box(3.0, 3.0, 0.0, 13.0, 13.0, 3.0)
+val SHAPE_SOUTH = Block.box(3.0, 3.0, 13.0, 13.0, 13.0, 16.0)
+val SHAPE_WEST = Block.box(0.0, 3.0, 3.0, 3.0, 13.0, 13.0)
+val SHAPE_EAST = Block.box(13.0, 3.0, 3.0, 16.0, 13.0, 13.0)
+val SHAPE_TOP = Block.box(3.0, 13.0, 3.0, 13.0, 16.0, 13.0)
+val SHAPE_BOTTOM = Block.box(3.0, 0.0, 3.0, 13.0, 3.0, 13.0)
 
 fun getShape(
     state: BlockState,
 ): VoxelShape {
-    var shape = SHAPE_CORE;
+    var shape = SHAPE_CORE
     if (state.getValue(PIPE_STATE_NORTH) != PipeLikeState.None) shape =
-        Shapes.join(shape, SHAPE_NORTH, BooleanOp.OR);
+        Shapes.join(shape, SHAPE_NORTH, BooleanOp.OR)
     if (state.getValue(PIPE_STATE_SOUTH) != PipeLikeState.None) shape =
-        Shapes.join(shape, SHAPE_SOUTH, BooleanOp.OR);
-    if (state.getValue(PIPE_STATE_WEST) != PipeLikeState.None) shape = Shapes.join(shape, SHAPE_WEST, BooleanOp.OR);
-    if (state.getValue(PIPE_STATE_EAST) != PipeLikeState.None) shape = Shapes.join(shape, SHAPE_EAST, BooleanOp.OR);
-    if (state.getValue(PIPE_STATE_TOP) != PipeLikeState.None) shape = Shapes.join(shape, SHAPE_TOP, BooleanOp.OR);
+        Shapes.join(shape, SHAPE_SOUTH, BooleanOp.OR)
+    if (state.getValue(PIPE_STATE_WEST) != PipeLikeState.None) shape = Shapes.join(shape, SHAPE_WEST, BooleanOp.OR)
+    if (state.getValue(PIPE_STATE_EAST) != PipeLikeState.None) shape = Shapes.join(shape, SHAPE_EAST, BooleanOp.OR)
+    if (state.getValue(PIPE_STATE_TOP) != PipeLikeState.None) shape = Shapes.join(shape, SHAPE_TOP, BooleanOp.OR)
     if (state.getValue(PIPE_STATE_BOTTOM) != PipeLikeState.None) shape =
-        Shapes.join(shape, SHAPE_BOTTOM, BooleanOp.OR);
-    return shape;
+        Shapes.join(shape, SHAPE_BOTTOM, BooleanOp.OR)
+    return shape
 }
 
 val PIPE_STATE_TOP = EnumProperty.create("pipe_state_top", PipeLikeState::class.java)

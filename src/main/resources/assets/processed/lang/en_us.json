@@ -13,6 +13,8 @@
   "block.processed.item_pipe.tooltip": "§7A pipe to transfer items.",
   "block.processed.pipe_pressurizer": "Pipe Pressurizer",
   "block.processed.pipe_pressurizer.tooltip": "§7The controller for item pipes.",
+  "block.processed.powered_furnace": "%d Powered Furnace",
+  "block.processed.powered_furnace.tooltip": "Smelts item using Power.",
   "processed.pipe_state.normal": "Normal",
   "processed.pipe_state.push": "Push",
   "processed.pipe_state.pull": "Pull",
@@ -44,8 +46,20 @@
   "processed.side.right": "Right",
   "processed.side.front": "Front",
   "processed.side.back": "Back",
-  "processed.screen.powered_furnace.name": "%d Powered Furnace",
-  "processed.tier_1": "Basic",
-  "processed.tier_2": "Advanced",
-  "processed.tier_3": "Very Advanced"
+
+  "processed.tier_1": "Rudimentary",
+  "processed.tier_2": "Basic",
+  "processed.tier_3": "Advanced",
+  "processed.tier_4": "Nuclear",
+  "processed.tier_5": "Quantum",
+  "processed.tier_6": "Final",
+
+  "processed.tier_1.colored": "§7Rudimentary§r",
+  "processed.tier_2.colored": "§eBasic§r",
+  "processed.tier_3.colored": "§9Advanced§r",
+  "processed.tier_4.colored": "§bNuclear§r",
+  "processed.tier_5.colored": "§5Quantum§r",
+  "processed.tier_6.colored": "§4Final§r",
+
+  "processed.tiered_machine_info": "Tier: %s"
 }

@@ -1,11 +1,19 @@
 package redcrafter07.processed.gui.inventory
 
+import net.minecraft.network.chat.Component
 import net.minecraft.world.entity.player.Inventory
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.inventory.AbstractContainerMenu
 import net.minecraft.world.inventory.MenuType
 import net.minecraft.world.inventory.Slot
 import net.minecraft.world.item.ItemStack
+import redcrafter07.processed.gui.widgets.ProgressBarWidget
+
+abstract class ProcessedMachineMenu(menuType: MenuType<*>?, containerId: Int, playerInventory: Inventory) :
+    ProcessedContainerMenu(menuType, containerId, playerInventory) {
+        abstract fun getProgressBar(offX: Int, offY: Int): ProgressBarWidget
+        abstract fun getTitle(): Component
+    }
 
 abstract class ProcessedContainerMenu(menuType: MenuType<*>?, containerId: Int, playerInventory: Inventory) :
     AbstractContainerMenu(menuType, containerId) {

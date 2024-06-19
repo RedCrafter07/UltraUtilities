@@ -22,18 +22,22 @@ object ModBlocks {
     val BLOCK_PIPE_PRESSURIZER = registerBlock("pipe_pressurizer", ::PipePressurizerBlock)
     val BLOCKS_POWERED_FURNACE = registerTieredBlock("powered_furnace", ProcessedTiers.machine, ::PoweredFurnaceBlock)
 
-    private fun <T : Block> registerTieredBlock(
+    private fun <T : TieredProcessedBlock> registerTieredBlock(
         id: String,
         tiers: Set<ProcessedTier>,
         block: TieredBlockProvider<T>,
     ): Set<DeferredBlock<T>> {
-        return tiers.map { tier -> registerBlock(tier.named() + "_" + id) { block.provide(tier) } }.toSet()
+        return tiers.map { tier ->
+            val regBlock = BLOCKS.register("${id}_${tier.named()}", Supplier { block.provide(tier) })
+            ModItems.registerItem("${id}_${tier.named()}") { TieredModBlockItem(regBlock.get(), Item.Properties()) }
+            regBlock
+        }.toSet()
     }
 
     private fun <T : Block> registerBlock(id: String, block: Supplier<T>): DeferredBlock<T> {
         val regBlock = BLOCKS.register(id, block)
 
-        registerBlockItem(id, regBlock)
+        ModItems.registerItem(id) { ModBlockItem(regBlock.get(), Item.Properties(), id) }
 
         return regBlock
     }

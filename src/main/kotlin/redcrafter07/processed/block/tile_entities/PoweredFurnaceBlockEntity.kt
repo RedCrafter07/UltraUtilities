@@ -111,7 +111,7 @@ class PoweredFurnaceBlockEntity(pos: BlockPos, state: BlockState) :
     }
 
     override fun getDisplayName(): Component {
-        return Component.translatable("processed.screen.powered_furnace.name", tier.translated())
+        return Component.translatable("block.processed.powered_furnace", tier.translated())
     }
 
     override fun saveAdditional(nbt: CompoundTag, provider: Provider) {

@@ -53,16 +53,16 @@ runs {
         // Please read: https://stackoverflow.com/questions/2031163/when-to-use-the-different-log-levels
         systemProperty 'forge.logging.console.level', 'debug'
 
-        modSource sourceSets.main
+        modSource project.sourceSets.main
     }
 
     client {
         // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
-        systemProperty 'forge.enabledGameTestNamespaces', mod_id
+        systemProperty 'forge.enabledGameTestNamespaces', project.mod_id
     }
 
     server {
-        systemProperty 'forge.enabledGameTestNamespaces', mod_id
+        systemProperty 'forge.enabledGameTestNamespaces', project.mod_id
         programArgument '--nogui'
     }
 
@@ -70,7 +70,7 @@ runs {
     // By default, the server will crash when no gametests are provided.
     // The gametest system is also enabled by default for other run configs under the /test command.
     gameTestServer {
-        systemProperty 'forge.enabledGameTestNamespaces', mod_id
+        systemProperty 'forge.enabledGameTestNamespaces', project.mod_id
     }
 
     data {
@@ -78,7 +78,7 @@ runs {
         // workingDirectory project.file('run-data')
 
         // Specify the modid for data generation, where to output the resulting resource, and where to look for existing resources.
-        programArguments.addAll '--mod', mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
+        programArguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
     }
 }
 

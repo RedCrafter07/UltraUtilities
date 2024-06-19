@@ -8,7 +8,11 @@ class ProcessedTier(val tier: Int, val multiplier_speed: Int, val multiplier_ene
         return "tier_$tier"; }
 
     fun translated(): Component {
-        return Component.translatable("processed." + named())
+        return Component.translatable("processed.${named()}")
+    }
+
+    fun colored(): Component {
+        return Component.translatable("processed.${named()}.colored")
     }
 
     fun save(name: String, nbt: CompoundTag) {
@@ -30,8 +34,11 @@ class ProcessedTier(val tier: Int, val multiplier_speed: Int, val multiplier_ene
 
 object ProcessedTiers {
     val machine = setOf(
-        ProcessedTier(1, 1, 1),
-        ProcessedTier(2, 2, 2),
-        ProcessedTier(3, 3, 2),
+        ProcessedTier(1, 1, 1), // Rudimentary
+        ProcessedTier(2, 3, 4), // Basic
+        ProcessedTier(3, 9, 16), // Advanced
+        ProcessedTier(4, 27, 64), // Nuclear
+        ProcessedTier(5, 81, 256), // Quantum
+        ProcessedTier(6, 243, 1024), // Final
     )
 }

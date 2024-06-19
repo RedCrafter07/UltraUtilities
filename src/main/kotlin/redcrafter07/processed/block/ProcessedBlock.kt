@@ -1,11 +1,14 @@
 package redcrafter07.processed.block
 
 import net.minecraft.core.BlockPos
+import net.minecraft.network.chat.Component
+import net.minecraft.network.chat.MutableComponent
 import net.minecraft.world.Containers
 import net.minecraft.world.InteractionHand
 import net.minecraft.world.ItemInteractionResult
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.ItemStack
+import net.minecraft.world.item.TooltipFlag
 import net.minecraft.world.item.context.BlockPlaceContext
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.Block
@@ -13,14 +16,48 @@ import net.minecraft.world.level.block.EntityBlock
 import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.entity.BlockEntityTicker
 import net.minecraft.world.level.block.entity.BlockEntityType
+import net.minecraft.world.level.block.entity.BlockEntityType.BlockEntitySupplier
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.block.state.StateDefinition
 import net.minecraft.world.level.block.state.properties.BlockStateProperties
 import net.minecraft.world.level.block.state.properties.DirectionProperty
 import net.minecraft.world.phys.BlockHitResult
 import redcrafter07.processed.block.tile_entities.ProcessedMachine
+import redcrafter07.processed.block.tile_entities.TieredProcessedMachine
 import redcrafter07.processed.block.tile_entities.capabilities.SimpleDroppingContainer
 import redcrafter07.processed.item.ModItems
+
+abstract class TieredProcessedBlock(
+    properties: Properties,
+    private val baseName: String,
+    val tier: ProcessedTier,
+    private val blockEntity: BlockEntitySupplier<TieredProcessedMachine>
+) : ProcessedBlock(properties) {
+    override fun getName(): MutableComponent {
+        return Component.translatable(baseName, tier.translated())
+    }
+
+    open fun getShiftDescription(
+        tooltips: MutableList<Component>,
+        tooltipFlag: TooltipFlag
+    ) {
+        tooltips.add(Component.translatable("$baseName.tooltip"))
+    }
+
+    open fun getDescription(
+        tooltips: MutableList<Component>,
+        tooltipFlag: TooltipFlag
+    ) {
+        tooltips.add(Component.translatable("processed.tiered_machine_info", tier.colored()))
+    }
+
+
+    override fun newBlockEntity(pos: BlockPos, state: BlockState): BlockEntity? {
+        val entity = blockEntity.create(pos, state)
+        entity.tier = tier
+        return entity
+    }
+}
 
 abstract class ProcessedBlock(properties: Properties) : Block(properties), EntityBlock {
     companion object {

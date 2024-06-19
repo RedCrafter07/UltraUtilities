@@ -11,6 +11,7 @@ import net.minecraft.network.chat.Component
 import redcrafter07.processed.ProcessedMod
 import redcrafter07.processed.block.tile_entities.BlockSide
 import redcrafter07.processed.block.tile_entities.ProcessedMachine
+import redcrafter07.processed.gui.widgets.IoToggleButton
 import redcrafter07.processed.network.IOChangePacket
 
 class ConfigScreen(private val machine: ProcessedMachine, private val blockPos: BlockPos) :
