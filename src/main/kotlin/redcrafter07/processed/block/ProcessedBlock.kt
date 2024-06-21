@@ -1,5 +1,6 @@
 package redcrafter07.processed.block
 
+import net.minecraft.ChatFormatting
 import net.minecraft.core.BlockPos
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.MutableComponent
@@ -37,18 +38,18 @@ abstract class TieredProcessedBlock(
         return Component.translatable(baseName, tier.translated())
     }
 
-    open fun getShiftDescription(
-        tooltips: MutableList<Component>,
-        tooltipFlag: TooltipFlag
-    ) {
-        tooltips.add(Component.translatable("$baseName.tooltip"))
-    }
-
     open fun getDescription(
         tooltips: MutableList<Component>,
         tooltipFlag: TooltipFlag
     ) {
-        tooltips.add(Component.translatable("processed.tiered_machine_info", tier.colored()))
+        tooltips.add(Component.translatable("$baseName.tooltip"))
+        tooltips.add(
+            Component.translatable(
+                "processed.tiered_machine_info",
+                Component.literal(tier.getMaxPower().toString()).withStyle(ChatFormatting.GREEN),
+                tier.colored()
+            )
+        )
     }
 
 

@@ -1,0 +1,9 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "redcrafter07.processed.mixins",
+  "compatibilityLevel": "JAVA_21",
+  "client": [
+    "PlayerSkinMixin"
+  ]
+}

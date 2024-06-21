@@ -23,6 +23,10 @@ class ProcessedTier(val tier: Int, val multiplier_speed: Int, val multiplier_ene
         nbt.put(name, tag)
     }
 
+    fun getMaxPower(): Int {
+        return multiplier_energy * 32
+    }
+
     companion object {
         fun load(name: String, nbt: CompoundTag): ProcessedTier {
             val tag = nbt.get(name)
@@ -37,8 +41,9 @@ object ProcessedTiers {
         ProcessedTier(1, 1, 1), // Rudimentary
         ProcessedTier(2, 3, 4), // Basic
         ProcessedTier(3, 9, 16), // Advanced
-        ProcessedTier(4, 27, 64), // Nuclear
-        ProcessedTier(5, 81, 256), // Quantum
-        ProcessedTier(6, 243, 1024), // Final
+        ProcessedTier(4, 27, 64), //
+        ProcessedTier(5, 81, 256), // Nuclear
+        ProcessedTier(6, 243, 1024), // Quantum
+        ProcessedTier(7, 729, 4096), // Final
     )
 }

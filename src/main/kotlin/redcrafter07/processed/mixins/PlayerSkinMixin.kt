@@ -1,0 +1,21 @@
+package redcrafter07.processed.mixins;
+
+import net.minecraft.client.resources.PlayerSkin;
+import net.minecraft.resources.ResourceLocation;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+
+// TODO: REWRITE MIXING **IN JAVA**
+@Mixin(PlayerSkin::class)
+abstract class PlayerSkinMixin {
+    @Inject(
+            at = [At("HEAD")],
+            method = ["capeTexture", "elytraTexture"]
+    )
+    fun `processed$capeTexture`(cir: CallbackInfoReturnable<ResourceLocation>) {
+        // TODO: Milestone Capes :3
+    }
+}

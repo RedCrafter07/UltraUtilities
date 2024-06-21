@@ -1,6 +1,5 @@
 {
   "item_group.processed.main": "Processed",
-  "item.processed.hold_shift": "§8Hold §7[§2SHIFT§7] §8for more information.",
   "item.processed.blitz_orb": "Blitz Orb",
   "item.processed.wrench": "Wrench",
   "item.processed.wrench.tooltip": "§7Tweak other blocks from Processed!",
@@ -14,7 +13,7 @@
   "block.processed.pipe_pressurizer": "Pipe Pressurizer",
   "block.processed.pipe_pressurizer.tooltip": "§7The controller for item pipes.",
   "block.processed.powered_furnace": "%d Powered Furnace",
-  "block.processed.powered_furnace.tooltip": "Smelts item using Power.",
+  "block.processed.powered_furnace.tooltip": "§7Smelts item using Power.",
   "processed.pipe_state.normal": "Normal",
   "processed.pipe_state.push": "Push",
   "processed.pipe_state.pull": "Pull",
@@ -50,16 +49,18 @@
   "processed.tier_1": "Rudimentary",
   "processed.tier_2": "Basic",
   "processed.tier_3": "Advanced",
-  "processed.tier_4": "Nuclear",
-  "processed.tier_5": "Quantum",
-  "processed.tier_6": "Final",
+  "processed.tier_4": "Void",
+  "processed.tier_5": "Nuclear",
+  "processed.tier_6": "Quantum",
+  "processed.tier_7": "Final",
 
   "processed.tier_1.colored": "§7Rudimentary§r",
   "processed.tier_2.colored": "§eBasic§r",
   "processed.tier_3.colored": "§9Advanced§r",
-  "processed.tier_4.colored": "§bNuclear§r",
-  "processed.tier_5.colored": "§5Quantum§r",
-  "processed.tier_6.colored": "§4Final§r",
+  "processed.tier_4.colored": "§dVoid§r",
+  "processed.tier_5.colored": "§bNuclear§r",
+  "processed.tier_6.colored": "§5Quantum§r",
+  "processed.tier_7.colored": "§4Final§r",
 
-  "processed.tiered_machine_info": "Tier: %s"
+  "processed.tiered_machine_info": "§7Max Power: %s §aRF/t (%s§a)§f"
 }

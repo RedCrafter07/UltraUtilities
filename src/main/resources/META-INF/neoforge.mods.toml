@@ -18,6 +18,9 @@ logoFile="logo.png"
 # See: https://docs.modrinth.com/#tag/misc/operation/forgeUpdates
 # updateJSONURL=""
 
+[[mixins]]
+config="${mod_id}.mixins.json"
+
 [[dependencies.${mod_id}]]
 modId = "neoforge"
 type = "required"
@@ -28,5 +31,5 @@ side = "BOTH"
 modId = "minecraft"
 type = "required"
 versionRange = "${minecraft_version_range}"
-ordering = "NONE"
+ordering = "BEFORE"
 side = "BOTH"
