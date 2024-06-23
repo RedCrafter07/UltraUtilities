@@ -15,29 +15,13 @@ class ProcessedTier(val tier: Int, val multiplier_speed: Int, val multiplier_ene
         return Component.translatable("processed.${named()}.colored")
     }
 
-    fun save(name: String, nbt: CompoundTag) {
-        val tag = CompoundTag()
-        tag.putInt("tier", tier)
-        tag.putInt("speed_mul", multiplier_speed)
-        tag.putInt("energy_mul", multiplier_energy)
-        nbt.put(name, tag)
-    }
-
     fun getMaxPower(): Int {
         return multiplier_energy * 32
-    }
-
-    companion object {
-        fun load(name: String, nbt: CompoundTag): ProcessedTier {
-            val tag = nbt.get(name)
-            if (tag !is CompoundTag) return ProcessedTier(1, 1, 1)
-            return ProcessedTier(tag.getInt("tier"), tag.getInt("speed_mul"), tag.getInt("energy_mul"))
-        }
     }
 }
 
 object ProcessedTiers {
-    val machine = setOf(
+    val machine = listOf(
         ProcessedTier(1, 1, 1), // Rudimentary
         ProcessedTier(2, 3, 4), // Basic
         ProcessedTier(3, 9, 16), // Advanced

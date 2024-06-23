@@ -7,11 +7,11 @@ import net.minecraft.world.entity.player.Inventory
 import redcrafter07.processed.gui.inventory.ProcessedMachineMenu
 
 class GenericMachineMenuScreen(
-    menu: ProcessedMachineMenu,
+    menu: ProcessedMachineMenu<*>,
     inventory: Inventory,
     val component: Component,
 ) :
-    AbstractContainerScreen<ProcessedMachineMenu>(
+    AbstractContainerScreen<ProcessedMachineMenu<*>>(
         menu,
         inventory,
         menu.getTitle()
@@ -19,6 +19,7 @@ class GenericMachineMenuScreen(
     override fun init() {
         super.init()
         addRenderableOnly(menu.getProgressBar(leftPos, topPos))
+        menu.getEnergyContainer(leftPos, topPos)?.let { addRenderableWidget(it) }
     }
 
     override fun renderBg(guiGraphics: GuiGraphics, partialTick: Float, mouseX: Int, mouseY: Int) {

@@ -4,14 +4,13 @@ import net.minecraft.core.BlockPos
 import net.minecraft.world.InteractionResult
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.level.Level
-import net.minecraft.world.level.block.EntityBlock
 import net.minecraft.world.level.block.SoundType
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.phys.BlockHitResult
 import redcrafter07.processed.block.tile_entities.PoweredFurnaceBlockEntity
 
 class PoweredFurnaceBlock(tier: ProcessedTier) :
-    TieredProcessedBlock(Properties.of().sound(SoundType.STONE), "block.processed.powered_furnace", tier, ::PoweredFurnaceBlockEntity), EntityBlock {
+    TieredProcessedBlock(Properties.of().sound(SoundType.STONE), "block.processed.powered_furnace", tier, ::PoweredFurnaceBlockEntity) {
 
     override fun useWithoutItem(
         state: BlockState,

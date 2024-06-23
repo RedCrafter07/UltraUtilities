@@ -45,6 +45,7 @@
   "processed.side.right": "Right",
   "processed.side.front": "Front",
   "processed.side.back": "Back",
+  "processed.gui.widgets.energy_bar": "Energy: %s / %s FE",
 
   "processed.tier_1": "Rudimentary",
   "processed.tier_2": "Basic",

@@ -24,7 +24,7 @@ object ModBlocks {
 
     private fun <T : TieredProcessedBlock> registerTieredBlock(
         id: String,
-        tiers: Set<ProcessedTier>,
+        tiers: List<ProcessedTier>,
         block: TieredBlockProvider<T>,
     ): Set<DeferredBlock<T>> {
         return tiers.map { tier ->
@@ -40,10 +40,6 @@ object ModBlocks {
         ModItems.registerItem(id) { ModBlockItem(regBlock.get(), Item.Properties(), id) }
 
         return regBlock
-    }
-
-    private fun <T : Block> registerBlockItem(id: String, block: DeferredBlock<T>) {
-        ModItems.registerItem(id) { ModBlockItem(block.get(), Item.Properties(), id) }
     }
 
     fun interface TieredBlockProvider<T> {

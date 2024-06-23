@@ -19,8 +19,7 @@ import redcrafter07.processed.gui.widgets.ProgressBars
 
 
 class PoweredFurnaceMenu(id: Int, inventory: Inventory, entity: BlockEntity?, val data: ContainerData) :
-    ProcessedMachineMenu(ModMenuTypes.POWERED_FURNACE_MENU.get(), id, inventory) {
-    val blockEntity: PoweredFurnaceBlockEntity
+    ProcessedMachineMenu<PoweredFurnaceBlockEntity>(ModMenuTypes.POWERED_FURNACE_MENU.get(), id, inventory, entity as PoweredFurnaceBlockEntity) {
     val level: Level
 
     constructor(id: Int, inventory: Inventory, extraData: FriendlyByteBuf) : this(
@@ -32,7 +31,6 @@ class PoweredFurnaceMenu(id: Int, inventory: Inventory, entity: BlockEntity?, va
 
     init {
         checkContainerSize(inventory, 2)
-        blockEntity = entity as PoweredFurnaceBlockEntity
         level = inventory.player.level()
         addSlot(SlotItemHandler(blockEntity.inputItemHandler, 0, 80, 21))
         addSlot(SlotOutputItemHandler(blockEntity.outputItemHandler, 0, 80, 59))

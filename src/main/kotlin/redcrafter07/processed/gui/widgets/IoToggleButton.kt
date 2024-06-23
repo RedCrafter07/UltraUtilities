@@ -35,13 +35,11 @@ class IoToggleButton(x: Int, y: Int, private val buttonName: Component, var stat
     }
 
     override fun onClick(mouseX: Double, mouseY: Double, button: Int) {
-
         if (button == 0) this.state = this.state.next()
         else this.state = this.state.previous()
         this.onChange.onChange(this, this.state)
         this.tooltip = Tooltip.create(Component.translatable("processed.io_button.tooltip", this.state.toComponent()))
         this.message = Component.translatable("processed.io_button.message", buttonName, state.toComponent())
-
     }
 
     override fun updateWidgetNarration(output: NarrationElementOutput) {

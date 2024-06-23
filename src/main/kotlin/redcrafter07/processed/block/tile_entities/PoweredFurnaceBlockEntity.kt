@@ -16,19 +16,25 @@ import net.minecraft.world.item.crafting.SingleRecipeInput
 import net.minecraft.world.item.crafting.SmeltingRecipe
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.state.BlockState
+import redcrafter07.processed.block.ProcessedTier
 import redcrafter07.processed.gui.PoweredFurnaceMenu
 import kotlin.jvm.optionals.getOrNull
 
 class PoweredFurnaceBlockEntity(pos: BlockPos, state: BlockState) :
     TieredProcessedMachine(ModTileEntities.POWERED_FURNACE.get(), pos, state), MenuProvider {
 
-    protected val data: ContainerData
+    private val data: ContainerData
     private var progress = 0
     private var maxProgress = 78
+
+    override fun onTierChanged(old: ProcessedTier, new: ProcessedTier) {
+        useEnergyCapability(1000 * tier.multiplier_energy, tier.getMaxPower())
+    }
 
     init {
         useItemCapability(IoState.Input)
         useItemCapability(IoState.Output)
+        onTierChanged(tier, tier)
 
         this.data = object : ContainerData {
             override fun get(index: Int): Int {
@@ -116,11 +122,11 @@ class PoweredFurnaceBlockEntity(pos: BlockPos, state: BlockState) :
 
     override fun saveAdditional(nbt: CompoundTag, provider: Provider) {
         super.saveAdditional(nbt, provider)
-        nbt.putInt("powered_furnace.progress", progress)
+        nbt.putInt("progress", progress)
     }
 
     override fun loadAdditional(nbt: CompoundTag, provider: Provider) {
         super.loadAdditional(nbt, provider)
-        progress = nbt.getInt("powered_furnace.progress")
+        progress = nbt.getInt("progress")
     }
 }

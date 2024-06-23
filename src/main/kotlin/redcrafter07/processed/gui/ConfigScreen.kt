@@ -8,19 +8,16 @@ import net.minecraft.client.gui.screens.Screen
 import net.minecraft.client.renderer.GameRenderer
 import net.minecraft.core.BlockPos
 import net.minecraft.network.chat.Component
-import redcrafter07.processed.ProcessedMod
 import redcrafter07.processed.block.tile_entities.BlockSide
 import redcrafter07.processed.block.tile_entities.ProcessedMachine
 import redcrafter07.processed.gui.widgets.IoToggleButton
 import redcrafter07.processed.network.IOChangePacket
+import redcrafter07.processed.gui.RenderUtils.GUI_BASE_TEXTURE as TEXTURE
+import redcrafter07.processed.gui.RenderUtils.GUI_BASE_TEXTURE_WIDTH as IMAGE_WIDTH
+import redcrafter07.processed.gui.RenderUtils.GUI_BASE_TEXTURE_HEIGHT as IMAGE_HEIGHT
 
 class ConfigScreen(private val machine: ProcessedMachine, private val blockPos: BlockPos) :
     Screen(Component.translatable("processed.screen.block_config.title")) {
-    companion object {
-        const val IMAGE_WIDTH = 176
-        const val IMAGE_HEIGHT = 166
-        val TEXTURE = ProcessedMod.rl("textures/gui/gui_base_inventory.png")
-    }
 
     private var topX = 0
     private var topY = 0

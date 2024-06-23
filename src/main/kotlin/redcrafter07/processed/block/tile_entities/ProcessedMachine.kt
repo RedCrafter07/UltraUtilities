@@ -28,6 +28,7 @@ import net.neoforged.neoforge.items.wrapper.EmptyItemHandler
 import org.joml.Vector2i
 import redcrafter07.processed.ProcessedMod
 import redcrafter07.processed.block.ProcessedTier
+import redcrafter07.processed.block.ProcessedTiers
 import redcrafter07.processed.block.WrenchInteractableBlock
 import redcrafter07.processed.block.tile_entities.capabilities.*
 import redcrafter07.processed.gui.ConfigScreen
@@ -653,8 +654,14 @@ abstract class ProcessedMachine(blockEntityType: BlockEntityType<*>, blockPos: B
             if (tag.contains("energyStore", 10)) energyStore?.deserializeNBT(provider, tag.getCompound("energyStore"))
 
             // items
-            if (tag.contains("inputItemNbt", 10)) inputItemHandler?.deserializeNBT(provider, tag.getCompound("inputItemNbt"))
-            if (tag.contains("outputItemNbt", 10)) outputItemHandler?.deserializeNBT(provider, tag.getCompound("outputItemNbt"))
+            if (tag.contains("inputItemNbt", 10)) inputItemHandler?.deserializeNBT(
+                provider,
+                tag.getCompound("inputItemNbt")
+            )
+            if (tag.contains("outputItemNbt", 10)) outputItemHandler?.deserializeNBT(
+                provider,
+                tag.getCompound("outputItemNbt")
+            )
             if (tag.contains(
                     "additionalItemNbt",
                     10
@@ -667,7 +674,10 @@ abstract class ProcessedMachine(blockEntityType: BlockEntityType<*>, blockPos: B
             ) auxiliaryItemHandler?.deserializeNBT(provider, tag.getCompound("auxiliaryItemNbt"))
 
             // fluids
-            if (tag.contains("inputFluidNbt", 10)) inputFluidHandler?.deserializeNBT(provider, tag.getCompound("inputFluidNbt"))
+            if (tag.contains("inputFluidNbt", 10)) inputFluidHandler?.deserializeNBT(
+                provider,
+                tag.getCompound("inputFluidNbt")
+            )
             if (tag.contains(
                     "outputFluidNbt",
                     10
@@ -692,15 +702,32 @@ abstract class TieredProcessedMachine(
     blockPos: BlockPos,
     blockState: BlockState,
 ) : ProcessedMachine(blockEntityType, blockPos, blockState) {
-    var tier: ProcessedTier = ProcessedTier(1, 1, 1)
+    var tier: ProcessedTier
+        get() {
+            return hiddenTier
+        }
+        set(newTier) {
+            val oldTier = hiddenTier
+            hiddenTier = newTier
+            onTierChanged(oldTier, hiddenTier)
+        }
+
+    private var hiddenTier: ProcessedTier = ProcessedTier(1, 1, 1)
 
     override fun loadAdditional(nbt: CompoundTag, provider: Provider) {
         super.loadAdditional(nbt, provider)
-        tier = ProcessedTier.load("machine_tier", nbt)
+        tier = ProcessedTiers.machine[(nbt.getInt("machine_tier").coerceIn(0, ProcessedTiers.machine.size))]
     }
 
     override fun saveAdditional(nbt: CompoundTag, provider: Provider) {
         super.saveAdditional(nbt, provider)
-        tier.save("machine_tier", nbt)
+        nbt.putInt("machine_tier", tier.tier)
     }
+
+    /**
+     * Gets called when the tier gets changed.
+     *
+     * NOTE: **DOES NOT** get called on construction, so if you want that code to execute, call it yourself on construction!
+     */
+    open fun onTierChanged(old: ProcessedTier, new: ProcessedTier) {}
 }
