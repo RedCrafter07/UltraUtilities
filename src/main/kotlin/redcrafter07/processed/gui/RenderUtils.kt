@@ -3,7 +3,6 @@ package redcrafter07.processed.gui
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen
 import net.minecraft.util.FastColor
-import net.minecraft.world.inventory.AbstractContainerMenu
 import redcrafter07.processed.ProcessedMod
 
 object RenderUtils {
@@ -16,13 +15,19 @@ object RenderUtils {
         graphics.blit(WIDGETS_TEXTURE, x, y, 0, 14, 18, 18)
     }
 
-    fun renderSlots(menu: AbstractContainerMenu, graphics: GuiGraphics) {
-        menu.slots.forEach { renderSlot(graphics, it.x, it.y) }
-    }
-
     fun renderDefault(screen: AbstractContainerScreen<*>, graphics: GuiGraphics) {
-        graphics.blit(GUI_BASE_TEXTURE, screen.guiLeft, screen.guiTop, 0, 0, GUI_BASE_TEXTURE_WIDTH, GUI_BASE_TEXTURE_HEIGHT)
-        renderSlots(screen.menu, graphics)
+        val xOff = screen.guiLeft
+        val yOff = screen.guiTop
+        graphics.blit(
+            GUI_BASE_TEXTURE,
+            xOff,
+            yOff,
+            0,
+            0,
+            GUI_BASE_TEXTURE_WIDTH,
+            GUI_BASE_TEXTURE_HEIGHT
+        )
+        screen.menu.slots.forEach { renderSlot(graphics, xOff + it.x, yOff + it.y) }
     }
 
     fun color(red: Int, green: Int, blue: Int, alpha: Int): Int {

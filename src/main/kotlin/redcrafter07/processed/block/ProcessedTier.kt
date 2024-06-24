@@ -22,12 +22,12 @@ class ProcessedTier(val tier: Int, val multiplier_speed: Int, val multiplier_ene
 
 object ProcessedTiers {
     val machine = listOf(
-        ProcessedTier(1, 1, 1), // Rudimentary
-        ProcessedTier(2, 3, 4), // Basic
-        ProcessedTier(3, 9, 16), // Advanced
-        ProcessedTier(4, 27, 64), //
-        ProcessedTier(5, 81, 256), // Nuclear
-        ProcessedTier(6, 243, 1024), // Quantum
-        ProcessedTier(7, 729, 4096), // Final
+        ProcessedTier(0, 1, 1), // Rudimentary
+        ProcessedTier(1, 3, 4), // Basic
+        ProcessedTier(2, 9, 16), // Advanced
+        ProcessedTier(3, 27, 64), // Void
+        ProcessedTier(4, 81, 256), // Nuclear
+        ProcessedTier(5, 243, 1024), // Quantum
+        ProcessedTier(6, 729, 4096), // Final
     )
 }
