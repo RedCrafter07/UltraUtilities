@@ -58,13 +58,13 @@ abstract class ProcessedContainerMenu(menuType: MenuType<*>?, containerId: Int, 
     //  9 - 35 = player inventory slots (which map to the InventoryPlayer slot numbers 9 - 35)
     //  36 - 44 = TileInventory slots, which map to our TileEntity slot numbers 0 - 8)
     companion object {
-        val HOTBAR_SLOT_COUNT: Int = 9
-        val PLAYER_INVENTORY_ROW_COUNT: Int = 3
-        val PLAYER_INVENTORY_COLUMN_COUNT: Int = 9
-        val PLAYER_INVENTORY_SLOT_COUNT: Int = PLAYER_INVENTORY_COLUMN_COUNT * PLAYER_INVENTORY_ROW_COUNT
-        val VANILLA_SLOT_COUNT: Int = HOTBAR_SLOT_COUNT + PLAYER_INVENTORY_SLOT_COUNT
-        val VANILLA_FIRST_SLOT_INDEX: Int = 0
-        val TE_INVENTORY_FIRST_SLOT_INDEX: Int = VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT
+        private const val HOTBAR_SLOT_COUNT: Int = 9
+        private const val PLAYER_INVENTORY_ROW_COUNT: Int = 3
+        private const val PLAYER_INVENTORY_COLUMN_COUNT: Int = 9
+        private const val PLAYER_INVENTORY_SLOT_COUNT: Int = PLAYER_INVENTORY_COLUMN_COUNT * PLAYER_INVENTORY_ROW_COUNT
+        const val VANILLA_SLOT_COUNT: Int = HOTBAR_SLOT_COUNT + PLAYER_INVENTORY_SLOT_COUNT
+        const val VANILLA_FIRST_SLOT_INDEX: Int = 0
+        const val TE_INVENTORY_FIRST_SLOT_INDEX: Int = VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT
 
     }
 
@@ -115,7 +115,6 @@ abstract class ProcessedContainerMenu(menuType: MenuType<*>?, containerId: Int, 
                 return ItemStack.EMPTY
             }
         } else {
-            println("Invalid slotIndex:$pIndex")
             return ItemStack.EMPTY
         }
         // If stack size == 0 (the entire stack was moved) set slot contents to null

@@ -1,9 +1,8 @@
 package redcrafter07.processed.block
 
-import net.minecraft.nbt.CompoundTag
 import net.minecraft.network.chat.Component
 
-class ProcessedTier(val tier: Int, val multiplier_speed: Int, val multiplier_energy: Int) {
+class ProcessedTier(val tier: Int, val multiplierSpeed: Int, val multiplierEnergy: Int) {
     fun named(): String {
         return "tier_$tier"; }
 
@@ -16,7 +15,7 @@ class ProcessedTier(val tier: Int, val multiplier_speed: Int, val multiplier_ene
     }
 
     fun getMaxPower(): Int {
-        return multiplier_energy * 32
+        return multiplierEnergy * 32
     }
 }
 

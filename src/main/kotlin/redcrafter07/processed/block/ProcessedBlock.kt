@@ -22,6 +22,7 @@ import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.block.state.StateDefinition
 import net.minecraft.world.level.block.state.properties.BlockStateProperties
 import net.minecraft.world.level.block.state.properties.DirectionProperty
+import net.minecraft.world.level.material.PushReaction
 import net.minecraft.world.phys.BlockHitResult
 import redcrafter07.processed.block.tile_entities.ProcessedMachine
 import redcrafter07.processed.block.tile_entities.TieredProcessedMachine
@@ -105,6 +106,10 @@ abstract class ProcessedBlock(properties: Properties) : Block(properties), Entit
         )
     }
 
+    override fun getPistonPushReaction(state: BlockState): PushReaction {
+        return PushReaction.BLOCK
+    }
+
     override fun <T : BlockEntity?> getTicker(
         level: Level,
         state: BlockState,
@@ -128,13 +133,13 @@ abstract class ProcessedBlock(properties: Properties) : Block(properties), Entit
         newState: BlockState,
         isMoving: Boolean
     ) {
-        if (state.block != newState.block) {
-            val blockEntity = level.getBlockEntity(pos)
-            if (blockEntity is ProcessedMachine) blockEntity.dropItems()
-            val container = SimpleDroppingContainer()
-            addDrops(container, blockEntity)
-            if (container.containerSize > 0) Containers.dropContents(level, pos, container)
-        }
+        if (state.block == newState.block) return super.onRemove(state, level, pos, newState, isMoving)
+        val blockEntity = level.getBlockEntity(pos)
+        if (blockEntity is ProcessedMachine) blockEntity.dropItems()
+        val container = SimpleDroppingContainer()
+        addDrops(container, blockEntity)
+        if (container.containerSize > 0) Containers.dropContents(level, pos, container)
+
 
         super.onRemove(state, level, pos, newState, isMoving)
     }

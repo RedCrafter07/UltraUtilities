@@ -16,12 +16,18 @@ class ModItemTagGenerator(
     providerCompletableFuture: CompletableFuture<HolderLookup.Provider>,
     tagLookupCompletableFuture: CompletableFuture<TagLookup<Block>>,
     existingFileHelper: ExistingFileHelper?
-) : ItemTagsProvider(packOutput, providerCompletableFuture, tagLookupCompletableFuture, ProcessedMod.ID, existingFileHelper) {
+) : ItemTagsProvider(
+    packOutput,
+    providerCompletableFuture,
+    tagLookupCompletableFuture,
+    ProcessedMod.ID,
+    existingFileHelper
+) {
     override fun addTags(p0: HolderLookup.Provider) {
         this.tag(Tags.Items.INGOTS)
-            .add(ModItems.BLITZ_ORB.get());
+            .add(ModItems.BLITZ_ORB.get())
 
         this.tag(ProcessedTags.Items.FORGE_INGOT_BLITZ)
-            .add(ModItems.BLITZ_ORB.get());
+            .add(ModItems.BLITZ_ORB.get())
     }
 }

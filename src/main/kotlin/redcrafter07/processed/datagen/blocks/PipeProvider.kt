@@ -62,10 +62,10 @@ class PipeProvider(private val blockStateProvider: BlockStateProvider) {
                 }
 
                 val pipeLikeState = when (state) {
-                    "normal" -> PipeLikeState.Normal
-                    "push" -> PipeLikeState.Push
-                    "pull" -> PipeLikeState.Pull
-                    else -> PipeLikeState.Normal
+                    "normal" -> PipeState.Normal
+                    "push" -> PipeState.Push
+                    "pull" -> PipeState.Pull
+                    else -> PipeState.Normal
                 }
 
                 val newModelBuilder =

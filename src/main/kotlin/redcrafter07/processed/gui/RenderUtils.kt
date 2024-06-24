@@ -42,7 +42,7 @@ object RenderUtils {
         guiGraphics.fill(x, y, x + width, y + height, color)
     }
 
-    object gui_colors {
+    object GuiColors {
         val WHITE = color(0xff, 0xff, 0xff)
         val GRAY = color(0x8b, 0x8b, 0x8b)
         val DARK_GRAY = color(0x37, 0x37, 0x37)

@@ -15,7 +15,6 @@ class ModBlockStateProvider(output: PackOutput, exFileHelper: ExistingFileHelper
 
     override fun registerStatesAndModels() {
         blockWithItem(ModBlocks.BLITZ_ORE)
-        blockWithItem(ModBlocks.BLOCK_PIPE_PRESSURIZER)
 
         pipeProvider.pipeBlock(ModBlocks.BLOCK_ITEM_PIPE)
     }

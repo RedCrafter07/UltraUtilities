@@ -9,20 +9,19 @@ import net.neoforged.neoforge.registries.DeferredHolder
 import net.neoforged.neoforge.registries.DeferredRegister
 import redcrafter07.processed.ProcessedMod
 import redcrafter07.processed.block.ModBlocks
+import redcrafter07.processed.block.PipeBlockEntity
 import java.util.function.Supplier
 
 object ModTileEntities {
     val BLOCK_TYPES: DeferredRegister<BlockEntityType<*>> = DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, ProcessedMod.ID)
 
     val PIPE_BLOCK_ENTITY = register(
-        "item_pipe_block_entity", ::ItemPipeBlockEntity,
+        "pipe_block_entity", ::PipeBlockEntity,
         ModBlocks.BLOCK_ITEM_PIPE
     )
-    val PIPE_PRESSURIZER_BLOCK_ENTITY =
-        register("pipe_pressurizer_block_entity", ::PipePressurizerBlockEntity, ModBlocks.BLOCK_PIPE_PRESSURIZER)
-    val POWERED_FURNACE = register_blocks("powered_furnace", ::PoweredFurnaceBlockEntity, ModBlocks.BLOCKS_POWERED_FURNACE)
+    val POWERED_FURNACE = registerBlocks("powered_furnace", ::PoweredFurnaceBlockEntity, ModBlocks.BLOCKS_POWERED_FURNACE)
 
-    fun <TEntity : BlockEntity> register_blocks(
+    private fun <TEntity : BlockEntity> registerBlocks(
         name: String,
         blockEntity: BlockEntitySupplier<TEntity>,
         blocks: Set<DeferredBlock<*>>
@@ -35,7 +34,7 @@ object ModTileEntities {
             })
     }
 
-    fun <T : BlockEntity> register(
+    private fun <T : BlockEntity> register(
         name: String,
         blockEntity: BlockEntitySupplier<T>,
         block: DeferredBlock<*>,

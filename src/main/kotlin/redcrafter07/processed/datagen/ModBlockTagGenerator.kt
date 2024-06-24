@@ -18,15 +18,15 @@ class ModBlockTagGenerator(
 ) : BlockTagsProvider(output, lookupProvider, ProcessedMod.ID, existingFileHelper) {
     override fun addTags(p0: HolderLookup.Provider) {
         this.tag(BlockTags.MINEABLE_WITH_PICKAXE)
-            .add(ModBlocks.BLITZ_ORE.get());
+            .add(ModBlocks.BLITZ_ORE.get())
 
         this.tag(BlockTags.NEEDS_DIAMOND_TOOL)
-            .add(ModBlocks.BLITZ_ORE.get());
+            .add(ModBlocks.BLITZ_ORE.get())
 
         this.tag(Tags.Blocks.ORES)
-            .add(ModBlocks.BLITZ_ORE.get());
+            .add(ModBlocks.BLITZ_ORE.get())
 
         this.tag(ProcessedTags.Blocks.FORGE_ORE_BLITZ)
-            .add(ModBlocks.BLITZ_ORE.get());
+            .add(ModBlocks.BLITZ_ORE.get())
     }
 }

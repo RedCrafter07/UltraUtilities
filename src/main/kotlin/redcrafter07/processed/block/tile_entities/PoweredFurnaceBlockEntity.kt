@@ -28,7 +28,7 @@ class PoweredFurnaceBlockEntity(pos: BlockPos, state: BlockState) :
     private var maxProgress = 78
 
     override fun onTierChanged(old: ProcessedTier, new: ProcessedTier) {
-        useEnergyCapability(1000 * tier.multiplier_energy, tier.getMaxPower())
+        useEnergyCapability(1000 * tier.multiplierEnergy, tier.getMaxPower())
     }
 
     init {
@@ -61,7 +61,7 @@ class PoweredFurnaceBlockEntity(pos: BlockPos, state: BlockState) :
 
     override fun tick(level: Level, pos: BlockPos, state: BlockState) {
         if (hasRecipeAndSync()) {
-            progress += tier.multiplier_speed // we could also just do `maxProgress = recipe.cookingTime` in `hasRecipeAndSync`, but this takes less computation power!
+            progress += tier.multiplierSpeed // we could also just do `maxProgress = recipe.cookingTime` in `hasRecipeAndSync`, but this takes less computation power!
 
             if (progress > maxProgress) {
                 progress = 0

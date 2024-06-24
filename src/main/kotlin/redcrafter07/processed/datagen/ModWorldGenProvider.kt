@@ -15,11 +15,11 @@ import java.util.concurrent.CompletableFuture
 val BUILDER: RegistrySetBuilder = RegistrySetBuilder()
     .add(Registries.CONFIGURED_FEATURE, ModConfiguredFeatures::bootstrap)
     .add(Registries.PLACED_FEATURE, ModPlacedFeatures::bootstrap)
-    .add(NeoForgeRegistries.Keys.BIOME_MODIFIERS, ModBiomeModifiers::bootstrap);
+    .add(NeoForgeRegistries.Keys.BIOME_MODIFIERS, ModBiomeModifiers::bootstrap)
 
 class ModWorldGenProvider(
     output: PackOutput,
     registries: CompletableFuture<HolderLookup.Provider>,
 ) : DatapackBuiltinEntriesProvider(
     output, registries, BUILDER, setOf(ProcessedMod.ID)
-) {}
+)

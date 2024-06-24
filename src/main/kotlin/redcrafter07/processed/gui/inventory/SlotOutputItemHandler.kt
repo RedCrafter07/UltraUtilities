@@ -1,4 +1,4 @@
-package redcrafter07.processed.gui.inventory;
+package redcrafter07.processed.gui.inventory
 
 import net.minecraft.world.Container
 import net.minecraft.world.SimpleContainer
@@ -11,7 +11,9 @@ import net.neoforged.neoforge.items.IItemHandlerModifiable
 class SlotOutputItemHandler(val itemHandler: IItemHandler, private val realIndex: Int, xPosition: Int, yPosition: Int) :
     Slot(emptyInventory, realIndex, xPosition, yPosition) {
 
-    override fun mayPlace(stack: ItemStack): Boolean { return false }
+    override fun mayPlace(stack: ItemStack): Boolean {
+        return false
+    }
 
     override fun getItem(): ItemStack {
         return itemHandler.getStackInSlot(realIndex)

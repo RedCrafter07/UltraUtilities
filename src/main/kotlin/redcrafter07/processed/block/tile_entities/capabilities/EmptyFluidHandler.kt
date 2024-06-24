@@ -4,9 +4,7 @@ import net.neoforged.neoforge.fluids.FluidStack
 import net.neoforged.neoforge.fluids.capability.IFluidHandler
 
 class EmptyFluidHandler: IFluidHandlerModifiable {
-    override fun setStackInTank(tank: Int, stack: FluidStack) {
-        return
-    }
+    override fun setStackInTank(tank: Int, stack: FluidStack) {}
 
     override fun getStackInTank(tank: Int): FluidStack {
         return FluidStack.EMPTY

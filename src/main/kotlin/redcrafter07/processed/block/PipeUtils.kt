@@ -12,7 +12,7 @@ import net.minecraft.world.phys.shapes.BooleanOp
 import net.minecraft.world.phys.shapes.Shapes
 import net.minecraft.world.phys.shapes.VoxelShape
 
-enum class PipeLikeState : StringRepresentable {
+enum class PipeState : StringRepresentable {
     Normal, Push, Pull, None;
 
     override fun getSerializedName(): String {
@@ -24,7 +24,7 @@ enum class PipeLikeState : StringRepresentable {
         }
     }
 
-    fun next(): PipeLikeState {
+    fun next(): PipeState {
         return when (this) {
             Normal -> Pull
             Pull -> Push
@@ -55,7 +55,7 @@ enum class PipeLikeState : StringRepresentable {
     }
 
     companion object {
-        fun load(short: UShort): PipeLikeState {
+        fun load(short: UShort): PipeState {
             val int = (short and 0b11.toUShort()).toInt()
             return when (int) {  /* 0b11, the last 2 bits of a number, 0-3 */
                 0 -> Normal
@@ -68,15 +68,15 @@ enum class PipeLikeState : StringRepresentable {
     }
 }
 
-class DirectionalPipeLikeState(val blockEntity: BlockEntity) {
-    private var stateNorth: PipeLikeState = PipeLikeState.Normal
-    private var stateSouth: PipeLikeState = PipeLikeState.Normal
-    private var stateWest: PipeLikeState = PipeLikeState.Normal
-    private var stateEast: PipeLikeState = PipeLikeState.Normal
-    private var stateUp: PipeLikeState = PipeLikeState.Normal
-    private var stateDown: PipeLikeState = PipeLikeState.Normal
+class DirectionalPipeState(val blockEntity: BlockEntity) {
+    private var stateNorth: PipeState = PipeState.Normal
+    private var stateSouth: PipeState = PipeState.Normal
+    private var stateWest: PipeState = PipeState.Normal
+    private var stateEast: PipeState = PipeState.Normal
+    private var stateUp: PipeState = PipeState.Normal
+    private var stateDown: PipeState = PipeState.Normal
 
-    fun getState(direction: Direction): PipeLikeState {
+    fun getState(direction: Direction): PipeState {
         return when (direction) {
             Direction.UP -> stateUp
             Direction.DOWN -> stateDown
@@ -87,7 +87,7 @@ class DirectionalPipeLikeState(val blockEntity: BlockEntity) {
         }
     }
 
-    fun setState(direction: Direction, value: PipeLikeState) {
+    fun setState(direction: Direction, value: PipeState) {
         when (direction) {
             Direction.UP -> stateUp = value
             Direction.DOWN -> stateDown = value
@@ -112,12 +112,12 @@ class DirectionalPipeLikeState(val blockEntity: BlockEntity) {
     fun loadFromNBT(name: String, nbt: CompoundTag) {
         val ushort = nbt.getShort(name).toUShort()
         val utwo = 0b11.toUShort()
-        stateUp = PipeLikeState.load(ushort.rotateRight(10) and utwo)
-        stateDown = PipeLikeState.load(ushort.rotateRight(8) and utwo)
-        stateWest = PipeLikeState.load(ushort.rotateRight(6) and utwo)
-        stateEast = PipeLikeState.load(ushort.rotateRight(4) and utwo)
-        stateNorth = PipeLikeState.load(ushort.rotateRight(2) and utwo)
-        stateSouth = PipeLikeState.load(ushort and utwo)
+        stateUp = PipeState.load(ushort.rotateRight(10) and utwo)
+        stateDown = PipeState.load(ushort.rotateRight(8) and utwo)
+        stateWest = PipeState.load(ushort.rotateRight(6) and utwo)
+        stateEast = PipeState.load(ushort.rotateRight(4) and utwo)
+        stateNorth = PipeState.load(ushort.rotateRight(2) and utwo)
+        stateSouth = PipeState.load(ushort and utwo)
     }
 }
 
@@ -133,26 +133,26 @@ fun getShape(
     state: BlockState,
 ): VoxelShape {
     var shape = SHAPE_CORE
-    if (state.getValue(PIPE_STATE_NORTH) != PipeLikeState.None) shape =
+    if (state.getValue(PIPE_STATE_NORTH) != PipeState.None) shape =
         Shapes.join(shape, SHAPE_NORTH, BooleanOp.OR)
-    if (state.getValue(PIPE_STATE_SOUTH) != PipeLikeState.None) shape =
+    if (state.getValue(PIPE_STATE_SOUTH) != PipeState.None) shape =
         Shapes.join(shape, SHAPE_SOUTH, BooleanOp.OR)
-    if (state.getValue(PIPE_STATE_WEST) != PipeLikeState.None) shape = Shapes.join(shape, SHAPE_WEST, BooleanOp.OR)
-    if (state.getValue(PIPE_STATE_EAST) != PipeLikeState.None) shape = Shapes.join(shape, SHAPE_EAST, BooleanOp.OR)
-    if (state.getValue(PIPE_STATE_TOP) != PipeLikeState.None) shape = Shapes.join(shape, SHAPE_TOP, BooleanOp.OR)
-    if (state.getValue(PIPE_STATE_BOTTOM) != PipeLikeState.None) shape =
+    if (state.getValue(PIPE_STATE_WEST) != PipeState.None) shape = Shapes.join(shape, SHAPE_WEST, BooleanOp.OR)
+    if (state.getValue(PIPE_STATE_EAST) != PipeState.None) shape = Shapes.join(shape, SHAPE_EAST, BooleanOp.OR)
+    if (state.getValue(PIPE_STATE_TOP) != PipeState.None) shape = Shapes.join(shape, SHAPE_TOP, BooleanOp.OR)
+    if (state.getValue(PIPE_STATE_BOTTOM) != PipeState.None) shape =
         Shapes.join(shape, SHAPE_BOTTOM, BooleanOp.OR)
     return shape
 }
 
-val PIPE_STATE_TOP = EnumProperty.create("pipe_state_top", PipeLikeState::class.java)
-val PIPE_STATE_BOTTOM = EnumProperty.create("pipe_state_bottom", PipeLikeState::class.java)
-val PIPE_STATE_NORTH = EnumProperty.create("pipe_state_north", PipeLikeState::class.java)
-val PIPE_STATE_SOUTH = EnumProperty.create("pipe_state_south", PipeLikeState::class.java)
-val PIPE_STATE_WEST = EnumProperty.create("pipe_state_west", PipeLikeState::class.java)
-val PIPE_STATE_EAST = EnumProperty.create("pipe_state_east", PipeLikeState::class.java)
+val PIPE_STATE_TOP = EnumProperty.create("pipe_state_top", PipeState::class.java)
+val PIPE_STATE_BOTTOM = EnumProperty.create("pipe_state_bottom", PipeState::class.java)
+val PIPE_STATE_NORTH = EnumProperty.create("pipe_state_north", PipeState::class.java)
+val PIPE_STATE_SOUTH = EnumProperty.create("pipe_state_south", PipeState::class.java)
+val PIPE_STATE_WEST = EnumProperty.create("pipe_state_west", PipeState::class.java)
+val PIPE_STATE_EAST = EnumProperty.create("pipe_state_east", PipeState::class.java)
 
-fun propertyForDirection(direction: Direction): EnumProperty<PipeLikeState> {
+fun propertyForDirection(direction: Direction): EnumProperty<PipeState> {
     return when (direction) {
         Direction.UP -> PIPE_STATE_TOP
         Direction.DOWN -> PIPE_STATE_BOTTOM
