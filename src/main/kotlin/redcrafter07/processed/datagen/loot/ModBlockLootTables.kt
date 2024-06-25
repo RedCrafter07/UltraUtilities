@@ -20,7 +20,9 @@ class ModBlockLootTables(provider: Provider) :
     BlockLootSubProvider(setOf(), FeatureFlags.REGISTRY.allFlags(), provider) {
     override fun generate() {
         createOreLootTable(ModBlocks.BLITZ_ORE.get(), ModItems.BLITZ_ORB.get(), 1f, 3f)
-        this.dropSelf(ModBlocks.BLOCK_ITEM_PIPE.get())
+        ModBlocks.BLOCK_ITEM_PIPES.map { this.dropSelf(it.get()) }
+        ModBlocks.BLOCK_FLUID_PIPES.map { this.dropSelf(it.get()) }
+        ModBlocks.BLOCK_ENERGY_PIPES.map { this.dropSelf(it.get()) }
 
         ModBlocks.BLOCKS_POWERED_FURNACE.forEach { this.dropSelf(it.get()) }
     }

@@ -716,7 +716,7 @@ abstract class TieredProcessedMachine(
 
     override fun loadAdditional(nbt: CompoundTag, provider: Provider) {
         super.loadAdditional(nbt, provider)
-        tier = ProcessedTiers.machine[(nbt.getInt("machine_tier").coerceIn(0, ProcessedTiers.machine.size - 1))]
+        tier = ProcessedTiers.TIERS[(nbt.getInt("machine_tier").coerceIn(0, ProcessedTiers.TIERS.size - 1))]
     }
 
     override fun saveAdditional(nbt: CompoundTag, provider: Provider) {

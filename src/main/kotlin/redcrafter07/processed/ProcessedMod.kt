@@ -67,7 +67,7 @@ object ProcessedMod {
      * things such as renderers and keymaps
      * Fired on the mod specific event bus.
      */
-    private fun onClientSetup(event: FMLClientSetupEvent) {
+    private fun onClientSetup(event: FMLCommonSetupEvent) {
     }
 
     /**

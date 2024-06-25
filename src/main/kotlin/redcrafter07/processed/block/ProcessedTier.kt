@@ -20,7 +20,7 @@ class ProcessedTier(val tier: Int, val multiplierSpeed: Int, val multiplierEnerg
 }
 
 object ProcessedTiers {
-    val machine = listOf(
+    val TIERS = listOf(
         ProcessedTier(0, 1, 1), // Rudimentary
         ProcessedTier(1, 3, 4), // Basic
         ProcessedTier(2, 9, 16), // Advanced

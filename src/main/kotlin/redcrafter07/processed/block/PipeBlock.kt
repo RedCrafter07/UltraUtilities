@@ -1,5 +1,9 @@
 package redcrafter07.processed.block
 
+import com.mojang.blaze3d.vertex.PoseStack
+import net.minecraft.client.Minecraft
+import net.minecraft.client.renderer.MultiBufferSource
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.core.HolderLookup
@@ -28,23 +32,50 @@ import net.neoforged.neoforge.capabilities.Capabilities
 import net.neoforged.neoforge.fluids.FluidStack
 import net.neoforged.neoforge.fluids.capability.IFluidHandler
 import net.neoforged.neoforge.items.IItemHandler
-import redcrafter07.processed.ProcessedMod
 import redcrafter07.processed.block.tile_entities.ModTileEntities
 import java.util.*
 
 class PipeData(
     val maxExtract: Int,
     val capability: BlockCapability<*, Direction?>,
-    val identifier: ResourceLocation
+    val identifier: String
 ) {
     companion object {
 
         /** NOTE: This WILL NOT transfer any items **/
-        val DEFAULT = PipeData(0, Capabilities.ItemHandler.BLOCK, ProcessedMod.rl("default_pipe_data"))
+        val DEFAULT = PipeData(0, Capabilities.ItemHandler.BLOCK, "default_pipe_data")
 
-        val ITEM_PIPE_IRON = PipeData(1, Capabilities.ItemHandler.BLOCK, ProcessedMod.rl("item_pipe_iron"))
+        private val ITEM_MAX_EXTRACT = listOf(1, 6, 12, 16, 32, 48, 64)
+        private val FLUID_MAX_EXTRACT = listOf(10, 100, 500, 1000, 2000, 4000, 7000)
 
-        val VALUES = listOf(DEFAULT, ITEM_PIPE_IRON)
+        val ITEM_PIPE_BY_TIER = ProcessedTiers.TIERS.map {
+            PipeData(
+                ITEM_MAX_EXTRACT[it.tier],
+                Capabilities.ItemHandler.BLOCK,
+                "item_pipe_${it.named()}"
+            )
+        }
+        val FLUID_PIPE_BY_TIER = ProcessedTiers.TIERS.map {
+            PipeData(
+                FLUID_MAX_EXTRACT[it.tier],
+                Capabilities.FluidHandler.BLOCK,
+                "fluid_pipe_${it.named()}"
+            )
+        }
+        val ENERGY_PIPE_BY_TIER = ProcessedTiers.TIERS.map {
+            PipeData(
+                it.getMaxPower(),
+                Capabilities.EnergyStorage.BLOCK,
+                "energy_pipe_${it.named()}"
+            )
+        }
+
+        val VALUES = listOf(
+            DEFAULT,
+            *ITEM_PIPE_BY_TIER.toTypedArray(),
+            *FLUID_PIPE_BY_TIER.toTypedArray(),
+            *ENERGY_PIPE_BY_TIER.toTypedArray()
+        )
     }
 }
 
@@ -71,8 +102,8 @@ class PipeBlockEntity(pos: BlockPos, blockState: BlockState) : BlockEntity(
 
 class PipeBlock(private val data: PipeData) : Block(
     Properties.of().sound(SoundType.STONE).isRedstoneConductor { _, _, _ -> false }.noOcclusion()
-        .lightLevel { 4 }), EntityBlock, WrenchInteractableBlock {
-
+        .lightLevel { 4 }.pushReaction(PushReaction.BLOCK)
+), EntityBlock, WrenchInteractableBlock {
     override fun hasDynamicShape(): Boolean {
         return true
     }
@@ -203,10 +234,6 @@ class PipeBlock(private val data: PipeData) : Block(
         if (pipeNet != null && level is ServerLevel) PipeNetworkData.getForLevel(level).remove(pos, pipeNet)
 
         super.onRemove(state, level, pos, newState, movedByPiston)
-    }
-
-    override fun getPistonPushReaction(state: BlockState): PushReaction {
-        return PushReaction.BLOCK
     }
 
     override fun newBlockEntity(pos: BlockPos, state: BlockState): BlockEntity {
@@ -523,7 +550,7 @@ class PipeNet(
     fun serializeNBT(): CompoundTag {
         val tag = CompoundTag()
 
-        tag.putString("data", data.identifier.toString())
+        tag.putString("data", data.identifier)
         tag.putIntArray("blocks", serializeBlockPos(blocks))
         tag.putIntArray("pushing", serializeDirectionalBlockPos(pushing))
         tag.putIntArray("pulling", serializeDirectionalBlockPos(pulling))
@@ -538,7 +565,7 @@ class PipeNet(
 
     companion object {
         fun deserializeNBT(nbt: CompoundTag): PipeNet? {
-            val id = ResourceLocation.tryParse(nbt.getString("data")) ?: return null
+            val id = nbt.getString("data")
             val data = PipeData.VALUES.find { it.identifier == id } ?: return null
 
             val blocks = deserializeBlockPos(nbt.getIntArray("blocks"))

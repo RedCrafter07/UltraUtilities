@@ -33,7 +33,7 @@ class PipeProvider(private val blockStateProvider: BlockStateProvider) {
             // this should be registered into the /pipe folder for the block models
             models().getBuilder("block/pipe/${id}/$state")
                 .parent(models().getExistingFile(modLoc("block/pipe_components/$state")))
-                .texture("0", modLoc("block/pipe/$id")).texture("particle", modLoc("block/pipe/$id"))
+                .texture("0", modLoc("block/pipe/item_pipe")).texture("particle", modLoc("block/pipe/item_pipe"))
         }
     }
 

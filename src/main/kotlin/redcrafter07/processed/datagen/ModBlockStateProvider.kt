@@ -16,7 +16,9 @@ class ModBlockStateProvider(output: PackOutput, exFileHelper: ExistingFileHelper
     override fun registerStatesAndModels() {
         blockWithItem(ModBlocks.BLITZ_ORE)
 
-        pipeProvider.pipeBlock(ModBlocks.BLOCK_ITEM_PIPE)
+        ModBlocks.BLOCK_ITEM_PIPES.map(pipeProvider::pipeBlock)
+        ModBlocks.BLOCK_FLUID_PIPES.map(pipeProvider::pipeBlock)
+        ModBlocks.BLOCK_ENERGY_PIPES.map(pipeProvider::pipeBlock)
     }
 
     private fun blockWithItem(blockRegistryObject: DeferredBlock<*>, model: ModelFile) {
