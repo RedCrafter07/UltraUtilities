@@ -8,10 +8,9 @@ import net.neoforged.neoforge.fluids.FluidStack
 import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction
 
 open class SimpleInputFluidStore(protected var tanks: NonNullList<FluidStack>, protected var capacity: Int) :
-    IProcessedFluidHandler<CompoundTag> {
+    IProcessedFluidHandler<CompoundTag>() {
 
     constructor(size: Int, capacity: Int) : this(NonNullList.withSize(size, FluidStack.EMPTY), capacity)
-    constructor() : this(NonNullList.of(FluidStack.EMPTY), 1000)
 
     protected fun validateSlotIndex(slot: Int) {
         if (slot < 0 || slot >= this.tanks.size) {
@@ -48,7 +47,7 @@ open class SimpleInputFluidStore(protected var tanks: NonNullList<FluidStack>, p
 
                 if (action.execute()) {
                     tanks[slot] = stack.copyWithAmount(amount)
-                    onContentsChanged(slot)
+                    setChanged(slot)
                 }
             }
 
@@ -76,7 +75,7 @@ open class SimpleInputFluidStore(protected var tanks: NonNullList<FluidStack>, p
 
                 if (action.execute()) {
                     tanks[slot] = FluidStack.EMPTY
-                    onContentsChanged(slot)
+                    setChanged(slot)
                 }
 
                 if (amountLeft < 1) break
@@ -86,7 +85,7 @@ open class SimpleInputFluidStore(protected var tanks: NonNullList<FluidStack>, p
 
                 if (action.execute()) {
                     tanks[slot].amount -= amountLeft
-                    onContentsChanged(slot)
+                    setChanged(slot)
                 }
 
                 break
@@ -110,7 +109,7 @@ open class SimpleInputFluidStore(protected var tanks: NonNullList<FluidStack>, p
 
                 if (action.execute()) {
                     tanks[slot] = FluidStack.EMPTY
-                    onContentsChanged(slot)
+                    setChanged(slot)
                 }
 
                 if (amountLeft < 1) break
@@ -120,7 +119,7 @@ open class SimpleInputFluidStore(protected var tanks: NonNullList<FluidStack>, p
 
                 if (action.execute()) {
                     tanks[slot].amount -= amountLeft
-                    onContentsChanged(slot)
+                    setChanged(slot)
                 }
 
                 break
@@ -138,13 +137,13 @@ open class SimpleInputFluidStore(protected var tanks: NonNullList<FluidStack>, p
             val fluid = tanks[slot]
             if (action.execute()) {
                 tanks[slot] = FluidStack.EMPTY
-                onContentsChanged(slot)
+                setChanged(slot)
             }
             return fluid.copy()
         } else {
             if (action.execute()) {
                 tanks[slot].amount -= maxDrain
-                onContentsChanged(slot)
+                setChanged(slot)
             }
             return tanks[slot].copyWithAmount(maxDrain)
         }
@@ -153,7 +152,7 @@ open class SimpleInputFluidStore(protected var tanks: NonNullList<FluidStack>, p
     override fun setStackInTank(tank: Int, stack: FluidStack) {
         validateSlotIndex(tank)
         tanks[tank] = stack
-        onContentsChanged(tank)
+        setChanged(tank)
     }
 
     override fun getStackInTank(tank: Int): FluidStack {
@@ -189,17 +188,10 @@ open class SimpleInputFluidStore(protected var tanks: NonNullList<FluidStack>, p
             if (slot >= 0 && slot < tanks.size) tanks[slot] =
                 FluidStack.parseOptional(provider, tag.getCompound("Fluid") ?: continue)
         }
-
-        onLoad()
     }
 
     open fun setSize(size: Int) {
         tanks = NonNullList.withSize(size, FluidStack.EMPTY)
-    }
-
-    protected open fun onLoad() {
-    }
-
-    protected open fun onContentsChanged(slot: Int) {
+        setChanged(-1)
     }
 }

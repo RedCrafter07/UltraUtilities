@@ -20,14 +20,6 @@ object ModBlocks {
     }
     val BLOCKS_POWERED_FURNACE = registerTieredBlock("powered_furnace", ProcessedTiers.TIERS, ::PoweredFurnaceBlock)
 
-    val BLOCK_ITEM_PIPES = registerPipes(PipeData.ITEM_PIPE_BY_TIER)
-    val BLOCK_FLUID_PIPES = registerPipes(PipeData.FLUID_PIPE_BY_TIER)
-    val BLOCK_ENERGY_PIPES = registerPipes(PipeData.ENERGY_PIPE_BY_TIER)
-
-    private fun registerPipes(pipeDatas: List<PipeData>): List<DeferredBlock<PipeBlock>> {
-        return pipeDatas.map { registerBlock(it.identifier) { PipeBlock(it) } }
-    }
-
     private fun <T : TieredProcessedBlock> registerTieredBlock(
         id: String,
         tiers: List<ProcessedTier>,

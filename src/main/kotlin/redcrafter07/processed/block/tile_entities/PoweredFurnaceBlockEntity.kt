@@ -4,7 +4,6 @@ import net.minecraft.core.BlockPos
 import net.minecraft.core.HolderLookup.Provider
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.network.chat.Component
-import net.minecraft.world.MenuProvider
 import net.minecraft.world.entity.player.Inventory
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.inventory.AbstractContainerMenu
@@ -21,7 +20,7 @@ import redcrafter07.processed.gui.PoweredFurnaceMenu
 import kotlin.jvm.optionals.getOrNull
 
 class PoweredFurnaceBlockEntity(pos: BlockPos, state: BlockState) :
-    TieredProcessedMachine(ModTileEntities.POWERED_FURNACE.get(), pos, state), MenuProvider {
+    TieredProcessedMachine(ModTileEntities.POWERED_FURNACE.get(), pos, state) {
 
     private val data: ContainerData
     private var progress = 0

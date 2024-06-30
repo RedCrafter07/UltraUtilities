@@ -4,6 +4,7 @@ import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen
 import net.minecraft.network.chat.Component
 import net.minecraft.world.entity.player.Inventory
+import redcrafter07.processed.ProcessedMod
 import redcrafter07.processed.gui.inventory.ProcessedMachineMenu
 
 class GenericMachineMenuScreen(
@@ -24,6 +25,8 @@ class GenericMachineMenuScreen(
 
     override fun renderBg(guiGraphics: GuiGraphics, partialTick: Float, mouseX: Int, mouseY: Int) {
         RenderUtils.renderDefault(this, guiGraphics)
+        ProcessedMod.LOGGER.info("Energy: ${menu.blockEntity.energyHandler.energyStored}")
+        ProcessedMod.LOGGER.info("Slot #0: ${menu.blockEntity.inputItemHandler.getStackInSlot(0)}")
     }
 
     override fun render(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {

@@ -4,9 +4,13 @@ import net.minecraft.core.HolderLookup.Provider
 import net.minecraft.nbt.CompoundTag
 import kotlin.math.min
 
-class SimpleEnergyStore(protected var capacity: Int, protected val maxReceive: Int, protected val maxExtract: Int, protected var energy: Int) :
-    IProcessedEnergyHandler<CompoundTag> {
-
+class SimpleEnergyStore(
+    protected var capacity: Int,
+    protected val maxReceive: Int,
+    protected val maxExtract: Int,
+    protected var energy: Int,
+) :
+    IProcessedEnergyHandler<CompoundTag>() {
     constructor(capacity: Int) : this(capacity, capacity, 0, 0)
     constructor(capacity: Int, maxReceive: Int, maxExtract: Int) : this(capacity, maxReceive, maxExtract, 0)
 
@@ -17,6 +21,7 @@ class SimpleEnergyStore(protected var capacity: Int, protected val maxReceive: I
         val energyReceived = min((capacity - energy).toDouble(), min(this.maxReceive.toDouble(), maxReceive.toDouble()))
             .toInt()
         if (!simulate) energy += energyReceived
+        setChanged()
         return energyReceived
     }
 
@@ -27,6 +32,7 @@ class SimpleEnergyStore(protected var capacity: Int, protected val maxReceive: I
             min(energy.toDouble(), min(this.maxExtract.toDouble(), maxExtract.toDouble()))
                 .toInt()
         if (!simulate) energy -= energyExtracted
+        setChanged()
         return energyExtracted
     }
 
@@ -58,9 +64,11 @@ class SimpleEnergyStore(protected var capacity: Int, protected val maxReceive: I
 
     override fun setEnergyStored(energy: Int) {
         this.energy = energy
+        setChanged()
     }
 
     override fun setMaxEnergyStored(maxEnergy: Int) {
         this.capacity = maxEnergy
+        setChanged()
     }
 }

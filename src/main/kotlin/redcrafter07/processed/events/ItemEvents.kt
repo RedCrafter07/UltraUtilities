@@ -12,7 +12,7 @@ import redcrafter07.processed.item.WrenchItem
 import redcrafter07.processed.network.WrenchModeChangePacket
 
 @EventBusSubscriber(modid = ProcessedMod.ID)
-object WrenchHandler {
+object ItemEvents {
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
     fun onMouseScroll(event: InputEvent.MouseScrollingEvent) {

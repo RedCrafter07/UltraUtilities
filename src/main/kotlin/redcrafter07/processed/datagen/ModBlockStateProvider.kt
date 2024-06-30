@@ -7,18 +7,12 @@ import net.neoforged.neoforge.common.data.ExistingFileHelper
 import net.neoforged.neoforge.registries.DeferredBlock
 import redcrafter07.processed.ProcessedMod
 import redcrafter07.processed.block.*
-import redcrafter07.processed.datagen.blocks.PipeProvider
 
 class ModBlockStateProvider(output: PackOutput, exFileHelper: ExistingFileHelper) :
     BlockStateProvider(output, ProcessedMod.ID, exFileHelper) {
-    private val pipeProvider = PipeProvider(this)
 
     override fun registerStatesAndModels() {
         blockWithItem(ModBlocks.BLITZ_ORE)
-
-        ModBlocks.BLOCK_ITEM_PIPES.map(pipeProvider::pipeBlock)
-        ModBlocks.BLOCK_FLUID_PIPES.map(pipeProvider::pipeBlock)
-        ModBlocks.BLOCK_ENERGY_PIPES.map(pipeProvider::pipeBlock)
     }
 
     private fun blockWithItem(blockRegistryObject: DeferredBlock<*>, model: ModelFile) {

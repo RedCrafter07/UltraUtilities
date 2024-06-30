@@ -13,12 +13,16 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket
 import net.minecraft.util.ByIdMap
 import net.minecraft.util.StringRepresentable
 import net.minecraft.world.Containers
+import net.minecraft.world.MenuProvider
 import net.minecraft.world.SimpleContainer
 import net.minecraft.world.item.context.UseOnContext
 import net.minecraft.world.level.Level
+import net.minecraft.world.level.block.DirectionalBlock
+import net.minecraft.world.level.block.HorizontalDirectionalBlock
 import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.entity.BlockEntityType
 import net.minecraft.world.level.block.state.BlockState
+import net.minecraft.world.level.block.state.properties.BlockStateProperties
 import net.neoforged.neoforge.common.util.INBTSerializable
 import net.neoforged.neoforge.energy.IEnergyStorage
 import net.neoforged.neoforge.fluids.capability.IFluidHandler
@@ -51,6 +55,10 @@ enum class IoState(private val id: Int, private val stateName: String) : StringR
     }
 
     override fun getSerializedName(): String {
+        return stateName
+    }
+
+    override fun toString(): String {
         return stateName
     }
 
@@ -177,6 +185,24 @@ enum class BlockSide(private val id: Int, private val stateName: String) : Strin
             return fromDirection(DIRECTION_LOOKUP[machineFacing.get3DDataValue()][direction.get3DDataValue()])
         }
 
+        private val facingProperties =
+            listOf(
+                DirectionalBlock.FACING,
+                HorizontalDirectionalBlock.FACING,
+                BlockStateProperties.HORIZONTAL_FACING,
+                BlockStateProperties.FACING
+            )
+
+        fun translateDirection(direction: Direction, state: BlockState): BlockSide {
+            for (property in facingProperties) {
+                if (state.hasProperty(property)) {
+                    val facing = state.getValue(property)
+                    return BlockSide.getFacing(facing, direction)
+                }
+            }
+            return BlockSide.fromDirection(direction)
+        }
+
         val DEFAULT = Front
 
         val BY_ID = ByIdMap.continuous(BlockSide::getId, entries.toTypedArray(), ByIdMap.OutOfBoundsStrategy.WRAP)
@@ -195,12 +221,12 @@ enum class BlockSide(private val id: Int, private val stateName: String) : Strin
 
     fun getButtonPos(): Vector2i {
         return when (this) {
-            Top -> Vector2i(27, 28)
-            Bottom -> Vector2i(27, 54)
-            Left -> Vector2i(14, 41)
-            Front -> Vector2i(27, 41)
-            Right -> Vector2i(40, 41)
-            Back -> Vector2i(53, 41)
+            Top -> Vector2i(31, 30)
+            Bottom -> Vector2i(31, 72)
+            Left -> Vector2i(10, 51)
+            Front -> Vector2i(31, 51)
+            Right -> Vector2i(52, 51)
+            Back -> Vector2i(73, 51)
         }
     }
 
@@ -243,7 +269,8 @@ abstract class ProcessedMachine(blockEntityType: BlockEntityType<*>, blockPos: B
     BlockEntity(
         blockEntityType,
         blockPos, blockState
-    ), WrenchInteractableBlock, ItemCapableBlockEntity, EnergyCapableBlockEntity, FluidCapableBlockEntity {
+    ), WrenchInteractableBlock, ItemCapableBlockEntity, EnergyCapableBlockEntity, FluidCapableBlockEntity,
+    MenuProvider {
     companion object {
         val EMPTY_ITEM_HANDLER: IItemHandlerModifiable = EmptyItemHandler()
         val EMPTY_FLUID_HANDLER: IFluidHandlerModifiable = EmptyFluidHandler()
@@ -264,7 +291,7 @@ abstract class ProcessedMachine(blockEntityType: BlockEntityType<*>, blockPos: B
         IoState.None,
         IoState.None
     )
-    private val capabilityHandlers = CapabilityHandlers()
+    private val capabilityHandlers by lazy { CapabilityHandlers(this) }
 
     fun getSide(itemOrFluid: Boolean, side: BlockSide): IoState {
         return if (itemOrFluid) sides[side.getId()] else sides[side.getId() + 6]
@@ -278,6 +305,8 @@ abstract class ProcessedMachine(blockEntityType: BlockEntityType<*>, blockPos: B
 
     override fun loadAdditional(nbt: CompoundTag, provider: Provider) {
         super.loadAdditional(nbt, provider)
+
+        ProcessedMod.LOGGER.info("Load $nbt")
 
         val byteArray = nbt.getByteArray("io_states")
         for (index in 0..<12) {
@@ -295,10 +324,11 @@ abstract class ProcessedMachine(blockEntityType: BlockEntityType<*>, blockPos: B
     }
 
     override fun getUpdatePacket(): Packet<ClientGamePacketListener>? {
-        return ClientboundBlockEntityDataPacket.create(this)
+        return ClientboundBlockEntityDataPacket.create(this) { be, provider -> be.getUpdateTag(provider) }
     }
 
     override fun getUpdateTag(provider: Provider): CompoundTag {
+        ProcessedMod.LOGGER.info("getUpdateTag")
         return saveWithoutMetadata(provider)
     }
 
@@ -306,6 +336,9 @@ abstract class ProcessedMachine(blockEntityType: BlockEntityType<*>, blockPos: B
         val me = context.level.getBlockEntity(context.clickedPos) ?: return
         if (me !is ProcessedMachine) return
 
+        ProcessedMod.LOGGER.info("Supported item handlers: $supportedItemHandlers")
+        for (handler in supportedItemHandlers) ProcessedMod.LOGGER.info(handler.toString())
+        if (supportedFluidHandlers.size < 2 && supportedItemHandlers.size < 2) return
         if (context.level.isClientSide) Minecraft.getInstance().setScreen(ConfigScreen(this, context.clickedPos))
     }
 
@@ -445,6 +478,8 @@ abstract class ProcessedMachine(blockEntityType: BlockEntityType<*>, blockPos: B
         get() = getItemCapability(IoState.Additional)
     val auxiliaryItemHandler
         get() = getItemCapability(IoState.Auxiliary)
+    val supportedItemHandlers
+        get() = capabilityHandlers.supportedItemHandlers
 
     private fun dropItemForState(state: IoState) {
         val capability = this.capabilityHandlers.getItemHandlerForState(state) ?: return
@@ -478,7 +513,10 @@ abstract class ProcessedMachine(blockEntityType: BlockEntityType<*>, blockPos: B
         if (state == IoState.None) return
         this.capabilityHandlers.setFluidHandlerForState(
             state,
-            if (state == IoState.Output) SimpleOutputFluidStore(1, capacity) else SimpleInputFluidStore(1, capacity)
+            if (state == IoState.Output) SimpleOutputFluidStore(
+                1,
+                capacity
+            ) else SimpleInputFluidStore(1, capacity)
         )
         this.invalidateCapabilities()
         this.setChanged()
@@ -488,7 +526,10 @@ abstract class ProcessedMachine(blockEntityType: BlockEntityType<*>, blockPos: B
         if (state == IoState.None) return
         this.capabilityHandlers.setFluidHandlerForState(
             state,
-            (if (state == IoState.Output) SimpleOutputFluidStore(slots, capacity) else SimpleInputFluidStore(
+            (if (state == IoState.Output) SimpleOutputFluidStore(
+                slots,
+                capacity
+            ) else SimpleInputFluidStore(
                 slots,
                 capacity
             ))
@@ -544,14 +585,18 @@ abstract class ProcessedMachine(blockEntityType: BlockEntityType<*>, blockPos: B
         get() = getFluidCapability(IoState.Additional)
     val auxiliaryFluidHandler
         get() = getFluidCapability(IoState.Auxiliary)
+    val supportedFluidHandlers
+        get() = capabilityHandlers.supportedFluidHandlers
 
-
-    class CapabilityHandlers : INBTSerializable<CompoundTag> {
-        init {
-            ProcessedMod.LOGGER.info("Initializing Capability Handlers")
-        }
+    class CapabilityHandlers(val attachedMachine: ProcessedMachine) : INBTSerializable<CompoundTag> {
+        val supportedItemHandlers = hashSetOf(IoState.None)
+        val supportedFluidHandlers = hashSetOf(IoState.None)
 
         var energyStore: IProcessedEnergyHandler<CompoundTag>? = null
+            set(value) {
+                value?.setOnChange(attachedMachine::setChanged)
+                field = value
+            }
         private var inputItemHandler: IProcessedItemHandler<CompoundTag>? = null
         private var outputItemHandler: IProcessedItemHandler<CompoundTag>? = null
         private var additionalItemHandler: IProcessedItemHandler<CompoundTag>? = null
@@ -577,6 +622,19 @@ abstract class ProcessedMachine(blockEntityType: BlockEntityType<*>, blockPos: B
         }
 
         fun setItemHandlerForState(state: IoState, handler: IProcessedItemHandler<CompoundTag>?) {
+            handler?.setOnChange(attachedMachine::setChanged)
+            if (handler != null) {
+                supportedItemHandlers.add(state)
+                if (
+                    (state == IoState.Input && supportedItemHandlers.contains(IoState.Output))
+                    || (state == IoState.Output && supportedItemHandlers.contains(IoState.Input))
+                )
+                    supportedItemHandlers.add(IoState.InputOutput)
+            } else if (state != IoState.None) {
+                supportedItemHandlers.remove(state)
+                if (state == IoState.Input || state == IoState.Output) supportedItemHandlers.remove(IoState.InputOutput)
+            }
+
             when (state) {
                 IoState.None -> {}
                 IoState.Input -> inputItemHandler = handler
@@ -585,10 +643,6 @@ abstract class ProcessedMachine(blockEntityType: BlockEntityType<*>, blockPos: B
                 IoState.Additional -> additionalItemHandler = handler
                 IoState.Auxiliary -> auxiliaryItemHandler = handler
             }
-            ProcessedMod.LOGGER.info("Setting item handler $state to $handler")
-            ProcessedMod.LOGGER.info("output: {}", inputItemHandler)
-            ProcessedMod.LOGGER.info("input: {}", outputItemHandler)
-            ProcessedMod.LOGGER.info("me: {}", this)
         }
 
 
@@ -604,6 +658,19 @@ abstract class ProcessedMachine(blockEntityType: BlockEntityType<*>, blockPos: B
         }
 
         fun setFluidHandlerForState(state: IoState, handler: IProcessedFluidHandler<CompoundTag>?) {
+            handler?.setOnChange(attachedMachine::setChanged)
+            if (handler != null) {
+                supportedFluidHandlers.add(state)
+                if (
+                    (state == IoState.Input && supportedFluidHandlers.contains(IoState.Output))
+                    || (state == IoState.Output && supportedFluidHandlers.contains(IoState.Input))
+                )
+                    supportedFluidHandlers.add(IoState.InputOutput)
+            } else if (state != IoState.None) {
+                supportedFluidHandlers.remove(state)
+                if (state == IoState.Input || state == IoState.Output) supportedFluidHandlers.remove(IoState.InputOutput)
+            }
+
             when (state) {
                 IoState.None -> {}
                 IoState.Input -> inputFluidHandler = handler

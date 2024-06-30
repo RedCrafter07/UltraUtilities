@@ -12,7 +12,7 @@ object RenderUtils {
     const val GUI_BASE_TEXTURE_HEIGHT = 166
 
     fun renderSlot(graphics: GuiGraphics, x: Int, y: Int) {
-        graphics.blit(WIDGETS_TEXTURE, x, y, 0, 14, 18, 18)
+        graphics.blit(WIDGETS_TEXTURE, x, y, 0, 22, 18, 18)
     }
 
     fun renderDefault(screen: AbstractContainerScreen<*>, graphics: GuiGraphics) {
@@ -27,7 +27,7 @@ object RenderUtils {
             GUI_BASE_TEXTURE_WIDTH,
             GUI_BASE_TEXTURE_HEIGHT
         )
-        screen.menu.slots.forEach { renderSlot(graphics, xOff + it.x, yOff + it.y) }
+        screen.menu.slots.forEach { renderSlot(graphics, xOff + it.x - 1, yOff + it.y - 1) }
     }
 
     fun color(red: Int, green: Int, blue: Int, alpha: Int): Int {
