@@ -1,5 +1,4 @@
-# Make sure this is set to "kotlinforforge"
-modLoader = "kotlinforforge"
+modLoader = "javafml"
 # Make sure this is set to the appropriate version range
 loaderVersion = "${loader_version_range}" # Require at least 4.x
 license = "${mod_license}"

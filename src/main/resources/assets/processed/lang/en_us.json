@@ -39,14 +39,17 @@
   "processed.io_state.output": "Output",
   "processed.io_state.input_output": "Input + Output",
   "processed.io_state.additional": "Additional Input",
-  "processed.io_state.auxiliary": "Auxiliary Input",
+  "processed.io_state.auxiliary": "Extra Input",
   "processed.side.top": "Top",
   "processed.side.bottom": "Bottom",
   "processed.side.left": "Left",
   "processed.side.right": "Right",
   "processed.side.front": "Front",
   "processed.side.back": "Back",
-  "processed.gui.widgets.energy_bar": "Energy: %s / %s FE",
+  "processed.gui.widgets.energy_bar": "Energy: %s / %s",
+  "processed.gui.widget.energy_bar.normal": "%s Fe",
+  "processed.gui.widget.energy_bar.thousand": "%s kFe",
+  "processed.gui.widget.energy_bar.million": "%s MFe",
 
   "processed.tier_0": "Rudimentary",
   "processed.tier_1": "Basic",
@@ -64,5 +67,5 @@
   "processed.tier_5.colored": "§5Quantum§r",
   "processed.tier_6.colored": "§4Final§r",
 
-  "processed.tiered_machine_info": "§7Max Power: %s §aRF/t (%s§a)§f"
+  "processed.tiered_machine_info": "§7Max Power: %s§a/t (%s§a)§f"
 }
