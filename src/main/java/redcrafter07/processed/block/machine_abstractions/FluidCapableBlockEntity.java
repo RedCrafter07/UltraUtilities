@@ -7,5 +7,5 @@ import javax.annotation.Nullable;
 
 public interface FluidCapableBlockEntity {
     @Nullable
-    IFluidHandler fluidCapabilityForSide(BlockSide side, BlockState state);
+    IFluidHandler fluidCapabilityForSide(@Nullable BlockSide side, BlockState state);
 }

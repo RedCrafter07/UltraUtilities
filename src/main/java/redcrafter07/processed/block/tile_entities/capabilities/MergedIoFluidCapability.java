@@ -34,12 +34,12 @@ public class MergedIoFluidCapability implements IFluidHandlerModifiable {
     }
 
     @Override
-    public void setStackInTank(int slot, FluidStack stack) {
+    public void setFluidInTank(int slot, FluidStack stack) {
         var realSlot = slot - get(IoState.Output).getTanks();
 
         if (get(IoState.Input) instanceof IFluidHandlerModifiable handler) {
             if (realSlot < 0 || realSlot >= handler.getTanks()) return;
-            handler.setStackInTank(realSlot, stack);
+            handler.setFluidInTank(realSlot, stack);
         }
     }
 

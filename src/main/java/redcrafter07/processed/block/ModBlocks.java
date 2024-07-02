@@ -21,7 +21,8 @@ public class ModBlocks {
 
     // the returned ObjectHolderDelegate can be used as a property delegate
     // this is automatically registered by the deferred registry at the correct times
-    public static final DeferredBlock<Block> BLITZ_ORE = registerBlock("blitz_ore", () -> new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.DIAMOND_ORE).explosionResistance(1200f)));
+    public static final DeferredBlock<?> BLITZ_ORE = registerBlock("blitz_ore", () -> new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.DIAMOND_ORE).explosionResistance(1200f)));
+    public static final DeferredBlock<?> FLUID_TANK = registerBlock("fluid_tank", FluidTankBlock::new);
     public static final Set<DeferredBlock<PoweredFurnaceBlock>> BLOCKS_POWERED_FURNACE = registerTieredBlock("powered_furnace", ProcessedTier.TIERS, PoweredFurnaceBlock::new);
 
     private static <T extends TieredProcessedBlock> Set<DeferredBlock<T>> registerTieredBlock(

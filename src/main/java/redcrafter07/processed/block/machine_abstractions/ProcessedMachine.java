@@ -99,7 +99,7 @@ public abstract class ProcessedMachine
         }
     }
 
-    @org.jetbrains.annotations.Nullable
+    @Nullable
     @Override
     public Packet<ClientGamePacketListener> getUpdatePacket() {
         return ClientboundBlockEntityDataPacket.create(this);
@@ -120,21 +120,24 @@ public abstract class ProcessedMachine
         }
     }
 
-    @org.jetbrains.annotations.Nullable
+    @Nullable
     @Override
-    public IEnergyStorage energyCapabilityForSide(BlockSide side, BlockState state) {
+    public IEnergyStorage energyCapabilityForSide(@Nullable BlockSide side, BlockState state) {
+        if (side == null) return null;
         return capabilityHandlers.getEnergyStore();
     }
 
-    @org.jetbrains.annotations.Nullable
+    @Nullable
     @Override
-    public IItemHandler itemCapabilityForSide(BlockSide side, BlockState state) {
+    public IItemHandler itemCapabilityForSide(@Nullable BlockSide side, BlockState state) {
+        if (side == null) return null;
         return capabilityHandlers.getItemHandlerForState(getSide(true, side));
     }
 
-    @org.jetbrains.annotations.Nullable
+    @Nullable
     @Override
-    public IFluidHandler fluidCapabilityForSide(BlockSide side, BlockState state) {
+    public IFluidHandler fluidCapabilityForSide(@Nullable BlockSide side, BlockState state) {
+        if (side == null) return null;
         return capabilityHandlers.getFluidHandlerForState(getSide(false, side));
     }
 

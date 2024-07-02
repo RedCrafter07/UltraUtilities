@@ -7,5 +7,5 @@ import javax.annotation.Nullable;
 
 public interface EnergyCapableBlockEntity {
     @Nullable
-    IEnergyStorage energyCapabilityForSide(BlockSide side, BlockState state);
+    IEnergyStorage energyCapabilityForSide(@Nullable BlockSide side, BlockState state);
 }

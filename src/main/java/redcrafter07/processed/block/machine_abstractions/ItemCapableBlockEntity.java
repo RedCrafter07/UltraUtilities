@@ -7,5 +7,5 @@ import javax.annotation.Nullable;
 
 public interface ItemCapableBlockEntity {
     @Nullable
-    IItemHandler itemCapabilityForSide(BlockSide side, BlockState state);
+    IItemHandler itemCapabilityForSide(@Nullable BlockSide side, BlockState state);
 }

@@ -3,7 +3,7 @@ package redcrafter07.processed.block.tile_entities.capabilities;
 import net.minecraft.core.NonNullList;
 import net.neoforged.neoforge.fluids.FluidStack;
 
-public class SimpleOutputFluidStore extends SimpleInputFluidStore {
+public class SimpleOutputFluidStore extends SimpleFluidStore {
 
     public SimpleOutputFluidStore(NonNullList<FluidStack> tanks, int capacity) {
         super(tanks, capacity);

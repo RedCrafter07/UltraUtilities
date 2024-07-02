@@ -16,4 +16,9 @@ public class SimpleInputItemStore extends
     public SimpleInputItemStore() {
         super();
     }
+
+    @Override
+    public ItemStack extractItem(int slot, int amount, boolean simulate) {
+        return ItemStack.EMPTY;
+    }
 }

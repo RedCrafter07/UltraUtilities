@@ -19,6 +19,8 @@ public final class ModTileEntities {
 
     public static DeferredHolder<BlockEntityType<?>, BlockEntityType<PoweredFurnaceBlockEntity>> POWERED_FURNACE =
             register("powered_furnace", PoweredFurnaceBlockEntity::new, ModBlocks.BLOCKS_POWERED_FURNACE.toArray(DeferredBlock[]::new));
+    public static DeferredHolder<BlockEntityType<?>, BlockEntityType<FluidTankBlockEntity>> FLUID_TANK =
+            register("fluid_tank", FluidTankBlockEntity::new, ModBlocks.FLUID_TANK);
 
     private static <T extends BlockEntity> DeferredHolder<BlockEntityType<?>, BlockEntityType<T>> register(
             String name,

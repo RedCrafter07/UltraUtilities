@@ -5,7 +5,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
 public class EmptyFluidHandler implements IFluidHandlerModifiable {
 
     @Override
-    public void setStackInTank(int tank, FluidStack stack) {
+    public void setFluidInTank(int tank, FluidStack stack) {
     }
 
     @Override

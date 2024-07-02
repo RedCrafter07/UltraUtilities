@@ -27,6 +27,7 @@ public final class ModBlockLootTables extends BlockLootSubProvider {
     protected void generate() {
         createOreLootTable(ModBlocks.BLITZ_ORE.get(), ModItems.BLITZ_ORB.get(), 1f, 3f);
 
+        dropSelf(ModBlocks.FLUID_TANK);
         dropSelf(ModBlocks.BLOCKS_POWERED_FURNACE);
     }
 

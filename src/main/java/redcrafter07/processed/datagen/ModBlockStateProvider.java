@@ -17,6 +17,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
     @Override
     protected void registerStatesAndModels() {
         blockWithItem(ModBlocks.BLITZ_ORE);
+        blockWithItem(ModBlocks.FLUID_TANK, new ModelFile.ExistingModelFile(ProcessedMod.rl("block/fluid_tank"), this.models().existingFileHelper));
     }
 
     private void blockWithItem(DeferredBlock<?> blockRegistryObject, ModelFile model) {
