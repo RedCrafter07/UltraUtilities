@@ -1,6 +1,8 @@
 package redcrafter07.processed.block.tile_entities.capabilities;
 
 public class EmptyEnergyStorage implements IEnergyStorageModifiable {
+    public static final IEnergyStorageModifiable INSTANCE = new EmptyEnergyStorage();
+
     @Override
     public void setEnergyStored(int energy) {}
     @Override

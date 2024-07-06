@@ -43,8 +43,8 @@ public abstract class ProcessedMachine
     }
 
     public static final IItemHandlerModifiable EMPTY_ITEM_HANDLER = new EmptyItemHandler();
-    public static final IFluidHandlerModifiable EMPTY_FLUID_HANDLER = new EmptyFluidHandler();
-    public static final IEnergyStorageModifiable EMPTY_ENERGY_HANDLER = new EmptyEnergyStorage();
+    public static final IFluidHandlerModifiable EMPTY_FLUID_HANDLER = EmptyFluidHandler.INSTANCE;
+    public static final IEnergyStorageModifiable EMPTY_ENERGY_HANDLER = EmptyEnergyStorage.INSTANCE;
 
     private final ArrayList<IoState> sides = new ArrayList<>(
             List.of(IoState.None,

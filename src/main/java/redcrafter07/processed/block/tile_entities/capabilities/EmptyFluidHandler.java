@@ -3,6 +3,7 @@ package redcrafter07.processed.block.tile_entities.capabilities;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 public class EmptyFluidHandler implements IFluidHandlerModifiable {
+    public static final EmptyFluidHandler INSTANCE = new EmptyFluidHandler();
 
     @Override
     public void setFluidInTank(int tank, FluidStack stack) {
