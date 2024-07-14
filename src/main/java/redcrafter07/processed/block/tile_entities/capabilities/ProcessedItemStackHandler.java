@@ -92,7 +92,8 @@ public class ProcessedItemStackHandler extends IProcessedItemHandler<CompoundTag
     @Override
     public int getSlotLimit(int slot) {
         if (invalidSlotIndex(slot)) return 0;
-        return Item.ABSOLUTE_MAX_STACK_SIZE;
+        if (items.get(slot).isEmpty()) return Item.ABSOLUTE_MAX_STACK_SIZE;
+        return Math.min(Item.ABSOLUTE_MAX_STACK_SIZE, items.get(slot).getMaxStackSize());
     }
 
     @Override

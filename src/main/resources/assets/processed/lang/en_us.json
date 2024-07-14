@@ -14,6 +14,8 @@
   "block.processed.pipe_pressurizer.tooltip": "§7The controller for item pipes.",
   "block.processed.powered_furnace": "%d Powered Furnace",
   "block.processed.powered_furnace.tooltip": "§7Smelts item using Power.",
+  "block.processed.big_smelter": "Big Smelter",
+  "block.processed.big_smelter.tooltip": "An arc furnace lol",
   "processed.pipe_state.normal": "Normal",
   "processed.pipe_state.push": "Push",
   "processed.pipe_state.pull": "Pull",

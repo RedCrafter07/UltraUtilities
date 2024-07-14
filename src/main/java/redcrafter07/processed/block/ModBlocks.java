@@ -10,6 +10,7 @@ import redcrafter07.processed.ProcessedMod;
 import redcrafter07.processed.block.machine_abstractions.ProcessedTier;
 import redcrafter07.processed.block.machine_abstractions.TieredProcessedBlock;
 import redcrafter07.processed.item.ModItems;
+import redcrafter07.processed.multiblock.CasingBlock;
 
 import java.util.List;
 import java.util.Set;
@@ -24,6 +25,9 @@ public class ModBlocks {
     public static final DeferredBlock<?> BLITZ_ORE = registerBlock("blitz_ore", () -> new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.DIAMOND_ORE).explosionResistance(1200f)));
     public static final DeferredBlock<?> FLUID_TANK = registerBlock("fluid_tank", FluidTankBlock::new);
     public static final Set<DeferredBlock<PoweredFurnaceBlock>> BLOCKS_POWERED_FURNACE = registerTieredBlock("powered_furnace", ProcessedTier.TIERS, PoweredFurnaceBlock::new);
+    public static final DeferredBlock<?> BASIC_CASING = registerBlock("basic_casing", () -> new CasingBlock(BlockBehaviour.Properties.of()));
+    public static final DeferredBlock<?> BIG_SMELTER = registerBlock("big_smelter", BigSmelterBlock::new);
+
 
     private static <T extends TieredProcessedBlock> Set<DeferredBlock<T>> registerTieredBlock(
             String id,

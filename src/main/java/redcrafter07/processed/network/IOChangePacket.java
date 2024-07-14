@@ -35,9 +35,7 @@ public record IOChangePacket(BlockPos block, IoState state, BlockSide side, bool
                 blockEntity.setSide(itemOrFluid, side, state);
                 blockEntity.invalidateCapabilities();
             }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        } catch (IOException ignored) {}
     }
 
     @Override

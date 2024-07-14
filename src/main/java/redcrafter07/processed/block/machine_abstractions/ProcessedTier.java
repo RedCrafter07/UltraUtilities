@@ -34,7 +34,7 @@ public record ProcessedTier(int tier, int multiplierSpeed, int multiplierEnergy)
         return 8 * multiplierEnergy * defaultPower;
     }
 
-    public static List<ProcessedTier> TIERS = List.of(
+    public static final List<ProcessedTier> TIERS = List.of(
             new ProcessedTier(0, 1, 1), // Rudimentary
             new ProcessedTier(1, 3, 4), // Basic
             new ProcessedTier(2, 9, 16), // Advanced
@@ -43,5 +43,5 @@ public record ProcessedTier(int tier, int multiplierSpeed, int multiplierEnergy)
             new ProcessedTier(5, 243, 1024), // Quantum
             new ProcessedTier(6, 729, 4096) // Final
     );
-    public static ProcessedTier DEFAULT = new ProcessedTier(-1, 0, 0);
+    public static final ProcessedTier DEFAULT = new ProcessedTier(-1, 0, 0);
 }

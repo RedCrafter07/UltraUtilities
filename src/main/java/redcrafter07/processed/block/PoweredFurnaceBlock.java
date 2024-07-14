@@ -26,15 +26,11 @@ public class PoweredFurnaceBlock extends
             Player player,
             BlockHitResult hitResult
     ) {
-        if (level.isClientSide) {
-            return InteractionResult.SUCCESS;
-        } else {
-            if (level.getBlockEntity(blockPos) instanceof PoweredFurnaceBlockEntity be) {
-                player.openMenu(be, (data) -> data.writeBlockPos(blockPos));
-                return InteractionResult.CONSUME;
-            }
-            return InteractionResult.PASS;
+        if (level.getBlockEntity(blockPos) instanceof PoweredFurnaceBlockEntity be) {
+            player.openMenu(be, (data) -> data.writeBlockPos(blockPos));
+            return InteractionResult.sidedSuccess(level.isClientSide());
         }
+        return InteractionResult.PASS;
     }
 }
 

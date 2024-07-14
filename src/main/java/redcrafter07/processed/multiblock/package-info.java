@@ -1,5 +1,5 @@
-@ParametersAreNonnullByDefault @MethodsReturnNonnullByDefault @FieldsAreNonnullByDefault
-package redcrafter07.processed.network;
+@FieldsAreNonnullByDefault @MethodsReturnNonnullByDefault @ParametersAreNonnullByDefault
+package redcrafter07.processed.multiblock;
 
 import net.minecraft.FieldsAreNonnullByDefault;
 import net.minecraft.MethodsReturnNonnullByDefault;

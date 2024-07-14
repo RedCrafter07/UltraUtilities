@@ -1,6 +1,7 @@
 package redcrafter07.processed.block.machine_abstractions;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.nbt.CompoundTag;
@@ -13,6 +14,7 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -60,6 +62,25 @@ public abstract class ProcessedMachine
                     IoState.None,
                     IoState.None)
     );
+    private boolean isRunning = true;
+
+    public boolean isRunning() {
+        return isRunning;
+    }
+
+    public void stopMachine() {
+        isRunning = false;
+        sync();
+    }
+
+    public void startMachine() {
+        isRunning = true;
+        sync();
+    }
+
+    public void setRunning(boolean running) {
+        isRunning = running;
+    }
 
     private final CapabilityHandlers capabilityHandlers = new CapabilityHandlers(this);
 
@@ -94,7 +115,7 @@ public abstract class ProcessedMachine
     public void sync() {
         if (this.level instanceof ServerLevel) {
             final BlockState state = getBlockState();
-            this.level.sendBlockUpdated(this.worldPosition, state, state, 3);
+            this.level.sendBlockUpdated(this.worldPosition, state, state, Block.UPDATE_ALL);
             setChanged();
         }
     }
@@ -141,14 +162,27 @@ public abstract class ProcessedMachine
         return capabilityHandlers.getFluidHandlerForState(getSide(false, side));
     }
 
-    public void clientTick(Level level, BlockPos pos, BlockState state) {
+    public final void handleTick(Level level, BlockPos pos, BlockState state) {
+        tickNoProcessing(level, pos, state);
+        if (!isRunning) return;
+        if (level instanceof ClientLevel clientLevel && level.isClientSide()) clientTick(clientLevel, pos, state);
+        if (level instanceof ServerLevel serverLevel && !level.isClientSide()) serverTick(serverLevel, pos, state);
+        commonTick(level, pos, state);
     }
 
-    public void serverTick(Level level, BlockPos pos, BlockState state) {
+    public void clientTick(ClientLevel level, BlockPos pos, BlockState state) {
+    }
+
+    public void serverTick(ServerLevel level, BlockPos pos, BlockState state) {
     }
 
     public void commonTick(Level level, BlockPos pos, BlockState state) {
     }
+
+    /**
+     * This function should NOT do any processing of items, as this gets called even when the machine is disabled.
+     */
+    public void tickNoProcessing(Level level, BlockPos pos, BlockState state) {}
 
 
     /// ###########################################
@@ -224,7 +258,7 @@ public abstract class ProcessedMachine
         if (state == IoState.None) return;
         capabilityHandlers.setItemHandlerForState(
                 state,
-                state == IoState.Output ? new SimpleOutputItemStore(1) : new SimpleInputItemStore(1)
+                state == IoState.Output ? new SimpleOutputItemStore(1) : new ProcessedItemStackHandler(1)
         );
         this.invalidateCapabilities();
         this.setChanged();
@@ -234,7 +268,7 @@ public abstract class ProcessedMachine
         if (state == IoState.None) return;
         this.capabilityHandlers.setItemHandlerForState(
                 state,
-                (state == IoState.Output) ? new SimpleOutputItemStore(size) : new SimpleInputItemStore(size)
+                (state == IoState.Output) ? new SimpleOutputItemStore(size) : new ProcessedItemStackHandler(size)
         );
         this.invalidateCapabilities();
         this.setChanged();
@@ -338,7 +372,7 @@ public abstract class ProcessedMachine
                 ((state == IoState.Output) ? new SimpleOutputFluidStore(
                         slots,
                         capacity
-                ) : new SimpleInputFluidStore(
+                ) : new SimpleFluidStore(
                         slots,
                         capacity
                 ))

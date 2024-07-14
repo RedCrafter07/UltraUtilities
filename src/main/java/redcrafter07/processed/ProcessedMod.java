@@ -39,5 +39,6 @@ public class ProcessedMod {
         ModTileEntities.BLOCK_TYPES.register(modEventBus);
         ModDataComponents.DATA_COMPONENTS.register(modEventBus);
         ModMenuTypes.MENUS.register(modEventBus);
+        Attachments.ATTACHMENT_TYPES.register(modEventBus);
     }
 }

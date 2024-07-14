@@ -1,6 +1,9 @@
 package redcrafter07.processed.events;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.capabilities.Capabilities;
@@ -18,10 +21,49 @@ import redcrafter07.processed.block.tile_entities.ModTileEntities;
 import redcrafter07.processed.gui.GenericMachineMenuScreen;
 import redcrafter07.processed.gui.ModMenuTypes;
 import redcrafter07.processed.network.IOChangePacket;
+import redcrafter07.processed.network.MultiblockDestroyPacket;
 import redcrafter07.processed.network.WrenchModeChangePacket;
+
+import java.util.Arrays;
 
 @EventBusSubscriber(modid = ProcessedMod.ID, bus = EventBusSubscriber.Bus.MOD)
 public class Registering {
+    private static boolean blockEntityIs(Block block, Class<?> clazz) {
+        if (block instanceof EntityBlock entityBlock) {
+            try {
+                final BlockEntity be = entityBlock.newBlockEntity(BlockPos.ZERO, block.defaultBlockState());
+                return clazz.isInstance(be);
+            } catch (SecurityException e) {
+                return false;
+            }
+        }
+        return false;
+    }
+
+    private static boolean isItemCapable(Block block) {
+        return blockEntityIs(block, ItemCapableBlockEntity.class);
+    }
+
+    private static boolean isFluidCapable(Block block) {
+        return blockEntityIs(block, FluidCapableBlockEntity.class);
+    }
+
+    private static boolean isEnergyCapable(Block block) {
+        return blockEntityIs(block, EnergyCapableBlockEntity.class);
+    }
+
+    private static Block[] itemCapable(Block[] block) {
+        return Arrays.stream(block).filter(Registering::isItemCapable).toArray(Block[]::new);
+    }
+
+    private static Block[] fluidCapable(Block[] block) {
+        return Arrays.stream(block).filter(Registering::isFluidCapable).toArray(Block[]::new);
+    }
+
+    private static Block[] energyCapable(Block[] block) {
+        return Arrays.stream(block).filter(Registering::isEnergyCapable).toArray(Block[]::new);
+    }
+
     @SubscribeEvent
     public static void onRegisterCapabilities(RegisterCapabilitiesEvent event) {
         final var blocks = ModTileEntities.BLOCK_TYPES.getEntries().stream().flatMap(entry -> entry.get().getValidBlocks().stream()).toArray(Block[]::new);
@@ -35,7 +77,7 @@ public class Registering {
                     }
                     return null;
                 },
-                blocks
+                itemCapable(blocks)
         );
 
         event.registerBlock(
@@ -47,7 +89,7 @@ public class Registering {
                     }
                     return null;
                 },
-                blocks
+                fluidCapable(blocks)
         );
         event.registerBlock(
                 Capabilities.EnergyStorage.BLOCK,
@@ -58,7 +100,7 @@ public class Registering {
                     }
                     return null;
                 },
-                blocks
+                energyCapable(blocks)
         );
     }
 
@@ -76,6 +118,12 @@ public class Registering {
                 IOChangePacket.TYPE,
                 IOChangePacket.CODEC,
                 IOChangePacket::handleServer
+        );
+
+        register.playToClient(
+                MultiblockDestroyPacket.TYPE,
+                MultiblockDestroyPacket.CODEC,
+                MultiblockDestroyPacket::handleClient
         );
     }
 

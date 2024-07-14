@@ -17,10 +17,12 @@ public final class ModTileEntities {
     public static final DeferredRegister<BlockEntityType<?>> BLOCK_TYPES =
             DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, ProcessedMod.ID);
 
-    public static DeferredHolder<BlockEntityType<?>, BlockEntityType<PoweredFurnaceBlockEntity>> POWERED_FURNACE =
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<PoweredFurnaceBlockEntity>> POWERED_FURNACE =
             register("powered_furnace", PoweredFurnaceBlockEntity::new, ModBlocks.BLOCKS_POWERED_FURNACE.toArray(DeferredBlock[]::new));
-    public static DeferredHolder<BlockEntityType<?>, BlockEntityType<FluidTankBlockEntity>> FLUID_TANK =
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<FluidTankBlockEntity>> FLUID_TANK =
             register("fluid_tank", FluidTankBlockEntity::new, ModBlocks.FLUID_TANK);
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<BigSmelterBlockEntity>> BIG_SMELTER =
+            register("big_smelter", BigSmelterBlockEntity::new, ModBlocks.BIG_SMELTER);
 
     private static <T extends BlockEntity> DeferredHolder<BlockEntityType<?>, BlockEntityType<T>> register(
             String name,

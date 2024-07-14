@@ -18,8 +18,6 @@ version = mod_version
 group = mod_group_id
 
 repositories {
-    maven { url 'https://modmaven.dev/' }
-
     // NeoForged MDK includes mavenLocal by default
     mavenLocal()
 }
@@ -94,7 +92,7 @@ dependencies {
     // Use the latest version of NeoForge
     implementation "net.neoforged:neoforge:${neo_version}"
 
-    runtimeOnly "mekanism:Mekanism:1.21-10.6.3.49" // Mekanism
+    runtimeOnly "mekanism:Mekanism:1.21-10.6.5.52" // Mekanism
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.

@@ -7,15 +7,13 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.util.StringRepresentable;
-import net.minecraft.world.level.block.DirectionalBlock;
-import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import org.joml.Vector2i;
 
 import java.util.List;
 import java.util.function.IntFunction;
+
+import static redcrafter07.processed.ProcessedUtil.getFacingDirection;
 
 public enum BlockSide implements StringRepresentable {
     Top(0, "top"),
@@ -120,16 +118,8 @@ public enum BlockSide implements StringRepresentable {
         return fromDirection(DIRECTION_LOOKUP.get(machineFacing.get3DDataValue()).get(direction.get3DDataValue()));
     }
 
-    private static final List<DirectionProperty> facingProperties = List.of(DirectionalBlock.FACING,
-            HorizontalDirectionalBlock.FACING,
-            BlockStateProperties.HORIZONTAL_FACING,
-            BlockStateProperties.FACING);
-
     public static BlockSide translateDirection(Direction direction, BlockState state) {
-        for (var property : facingProperties) {
-            if (state.hasProperty(property)) return BlockSide.getFacing(state.getValue(property), direction);
-        }
-        return BlockSide.fromDirection(direction);
+        return BlockSide.getFacing(getFacingDirection(state), direction);
     }
 
     static final BlockSide DEFAULT = Front;

@@ -24,7 +24,7 @@ import redcrafter07.processed.item.ModItems;
 
 import javax.annotation.Nullable;
 
-abstract class ProcessedBlock extends Block implements EntityBlock {
+public abstract class ProcessedBlock extends Block implements EntityBlock {
     public ProcessedBlock(Properties properties) {
         super(properties.pushReaction(PushReaction.BLOCK));
     }
@@ -81,12 +81,7 @@ abstract class ProcessedBlock extends Block implements EntityBlock {
             BlockEntityType<T> blockEntityType
     ) {
         return (lv, pos, tickState, ticker) -> {
-            if (ticker instanceof ProcessedMachine machine) {
-                if (lv.isClientSide) machine.clientTick(lv, pos, tickState);
-                else machine.serverTick(lv, pos, tickState);
-                machine.commonTick(lv, pos, tickState);
-
-            }
+            if (ticker instanceof ProcessedMachine machine) machine.handleTick(lv, pos, tickState);
         };
     }
 
@@ -101,7 +96,7 @@ abstract class ProcessedBlock extends Block implements EntityBlock {
             BlockState newState,
             boolean isMoving
     ) {
-        if (state.getBlock() == newState.getBlock()) {
+        if (state.is(newState.getBlock())) {
             super.onRemove(state, level, pos, newState, isMoving);
             return;
         }

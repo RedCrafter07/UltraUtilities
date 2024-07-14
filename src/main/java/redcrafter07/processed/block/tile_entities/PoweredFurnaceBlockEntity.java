@@ -24,7 +24,6 @@ import redcrafter07.processed.gui.PoweredFurnaceMenu;
 import javax.annotation.Nullable;
 
 public final class PoweredFurnaceBlockEntity extends TieredProcessedMachine {
-
     private final ContainerData data;
     private int progress = 0;
     private int maxProgress = 78;
@@ -96,7 +95,16 @@ public final class PoweredFurnaceBlockEntity extends TieredProcessedMachine {
         if (recipe == null) return;
         if (level == null) return;
         final var result = recipe.getResultItem(level.registryAccess());
-        getInputItemHandler().extractItem(0, 1, false);
+
+        var ingredient = recipe.getIngredients().getFirst().getItems()[0];
+        if (ingredient.isEmpty()) return;
+        var remainingItems = recipe.getRemainingItems(new SingleRecipeInput(getInputItemHandler().getStackInSlot(0)));
+        boolean hasRemainingItems = !remainingItems.isEmpty() && !remainingItems.getFirst().isEmpty();
+        if (hasRemainingItems) getInputItemHandler().setStackInSlot(0, remainingItems.getFirst().copy());
+        else {
+            ItemStack input = getInputItemHandler().getStackInSlot(0);
+            getInputItemHandler().setStackInSlot(0, input.copyWithCount(input.getCount() - ingredient.getCount()));
+        }
 
         getOutputItemHandler().setStackInSlot(
                 0,
@@ -124,8 +132,25 @@ public final class PoweredFurnaceBlockEntity extends TieredProcessedMachine {
                 RecipeType.SMELTING,
                 new SingleRecipeInput(getInputItemHandler().getStackInSlot(0)),
                 level
-        ).map(RecipeHolder::value);
-        return recipe.orElse(null);
+        ).map(RecipeHolder::value).orElse(null);
+        if (recipe == null) return null;
+
+        final var result = recipe.getResultItem(level.registryAccess());
+        ItemStack currentOutput = getOutputItemHandler().getStackInSlot(0);
+        if (result.getCount() + currentOutput.getCount() > getOutputItemHandler().getSlotLimit(0) || result.getCount() + currentOutput.getCount() > currentOutput.getMaxStackSize())
+            return null;
+        if (!currentOutput.isEmpty()) {
+            if (!ItemStack.isSameItemSameComponents(currentOutput, result)) return null;
+        }
+
+        var ingredient = recipe.getIngredients().getFirst().getItems()[0];
+        if (ingredient.isEmpty()) return null;
+        var remainingItems = recipe.getRemainingItems(new SingleRecipeInput(getInputItemHandler().getStackInSlot(0)));
+        boolean hasRemainingItems = !remainingItems.isEmpty() && !remainingItems.getFirst().isEmpty();
+        if (hasRemainingItems && getInputItemHandler().getStackInSlot(0).getCount() > ingredient.getCount())
+            return null;
+
+        return recipe;
     }
 
     private boolean canInsertItemIntoOutputSlot(Item item) {
