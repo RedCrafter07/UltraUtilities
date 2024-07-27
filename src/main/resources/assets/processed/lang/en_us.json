@@ -1,5 +1,6 @@
 {
   "item_group.processed.main": "Processed",
+  "item_group.processed.materials": "Processed Materials",
   "item.processed.blitz_orb": "Blitz Orb",
   "item.processed.wrench": "Wrench",
   "item.processed.wrench.tooltip": "§7Tweak other blocks from Processed!",
@@ -52,6 +53,18 @@
   "processed.gui.widget.energy_bar.normal": "%s Fe",
   "processed.gui.widget.energy_bar.thousand": "%s kFe",
   "processed.gui.widget.energy_bar.million": "%s MFe",
+
+  "processed.material_dust": "%s Dust",
+  "processed.material_ingot": "%s Ingot",
+  "processed.material_nugget": "%s Nugget",
+  "processed.material_raw": "Raw %s",
+  "processed.material_metal_block": "%s Block",
+  "processed.material_ore": "%s Ore",
+
+  "processed.material.steel": "Steel",
+  "processed.material.aluminium": "Aluminium",
+  "processed.material.titanium": "Titanium",
+  "processed.material.nickel": "Nickel",
 
   "processed.tier_0": "Rudimentary",
   "processed.tier_1": "Basic",

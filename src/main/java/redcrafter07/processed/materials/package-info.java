@@ -1,0 +1,7 @@
+@MethodsReturnNonnullByDefault @FieldsAreNonnullByDefault @ParametersAreNonnullByDefault
+package redcrafter07.processed.materials;
+
+import net.minecraft.FieldsAreNonnullByDefault;
+import net.minecraft.MethodsReturnNonnullByDefault;
+
+import javax.annotation.ParametersAreNonnullByDefault;

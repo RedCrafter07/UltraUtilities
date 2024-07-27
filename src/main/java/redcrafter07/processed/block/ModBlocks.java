@@ -5,15 +5,23 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.neoforged.neoforge.registries.DeferredBlock;
+import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import redcrafter07.processed.ProcessedMod;
 import redcrafter07.processed.block.machine_abstractions.ProcessedTier;
 import redcrafter07.processed.block.machine_abstractions.TieredProcessedBlock;
 import redcrafter07.processed.item.ModItems;
+import redcrafter07.processed.materials.Material;
+import redcrafter07.processed.materials.MaterialBlock;
+import redcrafter07.processed.materials.MaterialBlockItem;
+import redcrafter07.processed.materials.Materials;
 import redcrafter07.processed.multiblock.CasingBlock;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -28,6 +36,9 @@ public class ModBlocks {
     public static final DeferredBlock<?> BASIC_CASING = registerBlock("basic_casing", () -> new CasingBlock(BlockBehaviour.Properties.of()));
     public static final DeferredBlock<?> BIG_SMELTER = registerBlock("big_smelter", BigSmelterBlock::new);
 
+    public static List<DeferredItem<MaterialBlockItem>> MATERIAL_BLOCK_ITEMS = new ArrayList<>();
+    public static List<DeferredBlock<MaterialBlock>> METAL_BLOCKS = registerMaterialBlock(Materials.MATERIALS, Material::getMetalBlockPath, MaterialBlock.MetalBlock::new, MaterialBlockItem.MetalBlock::new);
+    public static List<DeferredBlock<MaterialBlock>> STONE_ORE_BLOCKS = registerMaterialBlock(Materials.MATERIALS, Material::getOreBlockPath, MaterialBlock.OreBlock::new, MaterialBlockItem.OreBlock::new);
 
     private static <T extends TieredProcessedBlock> Set<DeferredBlock<T>> registerTieredBlock(
             String id,
@@ -47,6 +58,19 @@ public class ModBlocks {
         ModItems.registerItem(id, () -> new ModBlockItem(regBlock.get(), new Item.Properties(), id));
 
         return regBlock;
+    }
+
+    public static <T extends MaterialBlock> List<DeferredBlock<T>> registerMaterialBlock(List<Material> materials, Function<Material, String> nameSupplier, Function<Material, T> blockConstructor, BiFunction<Block, Material, MaterialBlockItem> itemConstructor) {
+        ArrayList<DeferredBlock<T>> list = new ArrayList<>();
+
+        for (Material material : materials) {
+            String name = nameSupplier.apply(material);
+            final var regBlock = BLOCKS.register(name, () -> blockConstructor.apply(material));
+            list.add(regBlock);
+            MATERIAL_BLOCK_ITEMS.add(ModItems.registerItem(name, () -> itemConstructor.apply(regBlock.get(), material)));
+        }
+
+        return list;
     }
 
     @FunctionalInterface

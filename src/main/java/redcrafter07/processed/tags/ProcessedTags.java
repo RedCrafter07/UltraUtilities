@@ -22,7 +22,7 @@ public class ProcessedTags {
     }
 
     public static class Blocks {
-        public static final TagKey<Block> FORGE_ORE_BLITZ = commonTag("ores/blitz");
+        public static final TagKey<Block> ORE_BLITZ = commonTag("ores/blitz");
 
         public static TagKey<Block> commonTag(String name) {
             return BlockTags.create(ResourceLocation.fromNamespaceAndPath("c", name));
